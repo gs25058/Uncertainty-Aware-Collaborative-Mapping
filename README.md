@@ -59,6 +59,19 @@ not the code:
 A harder, longer, or higher-speed multi-robot sequence — where VO actually drifts
 past the UWB noise floor — is where fusion is expected to win.
 
+### Paper-faithful reproduction
+
+The table above uses a **loop-closing-ON** front-end (full mono-SLAM: local BA +
+loop closure + map merging), which is drift-*corrected* and stronger than the
+drifting VO the paper assumes. A separate, **paper-faithful** run uses a
+continuous **drifting** VO instead — loop *detection* and map *merging* are kept
+(so the trajectory stays continuous across drone tracking loss) but loop-closure
+*correction* is disabled via a `loopCorrection` flag added to the ORB-SLAM3 fork
+(`loopClosing: 1 + loopCorrection: 0`). On that faithful front-end, fusion **does**
+correct VO drift (ifo002 0.78→0.45 m, ifo003 0.61→0.46 m), reproducing the paper's
+core demonstration. Full method-vs-paper checklist, ATE table, and the patch note
+are in **[`FAITHFUL_REPRODUCTION.md`](FAITHFUL_REPRODUCTION.md)**.
+
 ## Getting started
 
 ### Prerequisites
