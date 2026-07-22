@@ -24,6 +24,23 @@ vo_output/*.log
 vo_output/smoke_*
 vo_output/vo_*.log
 
+# ---- research byproducts (kept locally, not part of the code) ----
+DIAGNOSIS.md
+*_results.csv
+results/
+scripts/diagnose.py
+scripts/diagnose_data.py
+scripts/diag.py
+scripts/diaglog.py
+scripts/compare_lc.py
+scripts/test1_alignment.py
+scripts/test2_aux.py
+scripts/test2_gtrange.py
+scripts/summarize_sweep.py
+scripts/summarize_height.py
+scripts/eval_seq.py
+scripts/faithful_covor.py
+
 # ---- secrets / credentials (NEVER commit) ----
 ssh_key
 ssh_key.pub
