@@ -9,6 +9,7 @@ orbslam_driver/mono_miluv
 # ---- private session transcripts & copyrighted reference material ----
 reference files/
 *-reference-files*.txt
+*-covor-slam-*.txt
 과거_세션_대화_기록.txt
 
 # ---- local tooling / editor state ----
@@ -23,6 +24,9 @@ vo_output/*_list.txt
 vo_output/*.log
 vo_output/smoke_*
 vo_output/vo_*.log
+
+# ---- regeneratable occupancy inputs (fused poses + Sigma; make with fuse_and_dump.py) ----
+vo_output/occ_*.npz
 
 # ---- research byproducts (kept locally, not part of the code) ----
 DIAGNOSIS.md
