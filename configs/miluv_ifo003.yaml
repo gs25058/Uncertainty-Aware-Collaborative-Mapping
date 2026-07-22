@@ -17,11 +17,14 @@ Camera.height: 480
 Camera.fps: 30
 Camera.RGB: 1
 
-# Pure visual odometry to match CoVOR-SLAM (Lee 2023): loop closing + map merging
-# + place recognition disabled, so each robot's front-end drifts as odometry and
-# the UWB ranges (not visual loop closure) provide the drift correction. Local
-# bundle adjustment in LocalMapping is kept (that is part of the VO front-end).
-loopClosing: 0
+# Continuous drifting VO to match CoVOR-SLAM (Lee 2023): keep loop DETECTION and
+# map MERGING (so the trajectory stays continuous across tracking loss on drone
+# footage) but disable the loop-closure CORRECTION (pose-graph optimisation +
+# global BA). The UWB ranges -- not intra-agent visual loop closure -- correct the
+# drift. Local bundle adjustment in LocalMapping is kept (part of the VO front-end).
+# (loopCorrection is a custom flag added to this ORB-SLAM3 fork; see LoopClosing.cc.)
+loopClosing: 1
+loopCorrection: 0
 
 ORBextractor.nFeatures: 1500
 ORBextractor.scaleFactor: 1.2
