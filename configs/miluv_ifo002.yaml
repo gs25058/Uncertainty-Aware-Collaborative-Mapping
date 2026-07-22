@@ -1,0 +1,41 @@
+%YAML:1.0
+File.version: "1.0"
+Camera.type: "PinHole"
+
+Camera1.fx: 420.3293424072411
+Camera1.fy: 422.0938563331847
+Camera1.cx: 427.46982182827145
+Camera1.cy: 235.96662924080889
+
+Camera1.k1: -0.0006325857315915039
+Camera1.k2: 0.0004755762420834004
+Camera1.p1: -0.00036144795825349086
+Camera1.p2: 0.00010234072856141909
+
+Camera.width: 848
+Camera.height: 480
+Camera.fps: 30
+Camera.RGB: 1
+
+# Pure visual odometry to match CoVOR-SLAM (Lee 2023): loop closing + map merging
+# + place recognition disabled, so each robot's front-end drifts as odometry and
+# the UWB ranges (not visual loop closure) provide the drift correction. Local
+# bundle adjustment in LocalMapping is kept (that is part of the VO front-end).
+loopClosing: 0
+
+ORBextractor.nFeatures: 1500
+ORBextractor.scaleFactor: 1.2
+ORBextractor.nLevels: 8
+ORBextractor.iniThFAST: 20
+ORBextractor.minThFAST: 7
+
+Viewer.KeyFrameSize: 0.05
+Viewer.KeyFrameLineWidth: 1.0
+Viewer.GraphLineWidth: 0.9
+Viewer.PointSize: 2.0
+Viewer.CameraSize: 0.08
+Viewer.CameraLineWidth: 3.0
+Viewer.ViewpointX: 0.0
+Viewer.ViewpointY: -0.7
+Viewer.ViewpointZ: -1.8
+Viewer.ViewpointF: 500.0

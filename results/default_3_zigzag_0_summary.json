@@ -1,0 +1,44 @@
+{
+  "stats": {
+    "keyframes": {
+      "ifo001": 202,
+      "ifo002": 307,
+      "ifo003": 391
+    },
+    "scales_init": {
+      "ifo001": 3.7254,
+      "ifo002": 4.8719,
+      "ifo003": 3.3261
+    },
+    "n_inter_range": 41,
+    "n_anchor_range": 325,
+    "n_weak_priors": 67,
+    "n_factors": 2025,
+    "n_vars": 1800,
+    "initial_error": 482.88973016610277,
+    "final_error": 213.85458484573846
+  },
+  "per_robot": {
+    "ifo001": {
+      "monoVO_rmse": 0.0914,
+      "covor_rmse": 0.5679,
+      "improve_pct": -521.1,
+      "keyframes": 202,
+      "scale_init": 3.7254
+    },
+    "ifo002": {
+      "monoVO_rmse": 0.1291,
+      "covor_rmse": 0.5376,
+      "improve_pct": -316.5,
+      "keyframes": 307,
+      "scale_init": 4.8719
+    },
+    "ifo003": {
+      "monoVO_rmse": 0.2836,
+      "covor_rmse": 0.4245,
+      "improve_pct": -49.7,
+      "keyframes": 391,
+      "scale_init": 3.3261
+    }
+  }
+}
