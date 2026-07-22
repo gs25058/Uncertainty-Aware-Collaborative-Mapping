@@ -24,5 +24,12 @@ vo_output/*.log
 vo_output/smoke_*
 vo_output/vo_*.log
 
+# ---- secrets / credentials (NEVER commit) ----
+ssh_key
+ssh_key.pub
+*.pem
+id_rsa
+id_ed25519
+
 # ---- OS cruft ----
 .DS_Store
