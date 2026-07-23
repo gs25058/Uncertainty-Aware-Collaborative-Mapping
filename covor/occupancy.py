@@ -329,6 +329,7 @@ class OccupancyBuilder:
         self.tree.setOccupancyThres(_sigmoid(self.cfg.tau_occ))
         self.n_frames = 0
         self.n_points = 0
+        self._written = False        # write_bt is destructive; see its docstring
 
     def weight(self, tr_sigma_pos, sigma_Z):
         """w = exp(-tr(Sigma_pos)/alpha) * exp(-sigma_Z^2/beta)  (proposal §4.5).
@@ -414,7 +415,14 @@ class OccupancyBuilder:
 
         occupied: l > +tau_occ; free: l < -tau_free; unknown otherwise (not
         returned). Unknown is never conflated with free (proposal §4.8).
+
+        Must be called BEFORE write_bt (see its docstring).
         """
+        if self._written:
+            raise RuntimeError(
+                "classify_points() after write_bt(): the tree has been collapsed "
+                "to max-likelihood and pruned, so log-odds and cell counts are "
+                "no longer meaningful. Classify first, export last.")
         c = self.cfg
         occ, free = [], []
         self.tree.updateInnerOccupancy()
@@ -430,5 +438,14 @@ class OccupancyBuilder:
         return occ, free
 
     def write_bt(self, path):
+        """Export the binary .bt map. DESTRUCTIVE and therefore TERMINAL.
+
+        OctoMap's writeBinary converts the tree to its maximum-likelihood estimate
+        (every log-odds collapses to the min/max clamp) and prunes it (uniform
+        octants merge into single coarse leaves, so leaves no longer correspond
+        one-to-one with cells at ``resolution``). Anything that reads log-odds or
+        counts cells must run BEFORE this call -- classify_points() enforces that.
+        """
         self.tree.updateInnerOccupancy()
         self.tree.writeBinary(path.encode() if isinstance(path, str) else path)
+        self._written = True

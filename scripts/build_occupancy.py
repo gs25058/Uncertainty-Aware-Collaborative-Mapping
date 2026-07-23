@@ -181,11 +181,13 @@ def main():
     builder.finalize()
     mode = "weighted" if weighted else "uniform"
     tag = args.tag or ("_".join(drones) + "_" + mode)
-    bt = f"{OUTDIR}/occ_{tag}.bt"
-    builder.write_bt(bt); print("  wrote", bt)
+    # classify/plot BEFORE exporting: write_bt collapses the tree to
+    # max-likelihood and prunes it, which destroys log-odds and cell counts
     visualize(builder, trajs,
               "CoVOR->occupancy | %s | %s | %.1fs" % (",".join(drones), mode, time.time() - t0),
               f"{OUTDIR}/occ_{tag}.png")
+    bt = f"{OUTDIR}/occ_{tag}.bt"
+    builder.write_bt(bt); print("  wrote", bt)
 
 
 if __name__ == "__main__":
