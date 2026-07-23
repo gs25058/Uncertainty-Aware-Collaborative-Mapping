@@ -21,6 +21,8 @@ proposal's §7.3 tooling table.
 | `covor/occupancy.py` · `OccupancyBuilder` | ray traversal + **weighted log-odds** into an OctoMap tree; classify; `.bt` export | §4.4–4.8, Phase 1-5 / 3-2 |
 | `scripts/build_occupancy.py` | driver: 1 / 2 / 3-drone map + top-down and slice viz | Phase 1-6 / 3-3 |
 | `scripts/compare_weighting.py` | ablation: uncertainty-weighted vs uniform (standard OctoMap) | Phase 3-7 |
+| `scripts/gt_pose_control.py` | control: same map from mocap GT poses; scores objects and floating voxels against GT | diagnostic |
+| `tests/test_ray_traversal.py` | regression: per-cell log-odds vs the reference DDA | diagnostic |
 
 `OccupancyBuilder` is the reusable `slam_to_occupancy` module (Phase 1-6): the
 same instance ingests any number of `(pose, Σ, depth)` observations from one or
@@ -45,12 +47,52 @@ w    = exp(−tr(Σ_pos)/α) · exp(−σ_Z²/β)                        # ∈ (
   data's uncertainty scale so a median-quality observation keeps `w ≈ 0.85` and
   outliers collapse toward 0 (see `OccCfg` for the derivation).
 - **Safety asymmetry** `|l_free| < |l_occ|` (`l_free=−0.40`, `l_occ=+0.85`): free
-  space is asserted conservatively, occupied readily ⇒ fewer false-free.
+  space is asserted conservatively, occupied readily ⇒ fewer false-free. This
+  holds only if the traversal contributes `l_free` to a cell **exactly once per
+  beam** — see "Ray traversal" below.
 - Weighting toggles off (`OccCfg.weighted=False` ⇒ `w≡1`) to recover a standard
   OctoMap update, making the ablation structural.
 
 `unknown` is never conflated with `free`: pixels with no valid disparity cast no
 ray (`Z=NaN`), and cells below the free threshold stay unknown (§4.8).
+
+### Ray traversal
+
+`_dda_batch` is a vectorized Amanatides & Woo traversal: all beams share the
+camera origin, so tMax/tDelta are set up once and the active ray set marches in
+lockstep, shrinking as beams reach their endpoint. One beam contributes to one
+cell exactly once; different beams still accumulate (log-odds additivity, §4.7).
+`_voxel_traverse` is the single-ray reference kept for `tests/test_ray_traversal.py`,
+which asserts per-cell log-odds **values** (not just cell counts) against it.
+
+### Classification thresholds (§4.8)
+
+`tau_occ = l_occ = 0.85` is a definition, not a tuned value: one observation
+contributes `w·l_occ ≤ l_occ` whatever `w` is, so `l > tau_occ` is unreachable
+from a single observation — and 0.85 is the *smallest* threshold with that
+property. Demoted cells become **unknown, not free**, and §4.8 forbids treating
+unknown as traversable, so nothing gains traversability.
+
+This subsumes a separate "trust occupied evidence only within 2–3 m" rule: with
+`f·B = 21.7 px·m`, `w_depth = exp(−σ_Z²/β)` is already 0.94 / 0.71 / 0.34 / 0.07
+at `Z` = 2 / 3 / 4 / 5 m, so clearing `tau_occ` takes roughly 2 / 2 / 4 / 17
+observations at those ranges — a graded range dependence rather than a hard cutoff.
+
+### Dynamic teammates
+
+The drones see each other constantly, and a beam ending on a teammate is a
+correct observation of a *moving* object that a static map should not keep.
+`integrate_frame(..., teammates=...)` drops the endpoint evidence for beams
+ending within `OccCfg.dyn_radius = 0.35 m` of another robot, keeping the free
+evidence along the beam (that space really was traversed). Knowing where the
+teammates are is possible only because the CoVOR fusion puts every robot in one
+frame — a side benefit of §4.7, not an extra sensor.
+
+### Export is terminal
+
+OctoMap's `writeBinary` converts the tree to its maximum-likelihood estimate and
+prunes it, so `write_bt()` destroys log-odds and merges cells. Classify and plot
+first; `classify_points()` raises if called afterwards.
 
 ## How to run
 
@@ -68,7 +110,42 @@ $PY scripts/compare_weighting.py --drones ifo001 --stride 2
 
 # 2c) 3-drone collaborative map (Phase 3-3)
 $PY scripts/build_occupancy.py --drones ifo001,ifo002,ifo003 --weighted --stride 3
+
+# 3) diagnostics
+$PY tests/test_ray_traversal.py                      # traversal regression
+$PY scripts/gt_pose_control.py --robot ifo001        # pose-error vs mapping-error
 ```
+
+## Results (`default_3_zigzag_0`, res 0.10 m)
+
+| map | keyframes | occupied | free |
+|---|---|---|---|
+| ifo001, weighted | 190 | 22,055 | 495,241 |
+| ifo001, uniform (standard OctoMap) | 190 | 62,327 | 501,973 |
+| 3 drones, weighted | 464 | 40,780 | 721,556 |
+| ifo001, **GT poses** (control) | 190 | 24,626 | 282,484 |
+
+Ablation at the `z = 0.8 m` slice: of 8,497 cells the uniform map calls *free*,
+473 (5.6 %) are held unknown/occupied by the weighted map, and they stay
+spatially concentrated in the far / high-drift region — the false-free that §4.6
+targets.
+
+MILUV has no occupancy ground truth, but it does pin down the two things that
+were visibly wrong, so both are scored directly:
+
+- **objects** — `config/apriltags/apriltags.yaml` gives the 3D positions of the
+  13 elevated tag stands, the room's only real objects (`experiments.csv` marks
+  this sequence `obstacles_bool = false`; the obstacle sequences are
+  `obstacles_1_random3_0b` and the `cirObstacles_*` set).
+- **floating cubes** — occupied voxels strictly inside the room and above the
+  floor, and how many coincide with a teammate's position.
+
+| | objects w/ ≥3 voxels | object voxels | floating inside | of which on a teammate |
+|---|---|---|---|---|
+| fused poses, before the fixes | 10/13 | 272 | 1,101 | 36 % |
+| fused poses, after | 9/13 | 100 | 736 | — |
+| **GT poses, before** | 13/13 | 584 | 130 | 79 % |
+| **GT poses, after** | 13/13 | 419 | **29** | 43 % |
 
 ## Faithfulness checklist (proposal §4 / §7.3)
 
@@ -80,11 +157,11 @@ $PY scripts/build_occupancy.py --drones ifo001,ifo002,ifo003 --weighted --stride
 | Depth uncertainty | `σ_Z=Z²/(f·B)·Δd` | same | **match** |
 | Back-projection | `P_cam=[(u−cᵤ)Z/f, …]`, 4×4 downsample | same | **match** |
 | World transform | `P_world=R·P_cam+t` (§3③) | same (pose = infra1 camera frame) | **match** |
-| Ray casting | free = pass-through, occupied = endpoint, unknown behind | vectorized voxel traversal (§4.4 Bresenham-equivalent) | **match** |
+| Ray casting | free = pass-through, occupied = endpoint, unknown behind | `_dda_batch`, vectorized Amanatides & Woo (§4.4 Bresenham-equivalent), regression-tested against the single-ray reference | **match** |
 | **Weighted log-odds** | §4.5 ★ `w=exp(−trΣ/α)exp(−σ_Z²/β)`, `updateNode` direct | same, `updateNode(cell, w·l_meas)` | **match** |
 | **Safety asymmetry** | §4.6 ★ `|l_free|<|l_occ|` | `l_free=−0.40 < l_occ=0.85` | **match** |
 | Multi-drone accumulation | §4.7 log-odds additive into one tree | same builder, all robots | **match** |
-| Classification | occ / free / unknown, unknown≠free | `tau_occ`, `tau_free` thresholds | **match** |
+| Classification | occ / free / unknown, unknown≠free | `tau_occ = l_occ` (one observation can never suffice), `tau_free = 0` | **match** |
 | Ablation | Phase 3-7 uniform vs weighted | `weighted` flag + `compare_weighting.py` | **match** |
 | Optimiser / tooling | GTSAM + OpenCV + OctoMap-python, no C++ edits | same | **match** |
 
@@ -104,14 +181,83 @@ $PY scripts/build_occupancy.py --drones ifo001,ifo002,ifo003 --weighted --stride
   pipeline runs as designed and that the weighting changes the map in the
   safety-conservative direction, rather than reporting an IoU/false-free number
   (which requires the simulator stage).
+- **The room has almost nothing in it.** `experiments.csv` marks
+  `default_3_zigzag_0` as `obstacles_bool = false`; the only real objects are the
+  13 AprilTag stands, and they sit at the room perimeter, 0.6–3.8 m from the
+  trajectory. Combined with `f·B = 21.7 px·m` (σ_Z = 0.42 m at 3 m, 1.15 m at
+  5 m), this sequence is a weak demonstration of *object* mapping. The obstacle
+  sequences (`obstacles_1_random3_0b`, already downloaded, and the
+  `cirObstacles_*` set) are the right target for that.
 
 ## What this stage shows
 
-On `default_3_zigzag_0`, a single drone yields a clean navigation occupancy map —
-free interior, occupied walls, unknown beyond — from CoVOR fused poses + stereo.
-The uncertainty weighting **changes the map in the safety direction**: in the
-`z=0.8 m` slice, ~6–7 % of the cells that the standard (uniform) map declares
+On `default_3_zigzag_0`, a single drone yields a navigation occupancy map — free
+interior, occupied walls, unknown beyond — from CoVOR fused poses + stereo. The
+uncertainty weighting **changes the map in the safety direction**: in the
+`z=0.8 m` slice, 5.6 % of the cells that the standard (uniform) map declares
 *free* are held *unknown/occupied* by the weighted map, and those suppressed cells
 are spatially concentrated in the far / high-drift regions — exactly the
 false-free that §4.6 targets. Quantitative IoU / false-free evaluation against GT
 is the simulator stage (proposal §4.2, Phase 1-6/3-3), not MILUV.
+
+## Defects found and fixed (2026-07-23)
+
+The first version of this pipeline produced a map whose room boundary looked
+right but whose interior objects were missing and which was littered with
+floating occupied voxels. Diagnosed by measurement, in this order.
+
+1. **Free evidence was counted 2–4× per cell.** `integrate_frame` sampled each
+   beam at `res/2` in *arc length* instead of doing a voxel traversal. Cells
+   containing several samples of the same beam accumulated several times the
+   intended `l_free` (measured 2× on axis-aligned rays, up to 4× on diagonals),
+   so effective `l_free` was −0.8…−1.6 against `l_occ = +0.85` — the §4.6 safety
+   asymmetry was silently **inverted**. Arc-length sampling also *skipped* cells a
+   beam only clips (18 of 53 found on a body diagonal), biasing the carving by ray
+   direction. Fixed with `_dda_batch`; the object voxel count rose 24 % (fused)
+   and 30 % (GT), with the largest gains on the stands nearest the trajectory,
+   which are seen from the most angles.
+2. **`tau_occ = 0` made one stereo mismatch a permanent cube.** 75 % of the cells
+   classified occupied were reachable by a single observation. Fixed by
+   `tau_occ = l_occ` (see above); floating voxels 2,393 → 1,242 (fused) and
+   225 → 98 (GT).
+3. **Teammate observations were mapped as static structure.** 79 % of the
+   floating voxels remaining in the GT map sat within 0.4 m of another drone.
+   Fixed by `OccCfg.dyn_radius`; floating voxels 98 → 35 (GT) with the object
+   count untouched. On fused poses this changes nothing (1,242 → 1,236), because
+   the exclusion sphere is placed from an imprecise fused teammate position and
+   the observer's own rotation error already puts the endpoint elsewhere.
+4. **`build_occupancy.py` reported post-pruning leaf counts.** `write_bt` is
+   destructive (max-likelihood + prune) and ran before `visualize`. Occupied
+   structure barely prunes (1–3 % undercount, so the conclusions above are
+   unaffected) but free space prunes heavily — the same run reported 172,802 free
+   from this driver against 495,241 when classified first.
+
+### Diagnosis: which failures are the map's, and which are the pose's
+
+`scripts/gt_pose_control.py` rebuilds the map from mocap GT poses with everything
+downstream unchanged, which splits the two. Against the fused poses (median
+position error 0.19–0.26 m, median **rotation** error 21–34° after the best
+constant camera–body offset, since UWB ranges constrain position only and the
+mono front-end has no gravity reference):
+
+- **Objects** are recovered by GT poses at 13/13 stands (median 38 voxels each)
+  but only 9–10/13 under fused poses, worst on the *nearest* stands. Part
+  mapping bug (fixed above), part pose error.
+- **Floating cubes** are overwhelmingly a pose artefact: 736 remain inside the
+  room under fused poses against 29 under GT poses.
+
+So the remaining gap between this map and a clean one is the front-end, not the
+mapping stage — consistent with the deviation recorded below.
+
+### Not changed, and why
+
+- **SGBM settings** already include the left–right consistency check
+  (`disp12MaxDiff=1`), `uniquenessRatio=10` and speckle filtering
+  (`speckleWindowSize=100`, `speckleRange=2`). Left as-is: the task is the
+  proposal's design, not a stereo bake-off.
+- **A hard "occupied only within 2–3 m" cutoff** is unnecessary — `w_depth`
+  plus `tau_occ` already impose a graded version of it (see above).
+- **Spreading the endpoint evidence over a σ_Z-wide Gaussian along the beam**
+  would be a more complete uncertainty-aware sensor model than weighting alone.
+  It is a design change beyond the current §4.5 formula and is *not* implemented;
+  flagged as the natural next step.

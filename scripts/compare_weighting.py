@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam")
 from covor.occupancy import (load_stereo_calib, StereoDepth, DepthCfg,
                              OccupancyBuilder, OccCfg)
-from build_occupancy import FrameIndex, _fname_for, SEQ, DATA, VO, OUTDIR
+from build_occupancy import FrameIndex, Teammates, _fname_for, SEQ, DATA, VO, OUTDIR
 
 
 def build_pair(drones, stride):
@@ -40,6 +40,7 @@ def build_pair(drones, stride):
         t, T, tr = npz["t"], npz["T"], npz["tr_sigma_pos"]
         sd = StereoDepth(load_stereo_calib(rob), depth_cfg)
         idx = FrameIndex(rob)
+        mates = Teammates(rob, ["ifo001", "ifo002", "ifo003"])
         traj = []
         for i in range(0, len(t), stride):
             tval = idx.pair(t[i])
@@ -56,8 +57,9 @@ def build_pair(drones, stride):
             if valid.sum() < 100:
                 continue
             P_cam, sZp = sd.backproject(Z, sZ, valid, downsample=4)
-            wb.integrate_frame(T[i], float(tr[i]), P_cam, sZp)
-            ub.integrate_frame(T[i], float(tr[i]), P_cam, sZp)
+            tm = mates.at(t[i])
+            wb.integrate_frame(T[i], float(tr[i]), P_cam, sZp, teammates=tm)
+            ub.integrate_frame(T[i], float(tr[i]), P_cam, sZp, teammates=tm)
             traj.append(T[i][:3, 3])
         trajs.append(np.array(traj))
     wb.finalize(); ub.finalize()
