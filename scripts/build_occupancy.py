@@ -58,7 +58,32 @@ def _fname_for(robot, cam, tval, cache={}):
     return cache[key].get(tval)
 
 
-def process_robot(builder, robot, depth_cfg, stride, max_frames=None):
+class Teammates:
+    """Where the other robots were, in the fused frame, at any instant.
+
+    Only knowable because CoVOR fuses every robot into one frame (§4.7); used to
+    keep observations of flying teammates out of the static map (OccCfg.dyn_radius).
+    """
+    def __init__(self, robot, others):
+        self.tracks = []
+        for o in others:
+            if o == robot:
+                continue
+            npz = np.load(f"{VO}/occ_{SEQ}_{o}.npz")
+            self.tracks.append((npz["t"], npz["T"][:, :3, 3]))
+
+    def at(self, t, tol=0.5):
+        """(K,3) teammate positions at time t; a track is skipped if its nearest
+        pose is more than tol away in time (we then simply do not mask it)."""
+        out = []
+        for ts, ps in self.tracks:
+            i = int(np.abs(ts - t).argmin())
+            if abs(ts[i] - t) <= tol:
+                out.append(ps[i])
+        return np.array(out) if out else None
+
+
+def process_robot(builder, robot, depth_cfg, stride, max_frames=None, mates=None):
     npz = np.load(f"{VO}/occ_{SEQ}_{robot}.npz")
     t, T, tr = npz["t"], npz["T"], npz["tr_sigma_pos"]
     calib = load_stereo_calib(robot)
@@ -82,7 +107,8 @@ def process_robot(builder, robot, depth_cfg, stride, max_frames=None):
         if valid.sum() < 100:
             continue
         P_cam, sZp = sd.backproject(Z, sZ, valid, downsample=4)
-        builder.integrate_frame(T[i], float(tr[i]), P_cam, sZp)
+        builder.integrate_frame(T[i], float(tr[i]), P_cam, sZp,
+                                teammates=mates.at(t[i]) if mates else None)
         traj.append(T[i][:3, 3])
         used += 1
         if max_frames and used >= max_frames:
@@ -132,19 +158,24 @@ def main():
     ap.add_argument("--stride", type=int, default=2)
     ap.add_argument("--res", type=float, default=0.10)
     ap.add_argument("--tag", default="")
+    ap.add_argument("--no-mask-dynamic", action="store_true",
+                    help="keep observations of flying teammates in the static map")
     args = ap.parse_args()
     weighted = not args.uniform          # default weighted unless --uniform
     drones = args.drones.split(",")
 
-    occ_cfg = OccCfg(resolution=args.res, weighted=weighted)
+    occ_cfg = OccCfg(resolution=args.res, weighted=weighted,
+                     dyn_radius=0.0 if args.no_mask_dynamic else OccCfg.dyn_radius)
     builder = OccupancyBuilder(occ_cfg)
     depth_cfg = DepthCfg()
     print("=== build_occupancy drones=%s weighted=%s stride=%d res=%.2f ===" % (
         drones, weighted, args.stride, args.res))
     t0 = time.time()
     trajs = []
+    ALL = ["ifo001", "ifo002", "ifo003"]
     for rob in drones:
-        n, traj = process_robot(builder, rob, depth_cfg, args.stride)
+        mates = None if args.no_mask_dynamic else Teammates(rob, ALL)
+        n, traj = process_robot(builder, rob, depth_cfg, args.stride, mates=mates)
         trajs.append(traj)
         print("  %s: %d keyframes integrated" % (rob, n))
     builder.finalize()

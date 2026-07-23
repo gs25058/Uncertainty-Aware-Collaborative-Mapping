@@ -206,6 +206,16 @@ class OccCfg:
     alpha: float = 0.3           # pose-covariance scale (m^2); tr(Sigma_pos) units
     beta: float = 0.5            # depth-uncertainty scale (m^2); sigma_Z^2 units
     max_ray: float = 5.0         # m; cap ray length (matches depth z_max)
+    # Teammate (dynamic-object) exclusion. The drones fly together and see each
+    # other constantly; a beam terminating on a teammate is a correct observation
+    # of a MOVING object, which has no place in a static occupancy map. Measured
+    # on default_3_zigzag_0/ifo001 with GT poses, 79% of the occupied voxels left
+    # floating inside the room sit within 0.4 m of a teammate's position at the
+    # time of the observation. Only the endpoint (occupied) evidence is dropped;
+    # the free evidence along the beam is kept, since that space really was
+    # traversed. This is available only because the CoVOR fusion puts every robot
+    # in one frame -- a side benefit of §4.7's collaborative accumulation.
+    dyn_radius: float = 0.35     # m; drone half-size + pose error. 0 disables.
 
 
 def _sigmoid(x):
@@ -334,11 +344,14 @@ class OccupancyBuilder:
         w_depth = np.exp(-(sigma_Z ** 2) / c.beta)            # per-point
         return np.clip(w_pose * w_depth, 0.0, 1.0)
 
-    def integrate_frame(self, T_wc, tr_sigma_pos, P_cam, sigma_Z):
+    def integrate_frame(self, T_wc, tr_sigma_pos, P_cam, sigma_Z, teammates=None):
         """Integrate one keyframe's observation (proposal §4.4-4.7), vectorized.
 
         T_wc: 4x4 world<-camera pose (fused). tr_sigma_pos: pose position-cov
         trace. P_cam: (N,3) camera-frame points (raw infra1). sigma_Z: (N,).
+        teammates: (K,3) world positions of the OTHER robots at this instant, or
+        None. Beams ending within cfg.dyn_radius of one contribute free evidence
+        but no occupied evidence (see OccCfg.dyn_radius).
 
         Casts one ray per point (free evidence w*l_free along the beam, occupied
         evidence w*l_occ at the endpoint) with an exact vectorized DDA, and
@@ -360,9 +373,14 @@ class OccupancyBuilder:
             self.n_frames += 1
             return 0
 
-        # occupied endpoints
-        evox = np.floor(P / res).astype(np.int64)
-        ew = w * c.l_occ
+        # occupied endpoints, minus the ones that landed on a flying teammate
+        static = np.ones(len(P), bool)
+        if teammates is not None and len(teammates) and c.dyn_radius > 0:
+            near = np.linalg.norm(P[:, None, :] - np.atleast_2d(teammates)[None, :, :],
+                                  axis=2).min(axis=1) < c.dyn_radius
+            static = ~near
+        evox = np.floor(P[static] / res).astype(np.int64)
+        ew = w[static] * c.l_occ
 
         # free evidence: exact DDA, one contribution per (ray, pass-through cell)
         ray, fvox = _dda_batch(t, P, res)
