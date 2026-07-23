@@ -200,8 +200,20 @@ class OccCfg:
     max_ray: float = 5.0         # m; cap ray length (matches depth z_max)
 
 
+def _sigmoid(x):
+    """log-odds -> probability, without overflowing for large |x|."""
+    if x >= 0:
+        return 1.0 / (1.0 + np.exp(-x))
+    e = np.exp(x)
+    return e / (1.0 + e)
+
+
 def _voxel_traverse(o, e, res):
-    """Amanatides & Woo 3D DDA. Yield integer voxel indices from o to e,
+    """Amanatides & Woo 3D DDA for ONE ray -- the reference implementation.
+
+    Kept as the ground truth that ``_dda_batch`` (the vectorized version used in
+    the hot loop) is asserted against, cell-by-cell AND value-by-value, in
+    tests/test_ray_traversal.py. Yield integer voxel indices from o to e,
     EXCLUDING the terminal voxel (returned separately as the occupied cell).
 
     o, e: world points (m). res: voxel size. Returns (free_idx (M,3) int,
@@ -235,6 +247,50 @@ def _voxel_traverse(o, e, res):
     return free_idx, ei
 
 
+def _dda_batch(o, P, res):
+    """Vectorized Amanatides & Woo DDA from a shared origin ``o`` to every point
+    in ``P`` (N,3). Returns (ray, vox): ``vox`` (M,3) are the PASS-THROUGH voxel
+    indices, ``ray`` (M,) the index of the ray each one belongs to. Origin and
+    endpoint cells are excluded -- identical semantics to ``_voxel_traverse``.
+
+    Every ray visits every cell it crosses EXACTLY ONCE, which is what makes the
+    free evidence contributed by one beam to one cell exactly ``w * l_free``
+    (proposal §4.5). The previous implementation sampled each beam at res/2 in
+    arc length instead, which both (a) dropped 2-4x the intended free evidence
+    into cells containing several samples -- inverting the safety asymmetry
+    |l_free| < |l_occ| of §4.6 -- and (b) skipped cells the beam only clipped,
+    biasing the carving by ray direction. All rays share one origin (the camera
+    centre), so tMax/tDelta are set up once and the loop marches the whole active
+    set in lockstep, shrinking as rays reach their endpoint.
+    """
+    N = len(P)
+    d = P - o
+    oi = np.floor(o / res).astype(np.int64)
+    ei = np.floor(P / res).astype(np.int64)
+    step = np.sign(d).astype(np.int64)
+    cur = np.tile(oi, (N, 1))
+    nz = step != 0
+    with np.errstate(divide="ignore", invalid="ignore"):
+        nxt = (cur + (step > 0)) * res              # next boundary per axis
+        tmax = np.where(nz, (nxt - o) / d, np.inf)
+        tdelta = np.where(nz, res / np.abs(d), np.inf)
+    act = np.nonzero(~np.all(cur == ei, axis=1))[0]
+    max_steps = int(np.abs(ei - oi).sum(axis=1).max()) + 2 if N else 0
+    rays, voxs = [], []
+    for _ in range(max_steps):
+        if act.size == 0:
+            break
+        a = np.argmin(tmax[act], axis=1)            # axis of the nearest crossing
+        cur[act, a] += step[act, a]
+        tmax[act, a] += tdelta[act, a]
+        act = act[~np.all(cur[act] == ei[act], axis=1)]   # drop rays that arrived
+        rays.append(act.copy())
+        voxs.append(cur[act].copy())
+    if not rays:
+        return np.empty(0, np.int64), np.empty((0, 3), np.int64)
+    return np.concatenate(rays), np.concatenate(voxs)
+
+
 class OccupancyBuilder:
     """Reusable slam_to_occupancy module (proposal Phase 1-6).
 
@@ -248,8 +304,8 @@ class OccupancyBuilder:
         import octomap
         self.cfg = cfg or OccCfg()
         self.tree = octomap.OcTree(self.cfg.resolution)
-        self.tree.setClampingThresMin(1.0 / (1 + np.exp(-self.cfg.clamp_min)))
-        self.tree.setClampingThresMax(1.0 / (1 + np.exp(-self.cfg.clamp_max)))
+        self.tree.setClampingThresMin(_sigmoid(self.cfg.clamp_min))
+        self.tree.setClampingThresMax(_sigmoid(self.cfg.clamp_max))
         self.n_frames = 0
         self.n_points = 0
 
@@ -273,39 +329,33 @@ class OccupancyBuilder:
         T_wc: 4x4 world<-camera pose (fused). tr_sigma_pos: pose position-cov
         trace. P_cam: (N,3) camera-frame points (raw infra1). sigma_Z: (N,).
 
-        Equivalent to casting one ray per point (free evidence w*l_free along the
-        beam, occupied evidence w*l_occ at the endpoint) and adding the weighted
-        log-odds per cell, but samples each ray at res/2 and scatter-adds in numpy
-        so a full keyframe integrates in ~0.1 s instead of seconds. Per-cell
-        evidence from all rays is summed (log-odds additivity, §4.7); a cell that
-        is an endpoint for one ray and pass-through for another sums both.
+        Casts one ray per point (free evidence w*l_free along the beam, occupied
+        evidence w*l_occ at the endpoint) with an exact vectorized DDA, and
+        scatter-adds the weighted log-odds per cell. Per-cell evidence from all
+        rays is summed (log-odds additivity, §4.7): a cell crossed by two beams
+        gets 2*w*l_free, and a cell that is an endpoint for one ray and
+        pass-through for another sums both. But a SINGLE beam contributes to a
+        cell exactly once -- see ``_dda_batch``.
         """
         c = self.cfg
         res = c.resolution
         R = T_wc[:3, :3]; t = T_wc[:3, 3]
         P = P_cam @ R.T + t                                    # §3③: R P_cam + t
         w = self.weight(tr_sigma_pos, sigma_Z)
-        d = P - t
-        L = np.linalg.norm(d, axis=1)
+        L = np.linalg.norm(P - t, axis=1)
         keep = (L > res) & (L <= c.max_ray)
-        P, w, d, L = P[keep], w[keep], d[keep], L[keep]
+        P, w = P[keep], w[keep]
         if len(P) == 0:
             self.n_frames += 1
             return 0
-        u = d / L[:, None]
 
         # occupied endpoints
         evox = np.floor(P / res).astype(np.int64)
         ew = w * c.l_occ
 
-        # free-space samples along each ray at res/2, excluding the endpoint voxel
-        step = res * 0.5
-        S = int(np.ceil(L.max() / step)) + 1
-        ts = (np.arange(S) + 0.5) * step                       # (S,)
-        valid = ts[None, :] < (L[:, None] - res * 0.5)         # (N,S) exclude end
-        pts = t[None, None, :] + u[:, None, :] * ts[None, :, None]   # (N,S,3)
-        fvox = np.floor(pts / res).astype(np.int64)[valid]     # (M,3)
-        fw = np.broadcast_to(w[:, None], valid.shape)[valid] * c.l_free
+        # free evidence: exact DDA, one contribution per (ray, pass-through cell)
+        ray, fvox = _dda_batch(t, P, res)
+        fw = w[ray] * c.l_free
 
         vox = np.vstack([fvox, evox])
         dlo = np.concatenate([fw, ew])
