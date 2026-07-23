@@ -184,7 +184,15 @@ class OccCfg:
     clamp_min: float = -2.0      # octomap default log clamp (prob 0.12)
     clamp_max: float = 3.5       # octomap default log clamp (prob 0.97)
     # Classification thresholds (proposal §4.8)
-    tau_occ: float = 0.0         # l > +tau_occ -> occupied
+    # tau_occ = l_occ is a DEFINITION, not a tuned value: a single observation
+    # contributes w*l_occ <= l_occ, so l > tau_occ is unreachable from one
+    # observation whatever w is. "Occupied requires more evidence than one ideal
+    # observation can provide." Measured on default_3_zigzag_0/ifo001, 75% of the
+    # cells that tau_occ=0 called occupied were single-observation cells -- one
+    # stereo mismatch became a permanent floating cube. Demoting them is safe in
+    # the proposal's terms: they become UNKNOWN, not free, and §4.8 forbids
+    # treating unknown as traversable, so nothing gains traversability.
+    tau_occ: float = 0.85        # l > +tau_occ -> occupied  (== l_occ)
     tau_free: float = 0.0        # l < -tau_free -> free (else unknown)
     # Uncertainty weighting (proposal §4.5): w = exp(-trSig/alpha)*exp(-sZ^2/beta)
     weighted: bool = True        # ablation toggle: False -> standard OctoMap (w=1)
@@ -306,6 +314,9 @@ class OccupancyBuilder:
         self.tree = octomap.OcTree(self.cfg.resolution)
         self.tree.setClampingThresMin(_sigmoid(self.cfg.clamp_min))
         self.tree.setClampingThresMax(_sigmoid(self.cfg.clamp_max))
+        # keep OctoMap's own notion of "occupied" (isNodeOccupied, .bt export)
+        # identical to the §4.8 classification below, so every consumer agrees
+        self.tree.setOccupancyThres(_sigmoid(self.cfg.tau_occ))
         self.n_frames = 0
         self.n_points = 0
 
