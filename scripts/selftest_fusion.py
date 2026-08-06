@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
-"""Synthetic self-test of the CoVOR-SLAM factor machinery (no MILUV data).
+"""LEGACY (Sim(3) era) -- synthetic self-test of the CoVOR-SLAM factor machinery.
 
-Builds 2 robots with known metric trajectories, generates up-to-scale VO and
-noisy inter-agent + anchor ranges, then checks the LM optimization drives the
-graph error down and recovers positions close to ground truth.
+Built 2 robots with known metric trajectories, generated UP-TO-SCALE VO and noisy
+ranges, and checked that LM recovered both the poses and the per-node scale.
+
+The scale variable no longer exists: the VINS front-end is metric and the graph is
+pure SE(3). This test is therefore not just broken but meaningless as written --
+its whole subject (scale recovery) is gone. Run it at commit a0a5e07, or write an
+SE(3) replacement. Failing loudly beats an AttributeError deep in the build.
 """
 import sys
 import numpy as np
 import gtsam
+
+sys.exit(__doc__)
 
 sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam")
 from covor import factors as F

@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
-"""Part C sweep: evaluate VO / VO+UWB / VO+height / VO+UWB+height on a MILUV
-sequence after the load_ranges fix (all 3 robots anchored) and the new height
-factor. Reports per-robot 3D ATE, vertical (z) RMSE, horizontal RMSE and the
-estimated per-robot scale. Rows are appended + fsync'd immediately.
+"""LEGACY (Sim(3) era) -- Part C sweep: VO / VO+UWB / VO+height / VO+UWB+height,
+reporting per-robot 3D ATE, vertical (z) RMSE, horizontal RMSE and the estimated
+per-robot scale.
+
+Reads the per-node scale variable, which the SE(3) transition removed. The height
+study's conclusion is already recorded (HANDOFF pitfall 9: the 6 anchors all sit at
+~1.7 m so vertical is unobservable from ranges; height factors fix zRMSE 0.30->0.05
+but are outside the proposal's scope, hence OFF by default). Re-run at a0a5e07, or
+port by dropping the scale column.
 
 Run:  python scripts/sweep_height.py [sequence]
 """
+import sys as _sys
+_sys.exit(__doc__)
 import os
 import sys
 import csv

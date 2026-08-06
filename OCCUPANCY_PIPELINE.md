@@ -22,6 +22,7 @@ proposal's §7.3 tooling table.
 | `scripts/build_occupancy.py` | driver: 1 / 2 / 3-drone map + top-down and slice viz | Phase 1-6 / 3-3 |
 | `scripts/compare_weighting.py` | ablation: uncertainty-weighted vs uniform (standard OctoMap) | Phase 3-7 |
 | `scripts/gt_pose_control.py` | control: same map from mocap GT poses; scores objects and floating voxels against GT | diagnostic |
+| `scripts/export_occupancy_web.py` + `web/occupancy_viewer.template.html` | classified voxels → self-contained WebGL2 3D viewer (single HTML file) | Phase 1-6 / 3-3 viz |
 | `tests/test_ray_traversal.py` | regression: per-cell log-odds vs the reference DDA | diagnostic |
 
 `OccupancyBuilder` is the reusable `slam_to_occupancy` module (Phase 1-6): the
@@ -110,6 +111,10 @@ $PY scripts/compare_weighting.py --drones ifo001 --stride 2
 
 # 2c) 3-drone collaborative map (Phase 3-3)
 $PY scripts/build_occupancy.py --drones ifo001,ifo002,ifo003 --weighted --stride 3
+
+# 2d) interactive 3D viewer (one self-contained HTML file, no server, no CDN)
+$PY scripts/export_occupancy_web.py --drones ifo001,ifo002,ifo003 --stride 3
+#    -> web/occupancy_viewer.html  (open in any WebGL2 browser)
 
 # 3) diagnostics
 $PY tests/test_ray_traversal.py                      # traversal regression
@@ -261,3 +266,74 @@ mapping stage — consistent with the deviation recorded below.
   would be a more complete uncertainty-aware sensor model than weighting alone.
   It is a design change beyond the current §4.5 formula and is *not* implemented;
   flagged as the natural next step.
+
+---
+
+## Which uncertainty term actually carries the weighting (2026-08-01, post-VINS)
+
+The weight is a product of two terms, `w = exp(−trΣ/α) · exp(−σ_Z²/β)`. After the
+front-end moved to VINS-Fusion and the fusion layer became SE(3), we measured what
+each term contributes. **They swapped roles**, and the honest reading is that the
+pose term is now dormant *by design* while the depth term carries the novelty.
+
+### The pose term went quiet — because the poses got good
+
+| era | median tr(Σ_pos) | spread | `w_pose` at α = 0.3 |
+|---|---|---|---|
+| ORB-SLAM3 mono | 0.05 m² (and 100–216 m² on gauge-free segments) | ~4000× | 0.85 … ≈0 |
+| VINS + SE(3) + gravity prior | **0.0017 m²** | **2.6×** | 0.991 … 0.997 |
+
+The old spread was not richness, it was **damage**: map breaks left segments with a
+free rotational gauge, whose covariance blew up to 100–216 m². The weighting was
+largely detecting broken poses. Remove the breaks (VINS), remove the scale gauge
+(SE(3)), pin roll/pitch (gravity prior), and the uncertainty becomes **uniform along
+the whole trajectory** — which is a *result*, not a regression.
+
+Two measurements keep this honest rather than convenient:
+
+- **Calibration.** NEES = 9.7 against an ideal 3, so Σ is 1.8× overconfident in σ.
+  Mild by SLAM standards, and — importantly — a *uniform* scale error is absorbed
+  entirely by α and changes no ranking.
+- **Discrimination.** This is what actually matters, and it is weak. Binned by
+  tr(Σ), the real error is **U-shaped** (lowest-Σ decile 0.074 m ≈ highest-Σ decile
+  0.093 m). Controlling for attitude (Spearman within yaw strata, which is immune to
+  the lever-arm model) recovers a positive relation on two robots (+0.15…+0.60) but
+  **not on ifo001 (−0.41…+0.26)**. Median across 18 strata: +0.26. Real signal,
+  weak and inconsistent.
+
+**α stays at 0.3, deliberately.** Lowering it to "wake up" the pose term would
+amplify a signal we have just shown to be unreliable, and choosing α so the ablation
+shows a difference would make the ablation circular. At α = 0.3 the pose term sleeps
+harmlessly when it has nothing to say, and still discriminates hard where it does:
+in the 1/2/3-drone study (§4.9) a drone without UWB stays odometry-only, tr(Σ)
+diverges along its chain past 0.1–1.0 m², and `w_pose` drops 0.72 → 0.036.
+
+### The depth term carries it
+
+`σ_Z = Z²/(f·B)` with `f·B = 21.7`, β = 0.5:
+
+| range | σ_Z | `w_depth` |
+|---|---|---|
+| 1 m | 0.05 | 0.99 |
+| median | 0.67 | 0.41 |
+| 5 m | 1.17 | **0.065** |
+
+**15× spread**, from a closed-form physical model rather than an estimator's
+self-assessment.
+
+### Narrative
+
+The earlier ablation result — suppression concentrated in **far-range** and
+**high-drift** regions — was already the sum of both terms: far-range is the depth
+term, high-drift is the pose term. VINS removed the drift, so only the depth half
+remains. Stated plainly:
+
+> **We propagate both pose and depth uncertainty into the map. The better the
+> front-end, the more the depth term dominates — and the pose term's value shows up
+> not within a single well-constrained run, but between configurations where some
+> agents are constrained and others are not.**
+
+The pose term's job is to tell constrained regions from unconstrained ones. In a run
+where all three drones are UWB-constrained throughout, there is nothing to tell
+apart. That is an **absence of the condition, not a failure of the method**, and its
+proper venue is the 1/2/3-drone comparison.

@@ -40,9 +40,11 @@ def main(seq):
             robots.append(rb.name); vo_only_al.append(None); fused_al.append(None)
             mocaps.append(None); vo_err.append(None); fused_err.append(None)
             continue
-        # mono-VO-only trajectory in its own frame (Sim3-aligned for eval)
+        # VIO-only trajectory in its own frame. The VINS front-end is metric, so
+        # it is scored rigidly; the legacy mono front-end needs the Sim3 fit.
         vo_traj = np.array([[rb.t[i], *rb.poses_vo[i].translation()] for i in range(rb.n())])
-        vo_rmse, vo_a, gt, ts = E.ate_rmse(vo_traj, rb.mocap, with_scale=True)
+        vo_rmse, vo_a, gt, ts = E.ate_rmse(vo_traj, rb.mocap,
+                                           with_scale=(cov.cfg.frontend != "vins"))
         # fused trajectory (metric, SE3-aligned for eval)
         fu_traj = cov.trajectory(cov.result, k)
         fu_rmse, fu_a, gt2, ts2 = E.ate_rmse(fu_traj, rb.mocap, with_scale=False)
@@ -52,7 +54,7 @@ def main(seq):
         summary[rb.name] = dict(monoVO_rmse=round(vo_rmse, 4),
                                 covor_rmse=round(fu_rmse, 4),
                                 improve_pct=round(imp, 1),
-                                keyframes=rb.n(), scale_init=round(rb.s0, 4))
+                                keyframes=rb.n())
         robots.append(rb.name)
         vo_only_al.append(np.column_stack([vo_a[:, 0], vo_a[:, 1]]))
         fused_al.append(np.column_stack([fu_a[:, 0], fu_a[:, 1]]))

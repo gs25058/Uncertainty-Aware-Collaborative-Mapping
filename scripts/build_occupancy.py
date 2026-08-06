@@ -29,7 +29,11 @@ from covor.occupancy import (load_stereo_calib, StereoDepth, DepthCfg,
 SEQ = "default_3_zigzag_0"
 DATA = "/src/gs25058/cr_RNE/miluv/data"
 VO = "/src/gs25058/cr_RNE/covor_slam/vo_output"
-OUTDIR = "/tmp/claude-1339/-src-gs25058-cr-RNE-covor-slam/cd0cd269-0e32-455a-a0e8-b24a268b2fb0/scratchpad"
+# Figures and .bt trees land in the repo's results/ so they survive the session.
+# This used to be a hard-coded per-session /tmp scratchpad, which meant the
+# ablation artefacts we cite disappeared with the session that made them.
+OUTDIR = os.environ.get(
+    "COVOR_OUTDIR", "/src/gs25058/cr_RNE/covor_slam/results")
 
 
 class FrameIndex:
@@ -70,7 +74,12 @@ class Teammates:
             if o == robot:
                 continue
             npz = np.load(f"{VO}/occ_{SEQ}_{o}.npz")
-            self.tracks.append((npz["t"], npz["T"][:, :3, 3]))
+            # Mask against the AIRFRAME centre, not the camera: T is world<-camera
+            # and the camera sits ~0.11 m off the body origin, which is 31 % of
+            # dyn_radius. Older .npz files have no p_body; fall back to T's
+            # translation so they still load.
+            p = npz["p_body"] if "p_body" in npz.files else npz["T"][:, :3, 3]
+            self.tracks.append((npz["t"], p))
 
     def at(self, t, tol=0.5):
         """(K,3) teammate positions at time t; a track is skipped if its nearest

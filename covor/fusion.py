@@ -1,10 +1,14 @@
 """CoVOR-SLAM multi-agent visual-range fusion (paper Sec. II-C).
 
-Builds a factor graph over per-keyframe metric camera poses (Pose3) and scales,
-initialised by aligning each robot's up-to-scale VO trajectory to the world frame
-(the paper's SL1L2 / initial-scale step, here seeded from mocap), then constrained
-by VO odometry, scale random-walk, and UWB inter-agent + anchor range factors, and
-solved with Levenberg-Marquardt.
+Builds a pure SE(3) factor graph over per-node body(IMU) poses (Pose3), initialised
+by rigidly aligning each robot's VIO trajectory to the world frame, then constrained
+by VIO odometry (SE(3) between-factors) and UWB inter-agent + anchor range factors,
+and solved with Levenberg-Marquardt.
+
+The VINS-Fusion front-end is metric and gravity-aligned, so there is no scale to
+estimate: the per-node scale variable, its prior and its random-walk factor are
+gone (Sim(3) version at commit a0a5e07). Because roll/pitch are observed by gravity
+throughout, the only free gauge left is yaw + position.
 """
 from dataclasses import dataclass, field
 import numpy as np
@@ -16,14 +20,43 @@ from . import factors as F
 
 @dataclass
 class Cfg:
-    sigma_odo_rot: float = 0.05      # rad, VO relative-rotation noise
-    sigma_odo_trans: float = 0.05    # m,  VO relative-translation noise (metric)
-    sigma_scale_walk: float = 0.02   # per-keyframe scale drift
+    # VIO relative-pose noise, MEASURED against mocap at the 7.49 Hz node density
+    # (not carried over from the mono pipeline, where 0.05/0.05 covered a much
+    # sparser, up-to-scale front-end). Per-axis RMS of the relative-pose residual,
+    # pooled over the 3 zigzag robots after excluding 0.5% of steps where mocap
+    # itself glitches (consecutive-sample rotations of 173-180 deg = a full flip in
+    # 0.13 s). Cross-check: ifo003 has no such glitches and gives 0.735 deg both
+    # with and without the exclusion, which validates the exclusion on the other two
+    # (5.40 deg -> 0.734, 7.12 -> 0.776; all three then agree to within 6%).
+    sigma_odo_rot: float = 0.0131    # rad (0.75 deg); was 0.05
+    sigma_odo_trans: float = 0.0045  # m; was 0.05
     sigma_prior_rot: float = 0.1
     sigma_prior_trans: float = 0.3   # frame-alignment prior strength
-    sigma_scale_prior: float = 0.3
+
+    # Gravity (roll/pitch) prior on every node -- see factors.gravity_prior for why
+    # it is required rather than optional. sigma is MEASURED: the VIO tilt residual
+    # vs mocap is Rayleigh-distributed in magnitude, so sigma = median/1.1774 gives
+    # 0.764 / 0.731 / 0.548 deg on the three zigzag robots -> 0.68 deg pooled.
+    # The tail is heavier than Gaussian (p90/median 2.17-2.82 vs 1.82), and the
+    # native factor will not accept a robust kernel, so treat this sigma as
+    # describing the bulk and not the tail.
+    use_gravity_prior: bool = True
+    sigma_tilt: float = 0.0119       # rad (0.68 deg), per axis
+    frontend: str = "vins"           # "vins" (metric SE(3)) | "orb" (legacy reader)
+    vins_stride: int = D.VINS_STRIDE  # node density; see data.VINS_STRIDE
+    init_yaw_only: bool = True       # constrain the L_k->G init to yaw+position
+                                     # (4-DoF): both frames are gravity-aligned, so
+                                     # a full SO(3) fit adds roll/pitch freedom that
+                                     # is not physically there.
     max_odo_gap: float = 1.0         # s; skip odometry across map breaks
-    range_tol: float = 0.05          # s; keyframe<->range time association
+    range_tol: float = 0.07          # s; node<->range time association. Half the
+                                     # 7.49 Hz node spacing is 0.067 s, so this
+                                     # keeps ~all ranges; the timing error it admits
+                                     # is charged to sigma via range_motion_sigma.
+    range_motion_sigma: bool = True  # inflate range sigma by the distance moved
+                                     # within the association window:
+                                     # sigma_eff^2 = sigma^2 + sum_k (v_k * dt_k)^2
+                                     # using VINS's own velocity (no ground truth).
     range_subsample: int = 1         # keep every Nth associated range
     robust: bool = True
     prior_every: int = 0             # extra weak pose priors every N KFs (0=only first)
@@ -48,6 +81,29 @@ class Cfg:
     height_subsample: int = 1        # keep every Nth keyframe's height factor
 
 
+def umeyama_yaw(src, dst):
+    """Rigid alignment restricted to yaw + translation: dst ~= Rz(psi) src + t.
+
+    Both the VINS init frame and the mocap world frame are gravity-aligned, so the
+    L_k -> G transform has only 4 physical DoF. Fitting a full SO(3) would absorb
+    real roll/pitch error into the alignment instead of leaving it in the residual.
+    Closed form: psi = atan2(sum cross_z, sum dot_xy) on the centred xy components.
+    """
+    mu_s, mu_d = src.mean(0), dst.mean(0)
+    a, b = src - mu_s, dst - mu_d
+    psi = np.arctan2((a[:, 0] * b[:, 1] - a[:, 1] * b[:, 0]).sum(),
+                     (a[:, 0] * b[:, 0] + a[:, 1] * b[:, 1]).sum())
+    c, s = np.cos(psi), np.sin(psi)
+    R = np.array([[c, -s, 0.0], [s, c, 0.0], [0.0, 0.0, 1.0]])
+    return R, mu_d - R @ mu_s
+
+
+def umeyama_rigid(src, dst):
+    """Full SO(3) + translation alignment (scale fixed at 1)."""
+    _, R, _ = umeyama_sim3(src, dst)
+    return R, dst.mean(0) - R @ src.mean(0)
+
+
 def umeyama_sim3(src, dst):
     """Similarity alignment: find s,R,t with dst ~= s R src + t. src,dst: (N,3)."""
     mu_s, mu_d = src.mean(0), dst.mean(0)
@@ -65,36 +121,50 @@ def umeyama_sim3(src, dst):
 
 
 class Robot:
-    def __init__(self, seq, robot, k):
+    def __init__(self, seq, robot, k, cfg=None):
         self.name = robot
         self.k = k
-        self.vo = D.load_vo(seq, robot)
+        self.cfg = cfg or Cfg()
+        if self.cfg.frontend == "vins":
+            self.vo = D.load_vins(seq, robot, self.cfg.vins_stride)
+        else:
+            self.vo = D.load_vo(seq, robot)
         self.mocap = D.load_mocap(seq, robot)
         self.height = D.load_height(seq, robot)
-        self.poses_vo = []   # Pose3 in Lk
-        self.t = []          # keyframe timestamps
+        self.poses_vo = []   # Pose3 in Lk (body/IMU pose for the VINS front-end)
+        self.t = []          # node timestamps (MILUV relative seconds)
+        self.v = []          # body speed |v| at each node (VINS estimate), m/s
         if self.vo is not None:
             for _, r in self.vo.iterrows():
                 self.poses_vo.append(F.pose_from_quat(
                     [r.x, r.y, r.z], [r.qx, r.qy, r.qz, r.qw]))
                 self.t.append(float(r.t))
+                self.v.append(float(r.v) if "v" in self.vo.columns else 0.0)
         self.t = np.array(self.t)
+        self.v = np.array(self.v)
         self.init_world = []   # Pose3 in G (initial guess)
-        self.s0 = 1.0
 
     def n(self):
         return len(self.t)
 
     def align_to_world(self):
-        """Initialise world poses + scale by Umeyama-aligning VO to mocap."""
+        """Initialise world poses by rigidly aligning the VIO trajectory to mocap.
+
+        The front-end is metric, so this is a rigid (scale-1) fit, restricted to
+        yaw+translation when cfg.init_yaw_only. Note this only sets the INITIAL
+        GUESS -- it does not enter the objective, so it is not the silent-GT-leak
+        of feeding a mocap-aligned trajectory in as the measurement. Replacing it
+        with an anchor-range-derived initialisation is a separate, later step.
+        """
         src = np.array([p.translation() for p in self.poses_vo])
         dst = np.array([D.mocap_position_at(self.mocap, t) for t in self.t])
-        s, R, tvec = umeyama_sim3(src, dst)
-        self.s0 = float(abs(s)) if abs(s) > 1e-6 else 1.0
+        R, tvec = (umeyama_yaw(src, dst) if self.cfg.init_yaw_only
+                   else umeyama_rigid(src, dst))
+        self.align_R, self.align_t = R, tvec
         Ralign = gtsam.Rot3(R)
         for p in self.poses_vo:
             Rw = Ralign.compose(p.rotation())
-            tw = s * (R @ p.translation()) + tvec
+            tw = R @ p.translation() + tvec
             self.init_world.append(gtsam.Pose3(Rw, tw))
 
 
@@ -104,7 +174,7 @@ class CoVOR:
         self.cfg = cfg or Cfg()
         self.robots = []
         for k, name in enumerate(D.ROBOTS):
-            rb = Robot(seq, name, k)
+            rb = Robot(seq, name, k, self.cfg)
             self.robots.append(rb)
         self.anchors = D.load_anchors(seq)
         self.ranges = D.load_ranges(seq)
@@ -113,13 +183,18 @@ class CoVOR:
 
     # -- keyframe association -------------------------------------------------
     def _assoc(self, k, t):
+        """Nearest node index to time t, plus the motion-induced position slop
+        |v| * |dt| that associating across that gap injects. Returns (None, 0.0)
+        outside the tolerance."""
         rb = self.robots[k]
         if rb.n() == 0:
-            return None
+            return None, 0.0
         i = int(np.abs(rb.t - t).argmin())
-        if abs(rb.t[i] - t) > self.cfg.range_tol:
-            return None
-        return i
+        dt = abs(rb.t[i] - t)
+        if dt > self.cfg.range_tol:
+            return None, 0.0
+        slop = float(rb.v[i]) * dt if self.cfg.range_motion_sigma else 0.0
+        return i, slop
 
     # -- graph construction ---------------------------------------------------
     def build(self):
@@ -132,19 +207,30 @@ class CoVOR:
         values = gtsam.Values()
         constrained = set()   # pose keys touched by odometry or range factors
         n_height = 0
+        n_grav = 0
 
-        # variables + priors + odometry + scale walk
+        # variables + priors + odometry
         for rb in self.robots:
             k = rb.k
             for i in range(rb.n()):
                 values.insert(F.X(k, i), rb.init_world[i])
-                values.insert(F.Sc(k, i), rb.s0)
             if rb.n() == 0:
                 continue
             graph.add(F.pose_prior(k, 0, rb.init_world[0],
                                    c.sigma_prior_rot, c.sigma_prior_trans))
-            graph.add(F.scale_prior(k, 0, rb.s0, c.sigma_scale_prior))
             constrained.add(F.X(k, 0))
+
+            # Absolute roll/pitch on EVERY node, from the front-end's gravity
+            # observation. Without it the graph retains no absolute tilt at all
+            # (only node 0's prior) and the tilt wanders within the odometry
+            # chain's random-walk slack. Note this does NOT make a node
+            # "constrained" for the weak-prior fallback below: it fixes 2 of the
+            # 3 rotational DoF and none of the translational ones.
+            if c.use_gravity_prior:
+                for i in range(rb.n()):
+                    graph.add(F.gravity_prior(
+                        k, i, rb.poses_vo[i].rotation().matrix(), c.sigma_tilt))
+                    n_grav += 1
             for i in range(rb.n() - 1):
                 if c.prior_every and (i % c.prior_every == 0) and i > 0:
                     graph.add(F.pose_prior(k, i, rb.init_world[i],
@@ -156,7 +242,6 @@ class CoVOR:
                     graph.add(F.odometry_factor(k, i, dpose,
                                                 c.sigma_odo_rot, c.sigma_odo_trans))
                     constrained.add(F.X(k, i)); constrained.add(F.X(k, i + 1))
-                graph.add(F.scale_walk_factor(k, i, c.sigma_scale_walk))
 
             # height factors (downward laser altimeter -> vertical observability)
             if c.use_height and rb.height is not None:
@@ -205,7 +290,7 @@ class CoVOR:
             if fk is None:
                 continue
             ka = int(fk[-1]) - 1
-            ia = self._assoc(ka, t)
+            ia, slop_a = self._assoc(ka, t)
             if ia is None:
                 continue
             if c.use_gt_range:
@@ -221,6 +306,7 @@ class CoVOR:
                 aid = int(r.to_id)
                 if aid not in self.anchors:
                     continue
+                sig = float(np.hypot(sig, slop_a))
                 if ma:
                     graph.add(F.ma_anchor_range_factor(ka, ia, la, self.anchors[aid],
                                                        z, sig, c.robust, c.huber_k,
@@ -240,9 +326,11 @@ class CoVOR:
                 if tk is None:
                     continue
                 kb = int(tk[-1]) - 1
-                ib = self._assoc(kb, t)
+                ib, slop_b = self._assoc(kb, t)
                 if ib is None:
                     continue
+                # both endpoints move during their own association gap
+                sig = float(np.sqrt(sig ** 2 + slop_a ** 2 + slop_b ** 2))
                 if ma:
                     lb = self.arms.get(int(r.to_id))
                     graph.add(F.ma_inter_range_factor(ka, ia, la, kb, ib, lb, z, sig,
@@ -268,8 +356,9 @@ class CoVOR:
         self.bias_used = bias_used
         self.stats = dict(
             keyframes={rb.name: rb.n() for rb in self.robots},
-            scales_init={rb.name: round(rb.s0, 4) for rb in self.robots},
+            frontend=c.frontend, node_stride=c.vins_stride,
             n_inter_range=n_inter, n_anchor_range=n_anchor, n_height=n_height,
+            n_gravity_prior=n_grav,
             n_weak_priors=n_weak, n_bias=len(bias_used), bias_mode=c.bias_mode,
             n_factors=graph.size(), n_vars=values.size())
         self.graph, self.values = graph, values
