@@ -49,9 +49,13 @@ def main():
     args = ap.parse_args()
     want = set(args.drones.split(","))
 
-    # Ablation over drone count is done by disabling the ranges of robots that
-    # are not in `want`: keep their odometry-only (drifting) solution, exactly
-    # the proposal's "fewer UWB constraints -> larger Sigma" path (§4.9).
+    # NOTE: --drones selects which robots get WRITTEN OUT. It does not change the
+    # graph -- every robot's ranges are always used. An earlier comment here
+    # claimed this performed the proposal's §4.9 drone-count ablation; it does not,
+    # and no such ablation exists yet. Cfg only has the global use_ranges /
+    # use_anchor / use_inter switches, so running the §4.9 ladder needs a per-pair
+    # Cfg.inter_pairs and a per-robot Cfg.anchor_robots first (design in
+    # OCCUPANCY_PIPELINE.md, "§4.9 collaboration-gain experiment").
     cfg = Cfg(**FAITHFUL)
     cov = CoVOR(args.seq, cfg).build()
     print("stats:", cov.stats)

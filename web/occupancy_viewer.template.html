@@ -1,0 +1,425 @@
+<title>__TITLE__</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --bg:#0b0e13; --bg2:#0e131b;
+    --panel:rgba(17,23,33,.82); --panel-brd:rgba(90,120,150,.28);
+    --ink:#cdd7e4; --ink-dim:#7d8da0; --label:#5f7188;
+    --accent:#38bdf8; --accent-dim:#1f6f92;
+    --d1:#f5a623; --d2:#2dd4bf; --d3:#e05cc7;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono","Cascadia Code",Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:
+      radial-gradient(120% 90% at 50% 0%, #10161f 0%, var(--bg) 60%);
+    color:var(--ink); font-family:var(--sans); overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  #view{position:fixed; inset:0; display:block; width:100%; height:100%; cursor:grab; touch-action:none}
+  #view:active{cursor:grabbing}
+
+  /* ---- instrument panel ---- */
+  .panel{
+    position:fixed; backdrop-filter:blur(14px) saturate(1.2);
+    background:var(--panel); border:1px solid var(--panel-brd);
+    border-radius:14px; box-shadow:0 8px 40px rgba(0,0,0,.5);
+  }
+  #controls{ top:18px; left:18px; width:288px; padding:18px 18px 16px; }
+  .brand{ display:flex; align-items:baseline; gap:8px; margin:0 0 2px; }
+  .brand h1{ font:600 15px/1.2 var(--sans); letter-spacing:.2px; margin:0; }
+  .brand .tag{ font:600 9px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent); border:1px solid var(--accent-dim); padding:3px 6px; border-radius:5px; }
+  .sub{ color:var(--label); font:400 11.5px/1.45 var(--sans); margin:0 0 15px; }
+
+  .group{ border-top:1px solid rgba(120,140,165,.14); padding:13px 0 3px; }
+  .group:first-of-type{ border-top:none; padding-top:4px; }
+  .glabel{ font:600 9.5px/1 var(--mono); letter-spacing:.16em; text-transform:uppercase;
+    color:var(--label); margin:0 0 11px; }
+
+  .row{ display:flex; align-items:center; gap:10px; margin:0 0 9px; cursor:pointer; user-select:none; }
+  .row:last-child{margin-bottom:2px}
+  .sw{ position:relative; width:34px; height:19px; flex:0 0 auto; border-radius:19px;
+    background:rgba(120,140,165,.22); transition:background .15s; }
+  .sw::after{ content:""; position:absolute; top:2px; left:2px; width:15px; height:15px;
+    border-radius:50%; background:#8aa0b8; transition:transform .15s, background .15s; }
+  .row.on .sw{ background:var(--accent-dim); }
+  .row.on .sw::after{ transform:translateX(15px); background:var(--accent); }
+  .row .nm{ font:500 13px/1 var(--sans); flex:1; }
+  .row .ct{ font:500 11px/1 var(--mono); color:var(--label); font-variant-numeric:tabular-nums; }
+  .dot{ width:9px;height:9px;border-radius:2px;flex:0 0 auto }
+
+  .slice .glabel{ display:flex; justify-content:space-between; }
+  .slice .glabel span{ color:var(--ink-dim); font-variant-numeric:tabular-nums; letter-spacing:0; text-transform:none; }
+  input[type=range]{ -webkit-appearance:none; appearance:none; width:100%; height:4px; margin:7px 0 2px;
+    background:linear-gradient(90deg,var(--accent-dim),var(--accent)); border-radius:3px; outline:none; }
+  input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:15px;height:15px;border-radius:50%;
+    background:#eaf2f8; border:2px solid var(--accent); cursor:pointer; box-shadow:0 1px 4px rgba(0,0,0,.5); }
+  input[type=range]::-moz-range-thumb{ width:15px;height:15px;border-radius:50%; background:#eaf2f8;
+    border:2px solid var(--accent); cursor:pointer; }
+
+  .btn{ width:100%; margin-top:12px; padding:9px; border:1px solid var(--panel-brd);
+    background:rgba(120,140,165,.10); color:var(--ink); border-radius:9px; cursor:pointer;
+    font:600 11.5px/1 var(--sans); letter-spacing:.02em; transition:background .13s,border-color .13s; }
+  .btn:hover{ background:rgba(56,189,248,.14); border-color:var(--accent-dim); }
+  .btn:focus-visible,.row:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:9px; }
+
+  /* ---- legend / readout ---- */
+  #legend{ bottom:18px; left:18px; padding:13px 15px 12px; width:220px; }
+  #legend .glabel{ margin-bottom:9px }
+  .cbar{ height:11px; border-radius:3px; margin-bottom:5px;
+    background:linear-gradient(90deg,#440154,#414487,#2a788e,#22a884,#7ad151,#fde725); }
+  .cbar-ax{ display:flex; justify-content:space-between; font:500 10px/1 var(--mono);
+    color:var(--label); font-variant-numeric:tabular-nums; }
+  .drones{ display:flex; flex-direction:column; gap:6px; margin-top:12px;
+    border-top:1px solid rgba(120,140,165,.14); padding-top:11px; }
+  .drones .row2{ display:flex; align-items:center; gap:9px; font:500 11.5px/1 var(--sans); }
+  .drones .row2 .k{ color:var(--label); font:500 10px/1 var(--mono); margin-left:auto; }
+
+  #hud{ position:fixed; top:18px; right:18px; text-align:right; pointer-events:none;
+    font:500 10.5px/1.7 var(--mono); color:var(--ink-dim); font-variant-numeric:tabular-nums; }
+  #hud b{ color:var(--accent); font-weight:600 }
+  #fps{ color:var(--label) }
+
+  #hint{ position:fixed; bottom:16px; left:50%; transform:translateX(-50%);
+    font:500 11px/1 var(--sans); color:var(--label); pointer-events:none;
+    background:rgba(11,14,19,.6); padding:7px 13px; border-radius:20px; border:1px solid var(--panel-brd);
+    transition:opacity .5s; }
+  @media (max-width:720px){
+    #controls{ width:calc(100% - 28px); left:14px; top:14px; }
+    #legend{ display:none }
+  }
+</style>
+
+<canvas id="view"></canvas>
+
+<div id="hud">
+  <div><b id="hOcc">0</b> occupied</div>
+  <div><span id="hFree">0</span> free · <span id="hShown">0</span> shown</div>
+  <div id="fps">— fps</div>
+</div>
+
+<div id="controls" class="panel">
+  <div class="brand">
+    <h1>Occupancy Map</h1><span class="tag">CoVOR · UWB</span>
+  </div>
+  <p class="sub">__SUBTITLE__</p>
+
+  <div class="group">
+    <div class="glabel">Layers</div>
+    <div class="row on" id="tOcc" tabindex="0" role="switch" aria-checked="true">
+      <span class="sw"></span><span class="nm">Occupied voxels</span><span class="ct" id="cOcc">0</span>
+    </div>
+    <div class="row" id="tFree" tabindex="0" role="switch" aria-checked="false">
+      <span class="sw"></span><span class="nm">Free space</span><span class="ct" id="cFree">0</span>
+    </div>
+    <div class="row on" id="tTraj" tabindex="0" role="switch" aria-checked="true">
+      <span class="sw"></span><span class="nm">Drone trajectories</span>
+    </div>
+    <div class="row on" id="tGrid" tabindex="0" role="switch" aria-checked="true">
+      <span class="sw"></span><span class="nm">Floor grid</span>
+    </div>
+    <div class="row" id="tSpin" tabindex="0" role="switch" aria-checked="false">
+      <span class="sw"></span><span class="nm">Auto-orbit</span>
+    </div>
+  </div>
+
+  <div class="group slice">
+    <div class="glabel"><span>Height slice</span><span id="sliceRead">— m</span></div>
+    <input type="range" id="sliceLo" min="0" max="100" value="0" aria-label="slice floor">
+    <input type="range" id="sliceHi" min="0" max="100" value="100" aria-label="slice ceiling">
+  </div>
+
+  <button class="btn" id="reset">Reset view</button>
+</div>
+
+<div id="legend" class="panel">
+  <div class="glabel">Voxel height (viridis)</div>
+  <div class="cbar"></div>
+  <div class="cbar-ax"><span id="zlo">0.0 m</span><span id="zhi">2.5 m</span></div>
+  <div class="drones" id="droneLegend"></div>
+</div>
+
+<div id="hint">drag to orbit · scroll to zoom · right-drag to pan</div>
+
+<script id="data">window.__OCC__ = /*__OCC_DATA__*/null;</script>
+<script>
+"use strict";
+(function(){
+  const D = window.__OCC__;
+  const cv = document.getElementById("view");
+  const gl = cv.getContext("webgl2", {antialias:true, alpha:false});
+  if(!gl){ document.body.innerHTML =
+    '<p style="color:#cdd7e4;font-family:system-ui;padding:40px">WebGL2 is required to view this map.</p>'; return; }
+
+  // ---------- decode payload ----------
+  const b64ToArr = (b64, Ctor) => {
+    const bin = atob(b64); const n = bin.length;
+    const u8 = new Uint8Array(n);
+    for(let i=0;i<n;i++) u8[i] = bin.charCodeAt(i);
+    return new Ctor(u8.buffer);
+  };
+  const res = D.res;
+  const occI = b64ToArr(D.occ_idx_b64, Int16Array);   // [i,j,k]*N
+  const occC = b64ToArr(D.occ_col_b64, Uint8Array);   // [r,g,b]*N
+  const freeI = b64ToArr(D.free_idx_b64, Int16Array);
+  const nOcc = occI.length/3, nFree = freeI.length/3;
+
+  // instance centers (float) from int16 voxel indices
+  const occOff = new Float32Array(nOcc*3);
+  const occZ = new Float32Array(nOcc);
+  for(let i=0;i<nOcc;i++){
+    occOff[3*i]   = (occI[3*i]  +0.5)*res;
+    occOff[3*i+1] = (occI[3*i+1]+0.5)*res;
+    occOff[3*i+2] = (occI[3*i+2]+0.5)*res;
+    occZ[i] = occOff[3*i+2];
+  }
+  const freeOff = new Float32Array(nFree*3);
+  const freeZ = new Float32Array(nFree);
+  for(let i=0;i<nFree;i++){
+    freeOff[3*i]   = (freeI[3*i]  +0.5)*res;
+    freeOff[3*i+1] = (freeI[3*i+1]+0.5)*res;
+    freeOff[3*i+2] = (freeI[3*i+2]+0.5)*res;
+    freeZ[i] = freeOff[3*i+2];
+  }
+
+  // ---------- linear algebra (mat4, z-up) ----------
+  const M = {
+    persp(fov,asp,n,f){ const t=1/Math.tan(fov/2); return new Float32Array([
+      t/asp,0,0,0, 0,t,0,0, 0,0,(f+n)/(n-f),-1, 0,0,(2*f*n)/(n-f),0]); },
+    look(e,c,u){
+      const z=norm(sub(e,c)), x=norm(cross(u,z)), y=cross(z,x);
+      return new Float32Array([ x[0],y[0],z[0],0, x[1],y[1],z[1],0, x[2],y[2],z[2],0,
+        -dot(x,e),-dot(y,e),-dot(z,e),1]); },
+    mul(a,b){ const o=new Float32Array(16);
+      for(let r=0;r<4;r++)for(let c=0;c<4;c++){let s=0;for(let k=0;k<4;k++)s+=a[k*4+r]*b[c*4+k];o[c*4+r]=s;}
+      return o; }
+  };
+  const sub=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]];
+  const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+  const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+  const norm=a=>{const l=Math.hypot(a[0],a[1],a[2])||1;return[a[0]/l,a[1]/l,a[2]/l];};
+
+  // ---------- shaders ----------
+  const prog = (vs,fs)=>{
+    const c=(t,s)=>{const sh=gl.createShader(t);gl.shaderSource(sh,s);gl.compileShader(sh);
+      if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS))throw gl.getShaderInfoLog(sh);return sh;};
+    const p=gl.createProgram();gl.attachShader(p,c(gl.VERTEX_SHADER,vs));gl.attachShader(p,c(gl.FRAGMENT_SHADER,fs));
+    gl.linkProgram(p); if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw gl.getProgramInfoLog(p); return p;
+  };
+
+  // instanced cubes (occupied)
+  const cubeVS=`#version 300 es
+  layout(location=0) in vec3 aPos; layout(location=1) in vec3 aNorm;
+  layout(location=2) in vec3 aOff; layout(location=3) in vec3 aCol;
+  uniform mat4 uVP; uniform float uScale; uniform vec3 uLight; uniform vec2 uSlice;
+  out vec3 vCol; out float vSh; out float vClip;
+  void main(){
+    vec3 w = aOff + aPos*uScale;
+    gl_Position = uVP*vec4(w,1.0);
+    vSh = 0.50 + 0.50*max(dot(aNorm, uLight),0.0);
+    vCol = aCol; vClip = (aOff.z>=uSlice.x && aOff.z<=uSlice.y)?1.0:0.0;
+  }`;
+  const cubeFS=`#version 300 es
+  precision highp float; in vec3 vCol; in float vSh; in float vClip; out vec4 o;
+  void main(){ if(vClip<0.5) discard; o=vec4(vCol*vSh,1.0); }`;
+
+  // points (free)
+  const ptVS=`#version 300 es
+  layout(location=0) in vec3 aOff;
+  uniform mat4 uVP; uniform float uSize; uniform vec2 uSlice; out float vClip;
+  void main(){ gl_Position=uVP*vec4(aOff,1.0); gl_PointSize=uSize;
+    vClip=(aOff.z>=uSlice.x && aOff.z<=uSlice.y)?1.0:0.0; }`;
+  const ptFS=`#version 300 es
+  precision highp float; uniform vec4 uColor; in float vClip; out vec4 o;
+  void main(){ if(vClip<0.5) discard;
+    vec2 d=gl_PointCoord-0.5; if(dot(d,d)>0.25) discard; o=uColor; }`;
+
+  // lines (trajectories)
+  const lnVS=`#version 300 es
+  layout(location=0) in vec3 aPos; uniform mat4 uVP; void main(){ gl_Position=uVP*vec4(aPos,1.0); gl_PointSize=5.0; }`;
+  const lnFS=`#version 300 es
+  precision highp float; uniform vec4 uColor; out vec4 o; void main(){ o=uColor; }`;
+
+  const pCube=prog(cubeVS,cubeFS), pPt=prog(ptVS,ptFS), pLn=prog(lnVS,lnFS);
+
+  // ---------- cube geometry (24 verts, 6 faces) ----------
+  function cube(){
+    const p=[], n=[], idx=[]; const f=[
+      [[ .5,-.5,-.5],[ .5,.5,-.5],[ .5,.5,.5],[ .5,-.5,.5],[1,0,0]],
+      [[-.5,-.5,.5],[-.5,.5,.5],[-.5,.5,-.5],[-.5,-.5,-.5],[-1,0,0]],
+      [[-.5,.5,-.5],[-.5,.5,.5],[.5,.5,.5],[.5,.5,-.5],[0,1,0]],
+      [[-.5,-.5,.5],[-.5,-.5,-.5],[.5,-.5,-.5],[.5,-.5,.5],[0,-1,0]],
+      [[-.5,-.5,.5],[.5,-.5,.5],[.5,.5,.5],[-.5,.5,.5],[0,0,1]],
+      [[.5,-.5,-.5],[-.5,-.5,-.5],[-.5,.5,-.5],[.5,.5,-.5],[0,0,-1]]];
+    f.forEach((fc,fi)=>{ for(let v=0;v<4;v++){ p.push(...fc[v]); n.push(...fc[4]); }
+      const b=fi*4; idx.push(b,b+1,b+2, b,b+2,b+3); });
+    return {p:new Float32Array(p), n:new Float32Array(n), idx:new Uint16Array(idx)};
+  }
+  const C=cube();
+
+  // occupied VAO
+  const vaoOcc=gl.createVertexArray(); gl.bindVertexArray(vaoOcc);
+  const buf=(data,loc,size,type=gl.FLOAT,norm=false,div=0)=>{
+    const b=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,b); gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc,size,type,norm,0,0);
+    if(div) gl.vertexAttribDivisor(loc,div); return b; };
+  buf(C.p,0,3); buf(C.n,1,3);
+  buf(occOff,2,3,gl.FLOAT,false,1);
+  buf(occC,3,3,gl.UNSIGNED_BYTE,true,1);
+  const ebo=gl.createBuffer(); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ebo);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,C.idx,gl.STATIC_DRAW);
+  gl.bindVertexArray(null);
+
+  // free VAO
+  const vaoFree=gl.createVertexArray(); gl.bindVertexArray(vaoFree);
+  buf(freeOff,0,3); gl.bindVertexArray(null);
+
+  // trajectory VAOs
+  const trajV = D.trajs.map(t=>{
+    const flat=new Float32Array(t.pts.length*3);
+    t.pts.forEach((p,i)=>{flat[3*i]=p[0];flat[3*i+1]=p[1];flat[3*i+2]=p[2];});
+    const vao=gl.createVertexArray(); gl.bindVertexArray(vao); buf(flat,0,3); gl.bindVertexArray(null);
+    return {vao, n:t.pts.length, col:t.color};
+  });
+
+  // floor grid
+  const gridLines=(()=>{
+    const c=D.center, R=Math.ceil(D.radius)+2, step=1, arr=[];
+    const z=D.zmin-0.05;
+    for(let g=-R;g<=R;g+=step){
+      arr.push(c[0]-R,c[1]+g,z, c[0]+R,c[1]+g,z);
+      arr.push(c[0]+g,c[1]-R,z, c[0]+g,c[1]+R,z);
+    }
+    const f=new Float32Array(arr); const vao=gl.createVertexArray(); gl.bindVertexArray(vao);
+    buf(f,0,3); gl.bindVertexArray(null); return {vao,n:arr.length/3};
+  })();
+
+  // ---------- camera ----------
+  const cam={ target:[...D.center], r:D.radius*2.4, theta:-Math.PI*0.62, phi:0.55 };
+  const home=JSON.parse(JSON.stringify(cam));
+  function eye(){
+    const cp=Math.cos(cam.phi), sp=Math.sin(cam.phi);
+    return [ cam.target[0]+cam.r*cp*Math.cos(cam.theta),
+             cam.target[1]+cam.r*cp*Math.sin(cam.theta),
+             cam.target[2]+cam.r*sp ];
+  }
+  function VP(){
+    const asp=cv.width/cv.height;
+    const P=M.persp(50*Math.PI/180, asp, 0.05, cam.r*6+50);
+    const V=M.look(eye(), cam.target, [0,0,1]);
+    return M.mul(P,V);
+  }
+
+  // ---------- interaction ----------
+  let drag=null;
+  cv.addEventListener("pointerdown",e=>{ drag={x:e.clientX,y:e.clientY,b:e.button}; cv.setPointerCapture(e.pointerId); state.spin=false; syncSpin(); });
+  cv.addEventListener("pointerup",()=>drag=null);
+  cv.addEventListener("pointermove",e=>{
+    if(!drag) return; const dx=e.clientX-drag.x, dy=e.clientY-drag.y; drag.x=e.clientX; drag.y=e.clientY;
+    if(drag.b===2 || e.shiftKey){ // pan
+      const ev=eye(), fwd=norm(sub(cam.target,ev)), rt=norm(cross(fwd,[0,0,1])), up=cross(rt,fwd);
+      const s=cam.r*0.0016;
+      for(let i=0;i<3;i++) cam.target[i]+= (-dx*rt[i]+dy*up[i])*s;
+    } else { // orbit
+      cam.theta-=dx*0.006; cam.phi=Math.max(-1.45,Math.min(1.45,cam.phi+dy*0.006));
+    }
+  });
+  cv.addEventListener("contextmenu",e=>e.preventDefault());
+  cv.addEventListener("wheel",e=>{ e.preventDefault();
+    cam.r=Math.max(0.6, Math.min(D.radius*8, cam.r*Math.exp(e.deltaY*0.0012))); }, {passive:false});
+
+  // ---------- UI state ----------
+  const state={occ:true,free:false,traj:true,grid:true,spin:false};
+  const zmin=D.zmin, zmax=D.zmax, sliceLo=document.getElementById("sliceLo"), sliceHi=document.getElementById("sliceHi");
+  let slice=[zmin-0.2, zmax+0.2];
+  function toggle(id,key){ const el=document.getElementById(id);
+    const flip=()=>{ state[key]=!state[key]; el.classList.toggle("on",state[key]); el.setAttribute("aria-checked",state[key]); };
+    el.addEventListener("click",flip);
+    el.addEventListener("keydown",e=>{ if(e.key===" "||e.key==="Enter"){e.preventDefault();flip();} });
+  }
+  toggle("tOcc","occ"); toggle("tFree","free"); toggle("tTraj","traj"); toggle("tGrid","grid");
+  const spinEl=document.getElementById("tSpin");
+  function syncSpin(){ spinEl.classList.toggle("on",state.spin); spinEl.setAttribute("aria-checked",state.spin); }
+  spinEl.addEventListener("click",()=>{state.spin=!state.spin;syncSpin();});
+  spinEl.addEventListener("keydown",e=>{ if(e.key===" "||e.key==="Enter"){e.preventDefault();state.spin=!state.spin;syncSpin();}});
+
+  function updSlice(){
+    const lo=+sliceLo.value/100, hi=+sliceHi.value/100;
+    const a=zmin-0.2+(zmax-zmin+0.4)*Math.min(lo,hi), b=zmin-0.2+(zmax-zmin+0.4)*Math.max(lo,hi);
+    slice=[a,b];
+    document.getElementById("sliceRead").textContent=`${a.toFixed(1)} – ${b.toFixed(1)} m`;
+  }
+  sliceLo.addEventListener("input",updSlice); sliceHi.addEventListener("input",updSlice); updSlice();
+  document.getElementById("reset").addEventListener("click",()=>{ Object.assign(cam,JSON.parse(JSON.stringify(home)));
+    sliceLo.value=0; sliceHi.value=100; updSlice(); });
+
+  // legends + counts
+  const fmt=n=>n.toLocaleString();
+  document.getElementById("hOcc").textContent=fmt(nOcc);
+  document.getElementById("hFree").textContent=fmt(nFree);
+  document.getElementById("cOcc").textContent=fmt(nOcc);
+  document.getElementById("cFree").textContent=fmt(nFree);
+  // colour ramp is stretched over the robust height range, not the extremes
+  const czmin=(D.czmin??zmin), czmax=(D.czmax??zmax);
+  document.getElementById("zlo").textContent=czmin.toFixed(1)+" m";
+  document.getElementById("zhi").textContent=czmax.toFixed(1)+" m";
+  const dl=document.getElementById("droneLegend");
+  D.trajs.forEach(t=>{ const c=`rgb(${t.color.map(x=>Math.round(x*255)).join(",")})`;
+    dl.insertAdjacentHTML("beforeend",
+      `<div class="row2"><span class="dot" style="background:${c}"></span>${t.name}<span class="k">${t.pts.length} kf</span></div>`); });
+  setTimeout(()=>{const h=document.getElementById("hint"); if(h) h.style.opacity=0;},4200);
+
+  // ---------- render ----------
+  function resize(){ const dpr=Math.min(devicePixelRatio||1,2);
+    cv.width=innerWidth*dpr; cv.height=innerHeight*dpr; gl.viewport(0,0,cv.width,cv.height); }
+  addEventListener("resize",resize); resize();
+  gl.enable(gl.DEPTH_TEST); gl.clearColor(0.043,0.055,0.075,1);
+  const light=norm([0.4,0.5,0.85]);
+  let last=performance.now(), fAcc=0, fN=0;
+
+  function frame(now){
+    const dt=(now-last)/1000; last=now;
+    if(state.spin) cam.theta+=dt*0.28;
+    fAcc+=dt; fN++; if(fAcc>0.5){ document.getElementById("fps").textContent=Math.round(fN/fAcc)+" fps"; fAcc=0;fN=0; }
+
+    gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+    const vp=VP();
+
+    if(state.grid){ gl.useProgram(pLn); gl.uniformMatrix4fv(gl.getUniformLocation(pLn,"uVP"),false,vp);
+      gl.uniform4f(gl.getUniformLocation(pLn,"uColor"),0.36,0.45,0.55,0.16);
+      gl.bindVertexArray(gridLines.vao); gl.drawArrays(gl.LINES,0,gridLines.n); }
+
+    if(state.free && nFree){ gl.useProgram(pPt); gl.uniformMatrix4fv(gl.getUniformLocation(pPt,"uVP"),false,vp);
+      gl.uniform1f(gl.getUniformLocation(pPt,"uSize"),2.0*Math.min(devicePixelRatio,2));
+      gl.uniform2f(gl.getUniformLocation(pPt,"uSlice"),slice[0],slice[1]);
+      gl.uniform4f(gl.getUniformLocation(pPt,"uColor"),0.42,0.60,0.78,0.16);
+      gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false);
+      gl.bindVertexArray(vaoFree); gl.drawArrays(gl.POINTS,0,nFree);
+      gl.depthMask(true); gl.disable(gl.BLEND); }
+
+    if(state.occ && nOcc){ gl.useProgram(pCube);
+      gl.uniformMatrix4fv(gl.getUniformLocation(pCube,"uVP"),false,vp);
+      gl.uniform1f(gl.getUniformLocation(pCube,"uScale"),res*0.96);
+      gl.uniform3f(gl.getUniformLocation(pCube,"uLight"),light[0],light[1],light[2]);
+      gl.uniform2f(gl.getUniformLocation(pCube,"uSlice"),slice[0],slice[1]);
+      gl.bindVertexArray(vaoOcc); gl.drawElementsInstanced(gl.TRIANGLES,36,gl.UNSIGNED_SHORT,0,nOcc); }
+
+    if(state.traj){ gl.useProgram(pLn); gl.uniformMatrix4fv(gl.getUniformLocation(pLn,"uVP"),false,vp);
+      trajV.forEach(t=>{ gl.uniform4f(gl.getUniformLocation(pLn,"uColor"),t.col[0],t.col[1],t.col[2],0.95);
+        gl.bindVertexArray(t.vao); gl.drawArrays(gl.LINE_STRIP,0,t.n); gl.drawArrays(gl.POINTS,0,t.n); }); }
+
+    // shown count (approx: occupied within slice)
+    requestAnimationFrame(frame);
+  }
+  // shown counter (updates on slice change, not per frame)
+  function updShown(){ let s=0; for(let i=0;i<nOcc;i++){ const z=occZ[i]; if(z>=slice[0]&&z<=slice[1])s++; }
+    document.getElementById("hShown").textContent=fmt(s); }
+  sliceLo.addEventListener("input",updShown); sliceHi.addEventListener("input",updShown); updShown();
+
+  requestAnimationFrame(frame);
+})();
+</script>
+

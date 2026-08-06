@@ -337,3 +337,162 @@ The pose term's job is to tell constrained regions from unconstrained ones. In a
 where all three drones are UWB-constrained throughout, there is nothing to tell
 apart. That is an **absence of the condition, not a failure of the method**, and its
 proper venue is the 1/2/3-drone comparison.
+
+---
+
+## GT-pose control on the VINS front-end (2026-08-06)
+
+Rebuilt the control with the SE(3)/VINS poses. One stereo pass feeds three
+builders — GT poses (w_pose forced to 1), fused weighted, fused uniform — with
+identical `OccCfg`/`DepthCfg`/stride/keyframe set, so the only difference is the
+pose source and the weight. 3 drones, stride 4, 1632 frames.
+
+**Predictions were recorded before measuring** (in the run script's docstring):
+P1 fused should now approach GT, since rotation error fell 21–34° → 0.6–0.9°;
+P2 the cells weighting removes should be mostly not-occupied in GT and
+concentrated at long range, since `w_depth` is the only term with real spread.
+
+### P1 — confirmed, and then some
+
+| map | stands ≥3 vox | object voxels | floating cubes inside room | total occupied |
+|---|---|---|---|---|
+| GT control | 13/13 | 549 | 116 | 70,869 |
+| fused, weighted | **13/13** | 575 | **48** | 64,225 |
+| fused, uniform | 13/13 | 663 | 53 | 96,794 |
+
+ORB era: fused 9–10/13 stands and **1,101** floating cubes vs GT 130. Fused now
+recovers **every** stand and floating cubes fell **1,101 → 48 (23×)**.
+
+### ⚠ The GT control is no longer a valid upper bound
+
+Fused shows *fewer* floating cubes than the GT control (48 vs 116). That cannot
+mean the fused poses beat mocap. Measured cause: **the GT chain has a systematic
+frame error**. `gt_pose_control.py` treats the mocap rigid-body pose as the px4-IMU
+body pose, but they are not the same frame — the fused and GT camera poses differ by
+**0.057–0.144 m (0.6–1.4 voxels at res 0.10) and 2.9–4.1°**, a constant offset, the
+same marker↔IMU mount transform that `eval_traj.py` has to fit as its two-sided `B`.
+
+So the front-end pose error is no longer the map's limiting factor — the *reference's*
+frame error is. That is a real milestone, and it also means **the control must be
+fixed before it can serve as the §5.2(A) upper bound**: compose
+`T_wb = T_w_marker · B` with the marker→IMU rotation `B` and lever arm `l`, both
+estimable from VINS-vs-mocap alone (front-end only, no fusion, so no GT leakage into
+the estimator).
+
+### P2 / the occupied −41% question — **AMBIGUOUS by the pre-registered rule**
+
+Weighting removes 40,014 of 96,794 uniform-occupied cells (41.3 %): 26.1 % become
+FREE, 73.9 % become UNKNOWN.
+
+| GT status of removed cells | 0.5 voxel tol | 1.0 voxel | 2.0 voxel |
+|---|---|---|---|
+| GT-occupied | 19.4 % | 42.2 % | 71.7 % |
+| GT-free | 42.5 % | 39.9 % | 22.8 % |
+| GT-unknown | 38.1 % | 17.9 % | 5.6 % |
+
+The verdict swings with tolerance, and the GT reference's own ~1-voxel frame error
+sits exactly in the band that decides it. Range concentration is in the predicted
+direction but weak: removed cells sit at median **3.00 m** from the camera vs
+**2.56 m** for kept cells (σ_Z 0.41 vs 0.30 m) — a 1.17× ratio, not the sharp
+far-field concentration P2 anticipated. Of the 10,426 cells that became FREE — the
+safety-critical direction — 51.4 % are GT-occupied at 1-voxel tolerance.
+
+**Per the rule fixed in advance, this is AMBIGUOUS, not an improvement claim.**
+
+### What *is* clean: registration-independent aggregates
+
+These need no map-to-map registration, so the frame error does not touch them:
+
+| | fused weighted | fused uniform | GT |
+|---|---|---|---|
+| total occupied | 64,225 (**−9.4 %** vs GT) | 96,794 (+36.6 % vs GT) | 70,869 |
+| object voxels (0.4 m radius on AprilTag GT) | 575 (**+4.7 %**) | 663 (+20.8 %) | 549 |
+
+Uniform **over-declares** occupied volume by 37 % against the GT reference and
+inflates the object stands by 21 %; weighted sits within 9 % and 5 %. Weighted is
+**3.9× closer** to GT on total occupied and **4.4× closer** on object volume, while
+losing no object (13/13). So the cells weighting removes are demonstrably not the
+real obstacles, even though per-cell adjudication is currently blocked.
+
+**Standing conclusion**: weighting moves the occupied geometry toward the GT
+reference in aggregate and costs no object recall; whether the specific removed
+cells are all spurious cannot be settled until the GT control's frame chain is
+fixed. β is NOT adjusted on this evidence.
+
+---
+
+## §4.9 collaboration-gain experiment — DESIGN ONLY, not run
+
+Proposal §5.2(A) fixes the conditions and says the implementation is "just change
+the UWB pair list, `[(1,2)] → [(1,2),(1,3),(2,3)]`", with **IoU and false-free
+rate** as the metrics, and §4.9 states the causal chain to be demonstrated:
+
+> drones ↑ ⇒ UWB constraints C(N,2) ↑ ⇒ Σ ↓ ⇒ w ↑ ⇒ occupancy quality ↑
+
+### ⚠ Blocker 1: the pair-list ablation is not implemented
+
+`fuse_and_dump.py --drones` **only filters which robots get written out** — it does
+not change the graph. The comment above it claims it performs the §4.9 ablation; it
+does not. `Cfg` has global `use_ranges` / `use_anchor` / `use_inter` switches, but
+nothing per-robot or per-pair. Needed: a `Cfg.inter_pairs` (tuple of robot-index
+pairs, default all three) and a `Cfg.anchor_robots` (which robots get anchor
+ranges), both applied in `CoVOR.build`'s range loop.
+
+### ⚠ Blocker 2: the GT upper bound is not yet valid
+
+See the section above — the control's marker↔IMU frame chain must be fixed first,
+otherwise every IoU / false-free number is measured against a reference that is
+itself displaced by ~1 voxel.
+
+### Conditions
+
+Proposal's table lists 1-drone as "VIO only / VINS-Fusion / drift as-is", i.e. no
+ranges at all. But the 1→2 step then changes two things at once (anchors appear
+*and* the first inter pair appears), while §4.9's causal claim is specifically about
+C(N,2). Adding one rung separates them:
+
+| # | condition | anchors | inter pairs | C(N,2) | role |
+|---|---|---|---|---|---|
+| 0 | VIO only | — | — | 0 | lower bound (proposal's "1대") |
+| 1 | 1 drone + anchors | ifo001 | — | 0 | isolates infrastructure ranging |
+| 2 | 2 drones | 1,2 | (1,2) | 1 | |
+| 3 | 3 drones | 1,2,3 | (1,2),(1,3),(2,3) | 3 | main result |
+| 4 | GT poses | — | — | — | upper bound (after the fix) |
+
+### Two sub-experiments — coverage must not be confounded with pose quality
+
+Comparing a 1-drone map to a 3-drone map changes *both* the number of cameras and
+the pose accuracy. The §4.9 causal claim is about pose accuracy only, so:
+
+- **A1 — quality at fixed coverage.** Always map with **ifo001's camera alone**, and
+  vary only how many drones' UWB constrain ifo001's poses (conditions 0–4). This is
+  the clean test of Σ → w → map quality.
+- **A2 — coverage gain.** Map with 1 / 2 / 3 cameras (the proposal's headline
+  figure). Deliberately confounded — it measures the whole collaboration benefit.
+
+Both use identical `OccCfg`/`DepthCfg`/stride/keyframe set.
+
+### Measurement axes
+
+| axis | metric | why |
+|---|---|---|
+| registration uncertainty | tr(Σ_pos) distribution per condition | direct evidence the pose term engages; expect divergence to 0.1–1.0 m² for unconstrained robots, so `w_pose` swings 0.72 → 0.036 at α = 0.3 |
+| map quality | **IoU** of occupied vs GT, **false-free rate** (cells the map calls free that GT calls occupied) | proposal's stated metrics |
+| coverage | mapped voxel count; recovered volume behind occlusions | A2's point |
+| localisation | ATE per condition | ties the map result back to the pose result |
+| causal link | correlation of tr(Σ) with false-free rate | §4.9's stated verification method |
+
+Registration-independent cross-checks (object recall, object-voxel count, total
+occupied vs GT) should be reported alongside IoU, since they survived the frame
+error that currently invalidates per-cell scoring.
+
+### Sequence
+
+`default_3_zigzag_0` only. `obstacles_1_random3_0b` has just `ifo001.bag` — no
+ifo002/ifo003 bag or mocap — so it cannot support a multi-drone condition.
+
+### Cost
+
+Conditions 1–3 are one fusion run each (~4 min) plus one occupancy build each
+(~17 min for 3 cameras, ~6 min for 1). Condition 0 needs no fusion. Roughly 1.5–2 h
+for the full A1+A2 grid.
