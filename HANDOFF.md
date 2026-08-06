@@ -27,12 +27,10 @@ VIO + UWB 거리로 협업 정합한 포즈와 **그 포즈의 불확실성(Σ)*
 - **커밋됨**: SE(3) 전환 일체(§9) — `covor/{data,factors,fusion}.py`,
   `scripts/{fuse_and_dump,build_occupancy,selftest_fusion,sweep_height}.py`,
   `run_covor.py`, `HANDOFF.md`, `OCCUPANCY_PIPELINE.md`.
-- **여전히 미커밋(별도 정리 대상, 이번 작업과 무관)**: 웹 뷰어 유닛
-  `?? scripts/export_occupancy_web.py` + `?? web/occupancy_viewer.template.html`
-  (`web/occupancy_viewer.html`은 1 MB 생성물이라 gitignore), `M .gitignore`(그 규칙),
-  세션 export `.txt`, `untitled.txt`.
-  ⚠ `OCCUPANCY_PIPELINE.md`에는 **이 뷰어를 설명하는 문단이 이미 커밋돼 있다** —
-  스크립트를 함께 커밋하거나 문단을 빼야 정합성이 맞는다.
+- **웹 뷰어 정합성 해소됨**: `scripts/export_occupancy_web.py` +
+  `web/occupancy_viewer.template.html` 커밋 완료(문서만 있고 파일은 없던 상태 해소).
+  생성물 `web/occupancy_viewer.html`(1 MB)은 gitignore 유지.
+- **여전히 미커밋**: 세션 export `.txt` 4개, `untitled.txt` (정리 대상).
 - **git 미추적 산출물**(재생성 가능, `.gitignore`): `vo_output/occ_*.npz`, `results/`.
 - 원격: `origin git@github.com:gs25058/Uncertainty-Aware-Collaborative-Mapping.git`
 
