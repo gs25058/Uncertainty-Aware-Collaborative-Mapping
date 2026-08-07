@@ -34,7 +34,26 @@ class Cfg:
     sigma_odo_rot: float = 0.0124    # rad (0.71 deg); mono default was 0.05
     sigma_odo_trans: float = 0.0041  # m; mono default was 0.05
     sigma_prior_rot: float = 0.1
-    sigma_prior_trans: float = 0.3   # frame-alignment prior strength
+    sigma_prior_trans: float = 0.3   # frame-alignment prior strength (legacy mode)
+
+    # --- gauge fixing (proposal §2.3-다) ---
+    # "component": ONE TIGHT prior per connected component of the inter-range graph,
+    #   and only for components no anchor grounds. This is what §2.3-다 describes
+    #   ("드론1의 첫 자세를 기준에 고정") generalised to the ablation ladder, where
+    #   0 or 1 pairs leave more than one component -- a prior on drone 1 alone would
+    #   leave the others singular.
+    # "per_robot": the legacy behaviour -- a WEAK prior on every robot's first pose.
+    #   Do not use it anchor-free: at sigma_trans = 0.3 m that prior carries
+    #   tr = 0.27 m^2, comparable to the tr(Sigma) the §4.9 experiment is trying to
+    #   measure, so it floors every condition and flattens the very effect under
+    #   test. It also hands each robot its own mocap-derived absolute reference,
+    #   which is the job the inter-agent ranges are supposed to do.
+    # The prior only removes the unobservable 4 DoF (yaw + position); evaluation
+    # aligns anyway, so its value defines a frame rather than adding information --
+    # which is why it can and should be tight.
+    gauge_mode: str = "component"
+    sigma_gauge_rot: float = 1e-3
+    sigma_gauge_trans: float = 1e-3
 
     # Gravity (roll/pitch) prior on every node -- see factors.gravity_prior for why
     # it is required rather than optional. sigma is MEASURED on cleaned mocap: the
@@ -223,6 +242,7 @@ class CoVOR:
         constrained = set()   # pose keys touched by odometry or range factors
         n_height = 0
         n_grav = 0
+        n_legacy_prior = 0
 
         # variables + priors + odometry
         for rb in self.robots:
@@ -231,9 +251,11 @@ class CoVOR:
                 values.insert(F.X(k, i), rb.init_world[i])
             if rb.n() == 0:
                 continue
-            graph.add(F.pose_prior(k, 0, rb.init_world[0],
-                                   c.sigma_prior_rot, c.sigma_prior_trans))
-            constrained.add(F.X(k, 0))
+            if c.gauge_mode == "per_robot":
+                graph.add(F.pose_prior(k, 0, rb.init_world[0],
+                                       c.sigma_prior_rot, c.sigma_prior_trans))
+                constrained.add(F.X(k, 0))
+                n_legacy_prior += 1
 
             # Absolute roll/pitch on EVERY node, from the front-end's gravity
             # observation. Without it the graph retains no absolute tilt at all
@@ -367,6 +389,41 @@ class CoVOR:
                 constrained.add(F.X(ka, ia)); constrained.add(F.X(kb, ib))
                 n_inter += 1
 
+        # --- gauge fixing: one tight prior per ungrounded connected component ---
+        # Components come from the inter-range graph. A component that any anchor
+        # touches is already grounded in the world frame, so it gets no prior --
+        # adding one would fight the anchors with a mocap-derived pose.
+        n_gauge, gauge_on = 0, []
+        if c.gauge_mode == "component":
+            live = [rb.k for rb in self.robots if rb.n() > 0]
+            parent = {k: k for k in live}
+
+            def find(x):
+                while parent[x] != x:
+                    parent[x] = parent[parent[x]]
+                    x = parent[x]
+                return x
+
+            for a, b in (_pairset or set()) if c.inter_pairs is not None else \
+                    {(i, j) for i in live for j in live if i < j}:
+                if c.use_inter and c.use_ranges and a in parent and b in parent:
+                    parent[find(a)] = find(b)
+            grounded = set()
+            if c.use_ranges and c.use_anchor:
+                grounded = set(live if c.anchor_robots is None else c.anchor_robots)
+            comps = {}
+            for k in live:
+                comps.setdefault(find(k), []).append(k)
+            for members in comps.values():
+                if grounded & set(members):
+                    continue                       # anchors already fix this frame
+                k0 = min(members)                  # proposal: drone 1 of the group
+                graph.add(F.pose_prior(k0, 0, self.robots[k0].init_world[0],
+                                       c.sigma_gauge_rot, c.sigma_gauge_trans))
+                constrained.add(F.X(k0, 0))
+                n_gauge += 1
+                gauge_on.append(k0)
+
         # weak priors on any pose left unconstrained (isolated across map breaks),
         # to guarantee a well-posed elimination without biasing constrained poses
         n_weak = 0
@@ -384,6 +441,8 @@ class CoVOR:
             anchor_robots=("all" if c.anchor_robots is None else tuple(c.anchor_robots)),
             n_inter_range=n_inter, n_anchor_range=n_anchor, n_height=n_height,
             n_gravity_prior=n_grav,
+            gauge_mode=c.gauge_mode, gauge_on=tuple(gauge_on),
+            n_gauge_prior=(n_legacy_prior if c.gauge_mode == "per_robot" else n_gauge),
             n_weak_priors=n_weak, n_bias=len(bias_used), bias_mode=c.bias_mode,
             n_factors=graph.size(), n_vars=values.size())
         self.graph, self.values = graph, values
