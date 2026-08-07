@@ -347,6 +347,45 @@ weighted, fused uniform — at identical `OccCfg`/`DepthCfg`/stride/keyframe set
 only the pose source and the weight differ. 3 drones, stride 4, 1632 frames.
 **Predictions were written into the run script before measuring.**
 
+### Mocap loading fix — the measuring instrument was contaminated
+
+`load_mocap` sampled the **raw** csv nearest-in-time. MILUV's own loader
+(`miluv/utils.py:130-188`) does not: it drops all-zero rows, drops any sample whose
+rotation differs from the last good one by >1 rad **together with its predecessor**,
+then fits csaps splines at smooth=0.9999. `covor.data` now ports those exact rules
+(`_mocap_splines`, `mocap_pose_at`) and every mocap consumer routes through it —
+`covor/fusion.py`, `scripts/gt_pose_control.py`, `run/eval_traj.py`, `run/plot_all.py`.
+
+| | rows dropped |
+|---|---|
+| zigzag / ifo001 | 79 / 29,605 (0.27 %) |
+| zigzag / ifo002 | 199 / 29,524 (0.67 %) |
+| zigzag / ifo003 | **0** |
+| obstacles / ifo001 | **0** |
+
+ifo003 dropping nothing independently confirms the earlier finding that its mocap
+carries no glitches, while ifo001/ifo002 do. This is **error removal, not
+improvement** — the outliers we had been excluding by hand ("mocap dropout spikes",
+gross >45° at 0–0.8 %) were exactly these rows.
+
+What moved, and what did not:
+
+| quantity | raw mocap | cleaned |
+|---|---|---|
+| VINS position RMSE (4 tracks) | 0.171 / 0.202 / 0.242 / 0.104 | **unchanged** |
+| VINS tilt median | 0.90 / 0.84 / 0.63 / 0.69° | 0.87 / 0.82 / 0.60 / 0.68° |
+| VINS tilt **max** | 171.6 / 173.6 / 8.9 / 24.1° | **27.1 / 10.3 / 8.8 / 24.2°** |
+| gross rotation outliers >45° | 0.28 / 0.82 / 0 / 0 % | **0 / 0 / 0 / 0 %** |
+| NEES (Σ overconfidence) | 9.7 → 1.8× | **9.7 → 1.8× unchanged** |
+| GT-control floating cubes | 116 | **52** |
+
+The headline numbers were robust to the contamination; the tails and the GT map were
+not. `sigma_odo_trans/rot` and `sigma_tilt` were re-derived on cleaned mocap with no
+hand filter and landed within 8 % of the hand-filtered values (0.0041 / 0.0124 /
+0.0114 vs 0.0045 / 0.0131 / 0.0119), which is the check that the loader replaces the
+hand filter rather than stacking with it. The `Cfg` defaults now carry the
+loader-derived values.
+
 ### Frame fix: mocap is the MARKER pose, not the IMU pose
 
 `gt_pose_control.py` composed `T_wc = T_w_marker @ inv(T_cam_imu)`, treating the
@@ -371,34 +410,30 @@ refitting from fused instead of raw VINS moves it by 0.062–0.195 m — more th
 own magnitude. Pinning it needs an independent observation; PnP on the AprilTag
 stands would do it, but MILUV ships tag positions without detections.
 
-### P1 — confirmed
+### P1 — confirmed; see the milestone table below.
+
+### ★ Milestone: fused poses now map as well as ground-truth poses ★
 
 | map | stands ≥3 vox | object voxels | floating cubes | total occupied |
 |---|---|---|---|---|
-| GT control (B applied) | 13/13 | 598 | 116 | 66,412 |
+| GT control (B applied, cleaned mocap) | 13/13 | 600 | **52** | 65,471 |
 | fused, weighted | **13/13** | 575 | **48** | 64,225 |
 | fused, uniform | 13/13 | 663 | 53 | 96,794 |
 
-ORB era: 9–10/13 stands and **1,101** floating cubes vs GT 130. Fused now recovers
-**every** stand and floating cubes fell **1,101 → 48 (23×)**.
+ORB era: 9–10/13 stands and **1,101** floating cubes against GT's 130. Fused now
+recovers **every** stand, floating cubes fell **1,101 → 48 (23×)**, and — the point —
+that is **statistically the same as the GT-pose control's 52**. The thread that
+opened when 21–34° rotation error was diagnosed as the map's limiting factor closes
+here: with the SE(3)/VINS front-end, replacing the estimated poses with mocap buys
+essentially nothing at this voxel resolution.
 
-### ★ Milestone: the front-end is no longer the map's bottleneck ★
-
-The thread opened when the 21–34° rotation error was diagnosed as the map's limiting
-factor closes here. Fused still shows **fewer** floating cubes than the GT control
-(48 vs 116) even after the rotation fix, which cannot mean fused poses beat mocap —
-it means **the reference is now the weaker artefact**. Two identified, unfixed
-causes, both GT-side:
-
-1. the unidentified lever arm above, leaving a constant 0.6–1.4 voxel offset;
-2. `gt_poses` samples **raw** mocap nearest-in-time, while MILUV's own loader
-   splines it and rejects gaps/outliers (`miluv/utils.py:151-160`) — for good
-   reason: raw mocap carries 173–180° rotation jumps between samples 0.13 s apart
-   in ~0.5 % of ifo001/ifo002 samples (0 % on ifo003) and position jumps up to
-   1.08 m.
-
-Recommended (not done): switch the control to MILUV's spline-smoothed mocap, and pin
-the lever arm by AprilTag PnP.
+> **Correction.** An earlier revision of this document read the same comparison as
+> "the GT control is no longer a valid upper bound", because fused (48) beat GT
+> (116). That was **mostly a defect in how mocap was being loaded**, not a property
+> of the reference: sampling raw mocap nearest-in-time let tracker glitches cast
+> whole point clouds from wrong poses. With MILUV's own gap/outlier rules applied
+> the GT control drops to 52 and the ordering is normal again. The residual
+> lever-arm uncertainty (0.6–1.4 voxel) is still real, but it was the smaller effect.
 
 ### The occupied −41 % question
 
@@ -407,15 +442,15 @@ the lever arm by AprilTag PnP.
 
 | tol [voxel] | 0.25–0.75 | 1.00 | 1.25 | 1.50 | 2.00 | 3.00 |
 |---|---|---|---|---|---|---|
-| GT-occupied | 18.8 % | 41.9 % | 50.1 % | 66.2 % | 72.7 % | 87.6 % |
-| GT-free | 42.3 % | 41.1 % | 37.4 % | 27.6 % | 23.3 % | 11.4 % |
-| GT-unknown | 38.9 % | 17.0 % | 12.5 % | 6.2 % | 4.0 % | 1.1 % |
+| GT-occupied | 18.7 % | 42.0 % | 50.3 % | 66.4 % | 73.0 % | 87.5 % |
+| GT-free | 41.4 % | 40.6 % | 36.9 % | 27.3 % | 22.9 % | 11.4 % |
+| GT-unknown | 39.9 % | 17.4 % | 12.8 % | 6.3 % | 4.1 % | 1.1 % |
 
-The GT-occupied share crosses 50 % at **1.25 voxel** — and the reference's own
+The GT-occupied share crosses 50 % at **1.24 voxel** — and the reference's own
 residual offset is **0.6–1.4 voxel**, which brackets that crossover. The verdict is
 therefore *undetermined by this data*, not merely unclear. No single threshold is
 reported. Of the 10,426 cells that became FREE — the safety-critical direction —
-the split at 1 voxel is 49.9 % GT-occupied vs 49.6 % GT-free, a coin flip. Range
+the split at 1 voxel is 50.2 % GT-occupied vs 49.4 % GT-free, a coin flip. Range
 concentration is in the predicted direction but weak: removed cells sit at median
 **3.00 m** vs **2.56 m** for kept (σ_Z 0.41 vs 0.30 m).
 
@@ -424,12 +459,12 @@ registration, so neither the lever arm nor the mocap glitches touch them:
 
 | | weighted | uniform | GT |
 |---|---|---|---|
-| total occupied | 64,225 (**−3.3 %**) | 96,794 (**+45.7 %**) | 66,412 |
-| object voxels | 575 (**−3.8 %**) | 663 (+10.9 %) | 598 |
+| total occupied | 64,225 (**−1.9 %**) | 96,794 (**+47.8 %**) | 65,471 |
+| object voxels | 575 (**−4.2 %**) | 663 (+10.5 %) | 600 |
 | stands recovered | 13/13 | 13/13 | 13/13 |
 
-Uniform over-declares occupied volume by **46 %** against GT; weighted sits within
-**3.3 %** — **13.9× closer**, and 2.8× closer on object volume, while losing no
+Uniform over-declares occupied volume by **48 %** against GT; weighted sits within
+**1.9 %** — **25× closer**, and 2.5× closer on object volume, while losing no
 object. **The cells weighting removes are not the real obstacles.** That is the
 question that was asked, and it is answered on registration-independent grounds; the
 per-cell adjudication is a bonus, not the basis. **β is NOT adjusted.**

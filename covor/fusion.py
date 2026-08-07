@@ -23,25 +23,29 @@ class Cfg:
     # VIO relative-pose noise, MEASURED against mocap at the 7.49 Hz node density
     # (not carried over from the mono pipeline, where 0.05/0.05 covered a much
     # sparser, up-to-scale front-end). Per-axis RMS of the relative-pose residual,
-    # pooled over the 3 zigzag robots after excluding 0.5% of steps where mocap
-    # itself glitches (consecutive-sample rotations of 173-180 deg = a full flip in
-    # 0.13 s). Cross-check: ifo003 has no such glitches and gives 0.735 deg both
-    # with and without the exclusion, which validates the exclusion on the other two
-    # (5.40 deg -> 0.734, 7.12 -> 0.776; all three then agree to within 6%).
-    sigma_odo_rot: float = 0.0131    # rad (0.75 deg); was 0.05
-    sigma_odo_trans: float = 0.0045  # m; was 0.05
+    # pooled over the 3 zigzag robots.
+    #
+    # Measured on CLEANED mocap (data.load_mocap now applies MILUV's gap/outlier
+    # rules), so no hand-written outlier filter is involved. The earlier values --
+    # 0.0045 / 0.0131, from raw mocap plus a manual ">20 deg mocap step" exclusion --
+    # agree to within 8 %, which is the check that the loader does what the hand
+    # filter did. On raw mocap with no filter at all the per-robot rotation sigma
+    # scattered as 0.094 / 0.124 / 0.013 rad; cleaned, it is 0.0134 / 0.0121 / 0.0115.
+    sigma_odo_rot: float = 0.0124    # rad (0.71 deg); mono default was 0.05
+    sigma_odo_trans: float = 0.0041  # m; mono default was 0.05
     sigma_prior_rot: float = 0.1
     sigma_prior_trans: float = 0.3   # frame-alignment prior strength
 
     # Gravity (roll/pitch) prior on every node -- see factors.gravity_prior for why
-    # it is required rather than optional. sigma is MEASURED: the VIO tilt residual
-    # vs mocap is Rayleigh-distributed in magnitude, so sigma = median/1.1774 gives
-    # 0.764 / 0.731 / 0.548 deg on the three zigzag robots -> 0.68 deg pooled.
+    # it is required rather than optional. sigma is MEASURED on cleaned mocap: the
+    # VIO tilt residual is Rayleigh in magnitude, so sigma = median/1.1774 gives
+    # 0.741 / 0.703 / 0.516 deg on the three zigzag robots -> 0.65 deg pooled
+    # (raw mocap + hand filter gave 0.68 deg, i.e. 4 % apart).
     # The tail is heavier than Gaussian (p90/median 2.17-2.82 vs 1.82), and the
     # native factor will not accept a robust kernel, so treat this sigma as
     # describing the bulk and not the tail.
     use_gravity_prior: bool = True
-    sigma_tilt: float = 0.0119       # rad (0.68 deg), per axis
+    sigma_tilt: float = 0.0114       # rad (0.65 deg), per axis
     frontend: str = "vins"           # "vins" (metric SE(3)) | "orb" (legacy reader)
     vins_stride: int = D.VINS_STRIDE  # node density; see data.VINS_STRIDE
     init_yaw_only: bool = True       # constrain the L_k->G init to yaw+position

@@ -82,14 +82,10 @@ def fit_marker_to_imu(robot, seq=None):
     from covor import data as D
     seq = seq or SEQ
     v = D.load_vins(seq, robot, D.VINS_STRIDE)
-    m = pd.read_csv(f"{MILUV}/data/{seq}/{robot}/mocap.csv")
     t = v.t.values
-    j = np.abs(m.timestamp.values[None, :] - t[:, None]).argmin(1)
-    ok = np.abs(m.timestamp.values[j] - t) < 0.05
-    Rv = Rot.from_quat(v[["qx", "qy", "qz", "qw"]].to_numpy(float)[ok]).as_matrix()
-    Rm = Rot.from_quat(m.iloc[j][["pose.orientation.x", "pose.orientation.y",
-                                  "pose.orientation.z", "pose.orientation.w"]]
-                       .to_numpy(float)[ok]).as_matrix()
+    Rv = Rot.from_quat(v[["qx", "qy", "qz", "qw"]].to_numpy(float)).as_matrix()
+    _, q = D.mocap_pose_at(seq, robot, t)          # cleaned + spline, not raw
+    Rm = Rot.from_quat(q).as_matrix()
     A = np.eye(3); Binv = np.eye(3)
     for _ in range(80):
         A = _procrustes(np.einsum('nij,nkj->ik', Rm, Rv @ Binv))
@@ -103,13 +99,14 @@ def gt_poses(robot, ts, apply_B=True):
     T_wc = T_w_marker @ marker_T_imu @ inv(T_cam_imu). apply_B=False reproduces the
     earlier (incorrect) chain that treated the marker pose as the IMU pose.
     """
+    from covor import data as D
     ex = yaml.safe_load(open(f"{MILUV}/config/realsense/{robot}/extrinsics_px4imu.yaml"))
     T_cb = np.array(ex["cam0"]["T_cam_imu"], float)          # cam0 <- IMU
-    m = pd.read_csv(f"{MILUV}/data/{SEQ}/{robot}/mocap.csv")
-    j = np.abs(m.timestamp.values[None, :] - ts[:, None]).argmin(1)
-    R = Rot.from_quat(m[["pose.orientation.x", "pose.orientation.y",
-                         "pose.orientation.z", "pose.orientation.w"]].values[j]).as_matrix()
-    p = m[["pose.position.x", "pose.position.y", "pose.position.z"]].values[j]
+    # Cleaned + spline-evaluated AT ts. Nearest-neighbour on raw mocap could land
+    # on a tracker glitch (173-180 deg jumps, up to 1.08 m) and cast a whole point
+    # cloud from a wrong pose.
+    p, q = D.mocap_pose_at(SEQ, robot, np.asarray(ts, dtype=float))
+    R = Rot.from_quat(q).as_matrix()
     if apply_B:
         R = R @ fit_marker_to_imu(robot)             # marker frame -> IMU frame
     T_wb = np.tile(np.eye(4), (len(ts), 1, 1))

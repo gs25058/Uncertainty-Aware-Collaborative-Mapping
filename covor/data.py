@@ -41,18 +41,104 @@ def robot_of_tag(tag_id: int) -> str | None:
     return f"ifo00{tag_id // 10}"
 
 
-def load_mocap(seq: str, robot: str) -> pd.DataFrame:
-    """Ground-truth body pose in the mocap/world frame G."""
+def _mocap_splines(seq: str, robot: str):
+    """Position/quaternion smoothing splines over CLEANED mocap.
+
+    Port of MILUV's own ``miluv/utils.py:get_mocap_splines`` (same gap rule, same
+    outlier rule, same csaps smooth=0.9999), reimplemented here only to avoid
+    pulling in that module's unrelated ``pymlg`` dependency. Keeping the rules
+    identical matters: raw mocap is NOT clean, and every metric in this project is
+    measured against it.
+
+    What it removes:
+      * gaps   -- all-zero position or quaternion rows (tracker dropout);
+      * outliers -- any sample whose rotation differs from the last good one by
+        more than 1 rad; BOTH that sample and its predecessor are dropped.
+    Raw mocap on this sequence carries 173-180 deg rotation jumps between samples
+    0.13 s apart in ~0.5 % of ifo001/ifo002 rows, and position jumps up to 1.08 m.
+    Sampling it nearest-in-time (what this file used to do) feeds those straight
+    into ATE, NEES and the GT-pose control.
+    """
+    from csaps import csaps
+    from scipy.spatial.transform import Rotation
     df = pd.read_csv(os.path.join(DATA, seq, robot, "mocap.csv"))
-    return df.rename(columns={
-        "pose.position.x": "x", "pose.position.y": "y", "pose.position.z": "z",
-        "pose.orientation.x": "qx", "pose.orientation.y": "qy",
-        "pose.orientation.z": "qz", "pose.orientation.w": "qw",
-    })
+    t = df["timestamp"].values
+    pos = df[["pose.position.x", "pose.position.y", "pose.position.z"]].values
+    quat = df[["pose.orientation.x", "pose.orientation.y",
+               "pose.orientation.z", "pose.orientation.w"]].values
+
+    gaps = (np.linalg.norm(pos, axis=1) < 1e-6) | (np.linalg.norm(quat, axis=1) < 1e-6)
+    t, pos, quat = t[~gaps], pos[~gaps], quat[~gaps]
+
+    outliers = np.zeros(len(t), dtype=bool)
+    last_good = Rotation.from_quat(quat[0]).as_matrix()
+    for i in range(1, len(quat)):
+        R_now = Rotation.from_quat(quat[i]).as_matrix()
+        if Rotation.from_matrix(last_good.T @ R_now).magnitude() > 1.0:
+            outliers[i - 1] = True
+            outliers[i] = True
+        else:
+            last_good = R_now
+    t, pos, quat = t[~outliers], pos[~outliers], quat[~outliers]
+
+    quat = quat / np.linalg.norm(quat, axis=1)[:, None]
+    for i in range(1, len(quat)):            # keep the quaternion path continuous
+        if np.dot(quat[i], quat[i - 1]) < 0:
+            quat[i] *= -1
+
+    n_drop = int(gaps.sum() + outliers.sum())
+    return (csaps(t, pos.T, smooth=0.9999).spline,
+            csaps(t, quat.T, smooth=0.9999).spline,
+            (t[0], t[-1]), n_drop, len(df))
+
+
+_MOCAP_CACHE = {}
+
+
+def load_mocap(seq: str, robot: str, clean: bool = True) -> pd.DataFrame:
+    """Ground-truth body pose in the mocap/world frame G.
+
+    clean=True (default) returns the spline-smoothed, outlier-rejected track
+    resampled on the original timestamps -- the MILUV convention. clean=False
+    returns the raw csv, kept only for before/after comparisons.
+    """
+    raw = pd.read_csv(os.path.join(DATA, seq, robot, "mocap.csv"))
+    ren = {"pose.position.x": "x", "pose.position.y": "y", "pose.position.z": "z",
+           "pose.orientation.x": "qx", "pose.orientation.y": "qy",
+           "pose.orientation.z": "qz", "pose.orientation.w": "qw"}
+    if not clean:
+        return raw.rename(columns=ren)
+    key = (seq, robot)
+    if key not in _MOCAP_CACHE:
+        _MOCAP_CACHE[key] = _mocap_splines(seq, robot)
+    ps, qs, (t0, t1), _, _ = _MOCAP_CACHE[key]
+    t = np.clip(raw["timestamp"].values, t0, t1)
+    p = np.asarray(ps(t)).T
+    q = np.asarray(qs(t)).T
+    q = q / np.linalg.norm(q, axis=1)[:, None]     # splines break unit norm
+    return pd.DataFrame({"timestamp": t, "x": p[:, 0], "y": p[:, 1], "z": p[:, 2],
+                         "qx": q[:, 0], "qy": q[:, 1], "qz": q[:, 2], "qw": q[:, 3]})
+
+
+def mocap_pose_at(seq: str, robot: str, ts) -> tuple:
+    """(positions (N,3), quaternions xyzw (N,4)) evaluated ON the spline at ts.
+
+    Preferred over nearest-neighbour lookup: it is continuous, and it cannot land
+    on a dropped sample.
+    """
+    key = (seq, robot)
+    if key not in _MOCAP_CACHE:
+        _MOCAP_CACHE[key] = _mocap_splines(seq, robot)
+    ps, qs, (t0, t1), _, _ = _MOCAP_CACHE[key]
+    ts = np.clip(np.asarray(ts, dtype=float), t0, t1)
+    p = np.asarray(ps(ts)).T
+    q = np.asarray(qs(ts)).T
+    return p, q / np.linalg.norm(q, axis=1)[:, None]
 
 
 def mocap_position_at(mocap: pd.DataFrame, t: float) -> np.ndarray:
-    """Nearest-in-time mocap position (x,y,z) at time t."""
+    """Nearest-in-time mocap position (x,y,z) at time t, from an already-loaded
+    (cleaned) frame. Prefer mocap_pose_at when the sequence/robot are to hand."""
     i = int(np.abs(mocap.timestamp.values - t).argmin())
     return mocap.iloc[i][["x", "y", "z"]].to_numpy(dtype=float)
 
