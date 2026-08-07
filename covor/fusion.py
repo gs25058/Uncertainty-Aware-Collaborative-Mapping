@@ -63,6 +63,17 @@ class Cfg:
     use_ranges: bool = True          # ablation: disable all UWB range factors
     use_anchor: bool = True          # ablation: disable anchor range factors
     use_inter: bool = True           # ablation: disable inter-agent range factors
+
+    # --- proposal §4.9 collaboration ladder: these change the GRAPH, not the output ---
+    # inter_pairs: which robot-index pairs contribute inter-agent ranges. None = all
+    #   C(N,2) pairs. The proposal's ladder is exactly ((),) -> ((0,1),) ->
+    #   ((0,1),(0,2),(1,2)), i.e. C(N,2) = 0 -> 1 -> 3 for 1 -> 2 -> 3 drones.
+    # anchor_robots: which robots get anchor ranges. None = all, () = ANCHOR-FREE.
+    #   The proposal is anchor-free (§1 constraint, §2.4 objective has no anchor
+    #   term); the anchors this pipeline currently uses are a CoVOR-reproduction
+    #   inheritance, kept only as a side condition for continuity with earlier numbers.
+    inter_pairs: tuple = None
+    anchor_robots: tuple = None
     range_sigma_floor: float = 0.3   # realistic UWB noise floor (empirical resid std)
     range_bias: float = 0.14         # systematic offset (antenna moment arm); const-mode value
     bias_mode: str = "const"         # "const" | "online" | "off": antenna-bias handling
@@ -282,6 +293,9 @@ class CoVOR:
 
         # range factors
         n_inter = n_anchor = 0
+        # normalise the pair list once so (k,k') and (k',k) both match
+        _pairset = (None if c.inter_pairs is None
+                    else {(min(a, b), max(a, b)) for a, b in c.inter_pairs})
         for cnt, (_, r) in enumerate(self.ranges.iterrows() if c.use_ranges else []):
             if c.range_subsample > 1 and (cnt % c.range_subsample):
                 continue
@@ -302,6 +316,8 @@ class CoVOR:
             la = self.arms.get(int(r.from_id)) if ma else None
             if r["kind"] == "anchor":
                 if not c.use_anchor:
+                    continue
+                if c.anchor_robots is not None and ka not in c.anchor_robots:
                     continue
                 aid = int(r.to_id)
                 if aid not in self.anchors:
@@ -326,6 +342,9 @@ class CoVOR:
                 if tk is None:
                     continue
                 kb = int(tk[-1]) - 1
+                if c.inter_pairs is not None and \
+                        (min(ka, kb), max(ka, kb)) not in _pairset:
+                    continue
                 ib, slop_b = self._assoc(kb, t)
                 if ib is None:
                     continue
@@ -357,6 +376,8 @@ class CoVOR:
         self.stats = dict(
             keyframes={rb.name: rb.n() for rb in self.robots},
             frontend=c.frontend, node_stride=c.vins_stride,
+            inter_pairs=("all" if c.inter_pairs is None else tuple(c.inter_pairs)),
+            anchor_robots=("all" if c.anchor_robots is None else tuple(c.anchor_robots)),
             n_inter_range=n_inter, n_anchor_range=n_anchor, n_height=n_height,
             n_gravity_prior=n_grav,
             n_weak_priors=n_weak, n_bias=len(bias_used), bias_mode=c.bias_mode,

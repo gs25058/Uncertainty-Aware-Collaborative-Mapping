@@ -15,10 +15,14 @@ provide for free:
   - floating cubes: occupied voxels strictly inside the room and above the floor,
     plus how many of them coincide with a teammate's position (a moving drone).
 
-Frames: mocap gives the px4-IMU body pose in the mocap world frame, and
-config/realsense/<robot>/extrinsics_px4imu.yaml gives T_cam_imu (cam0 <- body),
-so T_wc = T_wb @ inv(T_cam_imu). This chain was validated by reprojecting the
-known AprilTag positions into the images -- every tag landed on its marker.
+Frames: mocap gives the pose of the Vicon RIGID BODY (marker cluster), NOT the
+px4-IMU body that VINS and the graph estimate. config/realsense/<robot>/
+extrinsics_px4imu.yaml gives T_cam_imu (cam0 <- IMU), so the full chain is
+    T_wc = T_w_marker @ marker_T_imu @ inv(T_cam_imu)
+and the middle term is the one that used to be missing. Leaving it out left the
+GT camera poses 2.9-4.1 deg and 0.057-0.144 m (0.6-1.4 voxels at res 0.10) away
+from the fused ones -- enough to make the control LOOK worse than the estimate it
+is supposed to bound (48 floating cubes fused vs 116 GT). See fit_marker_to_imu.
 
 Usage: python scripts/gt_pose_control.py --robot ifo001 --stride 2
 """
@@ -46,15 +50,68 @@ MILUV = "/src/gs25058/cr_RNE/miluv"
 ROBOTS = ["ifo001", "ifo002", "ifo003"]
 
 
-def gt_poses(robot, ts):
-    """world <- cam0 (infra1) SE3 at times ts, from mocap + the px4imu extrinsic."""
+def _procrustes(M):
+    U, _, Vt = np.linalg.svd(M)
+    return U @ np.diag([1, 1, np.sign(np.linalg.det(U @ Vt))]) @ Vt
+
+
+def fit_marker_to_imu(robot, seq=None):
+    """Constant rotation B taking the mocap marker frame to the px4-IMU frame.
+
+    Model:  R_marker = A . R_vins . B^-1   (A = the constant mocap<-VINS world
+    rotation), solved by the same two-sided Procrustes eval_traj.py uses. Two
+    constants cannot absorb VINS's time-varying yaw drift, so the drift stays in
+    the residual instead of contaminating B.
+
+    Fitted from the RAW VINS front-end only -- never from the fused poses -- so the
+    reference is not calibrated against the estimator it is meant to judge.
+    Verified non-circular: refitting from the fused poses moves B by 0.006-0.141 deg.
+    Magnitudes are 1.09 / 3.27 / 2.43 deg (ifo002 / ifo001 / ifo003), i.e. ordinary
+    mounting misalignment.
+
+    ONLY the rotation is returned. The translation lever arm (the IMU origin in the
+    marker frame) is NOT identifiable here: the fit residual is 0.19-0.25 m, set by
+    VINS drift, which is larger than the lever arm itself, and refitting from fused
+    instead of raw VINS moves it by 0.062-0.195 m -- more than its own magnitude.
+    Pinning it would need an independent observation, e.g. PnP on the AprilTag
+    stands (MILUV ships positions but no detections, so that means running a
+    detector). Until then the GT reference carries a residual body-origin
+    uncertainty of order 0.05-0.17 m, which is why map comparisons against it are
+    reported as a tolerance sweep rather than at one threshold.
+    """
+    from covor import data as D
+    seq = seq or SEQ
+    v = D.load_vins(seq, robot, D.VINS_STRIDE)
+    m = pd.read_csv(f"{MILUV}/data/{seq}/{robot}/mocap.csv")
+    t = v.t.values
+    j = np.abs(m.timestamp.values[None, :] - t[:, None]).argmin(1)
+    ok = np.abs(m.timestamp.values[j] - t) < 0.05
+    Rv = Rot.from_quat(v[["qx", "qy", "qz", "qw"]].to_numpy(float)[ok]).as_matrix()
+    Rm = Rot.from_quat(m.iloc[j][["pose.orientation.x", "pose.orientation.y",
+                                  "pose.orientation.z", "pose.orientation.w"]]
+                       .to_numpy(float)[ok]).as_matrix()
+    A = np.eye(3); Binv = np.eye(3)
+    for _ in range(80):
+        A = _procrustes(np.einsum('nij,nkj->ik', Rm, Rv @ Binv))
+        Binv = _procrustes(np.einsum('nji,njk->ik', A @ Rv, Rm))
+    return Binv.T                                   # B = inverse of B^-1
+
+
+def gt_poses(robot, ts, apply_B=True):
+    """world <- cam0 (infra1) SE3 at times ts, from mocap.
+
+    T_wc = T_w_marker @ marker_T_imu @ inv(T_cam_imu). apply_B=False reproduces the
+    earlier (incorrect) chain that treated the marker pose as the IMU pose.
+    """
     ex = yaml.safe_load(open(f"{MILUV}/config/realsense/{robot}/extrinsics_px4imu.yaml"))
-    T_cb = np.array(ex["cam0"]["T_cam_imu"], float)          # cam0 <- body
+    T_cb = np.array(ex["cam0"]["T_cam_imu"], float)          # cam0 <- IMU
     m = pd.read_csv(f"{MILUV}/data/{SEQ}/{robot}/mocap.csv")
     j = np.abs(m.timestamp.values[None, :] - ts[:, None]).argmin(1)
     R = Rot.from_quat(m[["pose.orientation.x", "pose.orientation.y",
                          "pose.orientation.z", "pose.orientation.w"]].values[j]).as_matrix()
     p = m[["pose.position.x", "pose.position.y", "pose.position.z"]].values[j]
+    if apply_B:
+        R = R @ fit_marker_to_imu(robot)             # marker frame -> IMU frame
     T_wb = np.tile(np.eye(4), (len(ts), 1, 1))
     T_wb[:, :3, :3] = R
     T_wb[:, :3, 3] = p

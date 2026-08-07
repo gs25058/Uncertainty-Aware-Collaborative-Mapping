@@ -342,157 +342,197 @@ proper venue is the 1/2/3-drone comparison.
 
 ## GT-pose control on the VINS front-end (2026-08-06)
 
-Rebuilt the control with the SE(3)/VINS poses. One stereo pass feeds three
-builders — GT poses (w_pose forced to 1), fused weighted, fused uniform — with
-identical `OccCfg`/`DepthCfg`/stride/keyframe set, so the only difference is the
-pose source and the weight. 3 drones, stride 4, 1632 frames.
+One stereo pass feeds three builders — GT poses (w_pose forced to 1), fused
+weighted, fused uniform — at identical `OccCfg`/`DepthCfg`/stride/keyframe set, so
+only the pose source and the weight differ. 3 drones, stride 4, 1632 frames.
+**Predictions were written into the run script before measuring.**
 
-**Predictions were recorded before measuring** (in the run script's docstring):
-P1 fused should now approach GT, since rotation error fell 21–34° → 0.6–0.9°;
-P2 the cells weighting removes should be mostly not-occupied in GT and
-concentrated at long range, since `w_depth` is the only term with real spread.
+### Frame fix: mocap is the MARKER pose, not the IMU pose
 
-### P1 — confirmed, and then some
+`gt_pose_control.py` composed `T_wc = T_w_marker @ inv(T_cam_imu)`, treating the
+Vicon rigid body as the px4 IMU. They are different frames. `fit_marker_to_imu`
+now estimates the missing rotation `B` from the **raw VINS front-end only** (never
+the fused poses, so the reference is not calibrated against what it judges):
 
-| map | stands ≥3 vox | object voxels | floating cubes inside room | total occupied |
+| robot | B | check: refit from fused |
+|---|---|---|
+| ifo001 | 3.27° (pitch +2.54, roll −2.06) | differs by 0.135° |
+| ifo002 | 1.09° | 0.006° |
+| ifo003 | 2.43° | 0.141° |
+
+Ordinary mounting misalignment, and **non-circular** — refitting from the fused
+poses moves it by ≤0.14°. Applying it cuts the fused-vs-GT rotation gap from
+2.94–4.14° to **1.93–2.85°**, and what remains is just the fused rotation error
+itself (0.9° tilt + 1.3–2.0° yaw), i.e. `B` did its whole job.
+
+**The translation lever arm is NOT identifiable and was not applied.** The fit
+residual (0.19–0.25 m, set by VINS drift) is larger than the lever arm itself, and
+refitting from fused instead of raw VINS moves it by 0.062–0.195 m — more than its
+own magnitude. Pinning it needs an independent observation; PnP on the AprilTag
+stands would do it, but MILUV ships tag positions without detections.
+
+### P1 — confirmed
+
+| map | stands ≥3 vox | object voxels | floating cubes | total occupied |
 |---|---|---|---|---|
-| GT control | 13/13 | 549 | 116 | 70,869 |
+| GT control (B applied) | 13/13 | 598 | 116 | 66,412 |
 | fused, weighted | **13/13** | 575 | **48** | 64,225 |
 | fused, uniform | 13/13 | 663 | 53 | 96,794 |
 
-ORB era: fused 9–10/13 stands and **1,101** floating cubes vs GT 130. Fused now
-recovers **every** stand and floating cubes fell **1,101 → 48 (23×)**.
+ORB era: 9–10/13 stands and **1,101** floating cubes vs GT 130. Fused now recovers
+**every** stand and floating cubes fell **1,101 → 48 (23×)**.
 
-### ⚠ The GT control is no longer a valid upper bound
+### ★ Milestone: the front-end is no longer the map's bottleneck ★
 
-Fused shows *fewer* floating cubes than the GT control (48 vs 116). That cannot
-mean the fused poses beat mocap. Measured cause: **the GT chain has a systematic
-frame error**. `gt_pose_control.py` treats the mocap rigid-body pose as the px4-IMU
-body pose, but they are not the same frame — the fused and GT camera poses differ by
-**0.057–0.144 m (0.6–1.4 voxels at res 0.10) and 2.9–4.1°**, a constant offset, the
-same marker↔IMU mount transform that `eval_traj.py` has to fit as its two-sided `B`.
+The thread opened when the 21–34° rotation error was diagnosed as the map's limiting
+factor closes here. Fused still shows **fewer** floating cubes than the GT control
+(48 vs 116) even after the rotation fix, which cannot mean fused poses beat mocap —
+it means **the reference is now the weaker artefact**. Two identified, unfixed
+causes, both GT-side:
 
-So the front-end pose error is no longer the map's limiting factor — the *reference's*
-frame error is. That is a real milestone, and it also means **the control must be
-fixed before it can serve as the §5.2(A) upper bound**: compose
-`T_wb = T_w_marker · B` with the marker→IMU rotation `B` and lever arm `l`, both
-estimable from VINS-vs-mocap alone (front-end only, no fusion, so no GT leakage into
-the estimator).
+1. the unidentified lever arm above, leaving a constant 0.6–1.4 voxel offset;
+2. `gt_poses` samples **raw** mocap nearest-in-time, while MILUV's own loader
+   splines it and rejects gaps/outliers (`miluv/utils.py:151-160`) — for good
+   reason: raw mocap carries 173–180° rotation jumps between samples 0.13 s apart
+   in ~0.5 % of ifo001/ifo002 samples (0 % on ifo003) and position jumps up to
+   1.08 m.
 
-### P2 / the occupied −41% question — **AMBIGUOUS by the pre-registered rule**
+Recommended (not done): switch the control to MILUV's spline-smoothed mocap, and pin
+the lever arm by AprilTag PnP.
 
-Weighting removes 40,014 of 96,794 uniform-occupied cells (41.3 %): 26.1 % become
-FREE, 73.9 % become UNKNOWN.
+### The occupied −41 % question
 
-| GT status of removed cells | 0.5 voxel tol | 1.0 voxel | 2.0 voxel |
+**Cell-level: AMBIGUOUS, and the sweep shows exactly why.** Of 40,014 removed cells,
+26.1 % become free and 73.9 % unknown. Their GT status against tolerance:
+
+| tol [voxel] | 0.25–0.75 | 1.00 | 1.25 | 1.50 | 2.00 | 3.00 |
+|---|---|---|---|---|---|---|
+| GT-occupied | 18.8 % | 41.9 % | 50.1 % | 66.2 % | 72.7 % | 87.6 % |
+| GT-free | 42.3 % | 41.1 % | 37.4 % | 27.6 % | 23.3 % | 11.4 % |
+| GT-unknown | 38.9 % | 17.0 % | 12.5 % | 6.2 % | 4.0 % | 1.1 % |
+
+The GT-occupied share crosses 50 % at **1.25 voxel** — and the reference's own
+residual offset is **0.6–1.4 voxel**, which brackets that crossover. The verdict is
+therefore *undetermined by this data*, not merely unclear. No single threshold is
+reported. Of the 10,426 cells that became FREE — the safety-critical direction —
+the split at 1 voxel is 49.9 % GT-occupied vs 49.6 % GT-free, a coin flip. Range
+concentration is in the predicted direction but weak: removed cells sit at median
+**3.00 m** vs **2.56 m** for kept (σ_Z 0.41 vs 0.30 m).
+
+**Aggregate: settled, and it answers the actual question.** These need no map-to-map
+registration, so neither the lever arm nor the mocap glitches touch them:
+
+| | weighted | uniform | GT |
 |---|---|---|---|
-| GT-occupied | 19.4 % | 42.2 % | 71.7 % |
-| GT-free | 42.5 % | 39.9 % | 22.8 % |
-| GT-unknown | 38.1 % | 17.9 % | 5.6 % |
+| total occupied | 64,225 (**−3.3 %**) | 96,794 (**+45.7 %**) | 66,412 |
+| object voxels | 575 (**−3.8 %**) | 663 (+10.9 %) | 598 |
+| stands recovered | 13/13 | 13/13 | 13/13 |
 
-The verdict swings with tolerance, and the GT reference's own ~1-voxel frame error
-sits exactly in the band that decides it. Range concentration is in the predicted
-direction but weak: removed cells sit at median **3.00 m** from the camera vs
-**2.56 m** for kept cells (σ_Z 0.41 vs 0.30 m) — a 1.17× ratio, not the sharp
-far-field concentration P2 anticipated. Of the 10,426 cells that became FREE — the
-safety-critical direction — 51.4 % are GT-occupied at 1-voxel tolerance.
+Uniform over-declares occupied volume by **46 %** against GT; weighted sits within
+**3.3 %** — **13.9× closer**, and 2.8× closer on object volume, while losing no
+object. **The cells weighting removes are not the real obstacles.** That is the
+question that was asked, and it is answered on registration-independent grounds; the
+per-cell adjudication is a bonus, not the basis. **β is NOT adjusted.**
 
-**Per the rule fixed in advance, this is AMBIGUOUS, not an improvement claim.**
+## §4.9 collaboration-gain experiment — DESIGN, implemented but NOT run
 
-### What *is* clean: registration-independent aggregates
+### The main axis is ANCHOR-FREE — the anchors are inherited, not designed
 
-These need no map-to-map registration, so the frame error does not touch them:
+The proposal is anchor-free in three places: §1 lists it as a constraint ("사전
+인프라 설치 불가능한 재난 현장 상정"), §2.4's objective has exactly three terms —
+odometry, inter-agent ranges, prior — and states "anchor-free — 고정 앵커 항 없음",
+and §2.2 calls the inter-drone range "the *only* observation linking them". §4.9's
+causal chain is
 
-| | fused weighted | fused uniform | GT |
-|---|---|---|---|
-| total occupied | 64,225 (**−9.4 %** vs GT) | 96,794 (+36.6 % vs GT) | 70,869 |
-| object voxels (0.4 m radius on AprilTag GT) | 575 (**+4.7 %**) | 663 (+20.8 %) | 549 |
+> drones ↑ ⇒ UWB constraints **C(N,2)** ↑ ⇒ Σ ↓ ⇒ w ↑ ⇒ occupancy quality ↑
 
-Uniform **over-declares** occupied volume by 37 % against the GT reference and
-inflates the object stands by 21 %; weighted sits within 9 % and 5 %. Weighted is
-**3.9× closer** to GT on total occupied and **4.4× closer** on object volume, while
-losing no object (13/13). So the cells weighting removes are demonstrably not the
-real obstacles, even though per-cell adjudication is currently blocked.
+and C(N,2) counts **inter-agent pairs** (1 drone → 0, 2 → 1, 3 → 3). Anchors appear
+nowhere in it. The anchors this pipeline uses are a **CoVOR-reproduction
+inheritance** — the CoVOR paper uses them; this study does not. So the main ladder
+drops them and they survive only as a side condition.
 
-**Standing conclusion**: weighting moves the occupied geometry toward the GT
-reference in aggregate and costs no object recall; whether the specific removed
-cells are all spurious cannot be settled until the GT control's frame chain is
-fixed. β is NOT adjusted on this evidence.
+This is also what unblocks the pose term. With all three drones anchored, tr(Σ) is
+0.0010–0.0026 m² and uniform, so `w_pose` sits at 0.991–0.997 and does nothing.
+Anchor-free, the only absolute reference is the gauge prior, tr(Σ) grows along each
+odometry chain, and the conditions separate — which is why §4.9 is the pose term's
+proper venue.
 
----
+**Expect the absolute numbers to get worse** (today's 6–8 cm fused error rests on
+the anchors, and the anchor bias +0.087 m is what sets its floor). That is a return
+to the proposal's target system, not a regression; condition D preserves continuity
+with every number measured so far.
 
-## §4.9 collaboration-gain experiment — DESIGN ONLY, not run
+### Conditions — implemented as `Cfg.inter_pairs` / `Cfg.anchor_robots`
 
-Proposal §5.2(A) fixes the conditions and says the implementation is "just change
-the UWB pair list, `[(1,2)] → [(1,2),(1,3),(2,3)]`", with **IoU and false-free
-rate** as the metrics, and §4.9 states the causal chain to be demonstrated:
+These change the **graph**, not the output filter. Verified by build counts:
 
-> drones ↑ ⇒ UWB constraints C(N,2) ↑ ⇒ Σ ↓ ⇒ w ↑ ⇒ occupancy quality ↑
+| cond | inter_pairs | anchor_robots | inter factors | anchor factors | C(N,2) | role |
+|---|---|---|---|---|---|---|
+| **A** | `()` | `()` | 0 | 0 | 0 | 1 drone, VIO only — lower bound |
+| **B** | `((0,1),)` | `()` | 3,226 | 0 | 1 | first pair |
+| **C** | `((0,1),(0,2),(1,2))` | `()` | 9,712 | 0 | 3 | **proposal's target system** |
+| D | `None` (all) | `None` (all) | 9,712 | 14,578 | 3 | current pipeline — continuity |
+| E | `()` | `None` | 0 | 14,578 | 0 | anchors only — isolates infrastructure |
+| GT | — | — | — | — | — | upper bound (after the frame fix above) |
 
-### ⚠ Blocker 1: the pair-list ablation is not implemented
+### Separating coverage from pose quality — required for the causal claim
 
-`fuse_and_dump.py --drones` **only filters which robots get written out** — it does
-not change the graph. The comment above it claims it performs the §4.9 ablation; it
-does not. `Cfg` has global `use_ranges` / `use_anchor` / `use_inter` switches, but
-nothing per-robot or per-pair. Needed: a `Cfg.inter_pairs` (tuple of robot-index
-pairs, default all three) and a `Cfg.anchor_robots` (which robots get anchor
-ranges), both applied in `CoVOR.build`'s range loop.
+A→B→C changes two things at once: the number of UWB constraints *and* the number of
+cameras contributing to the map. "More cameras ⇒ better map" is trivially true and
+proves nothing about Σ. So:
 
-### ⚠ Blocker 2: the GT upper bound is not yet valid
+- **A1 — quality at fixed coverage (the actual §4.9 test).** Build every map from
+  **ifo001's observations only**, varying only the poses that conditions A–E produce.
+  Any map difference is then attributable to pose quality alone, i.e. to Σ.
+- **A2 — coverage gain (the proposal's headline figure).** Build from 1 / 2 / 3
+  cameras. Deliberately confounded; reported as coverage, not as causal evidence.
 
-See the section above — the control's marker↔IMU frame chain must be fixed first,
-otherwise every IoU / false-free number is measured against a reference that is
-itself displaced by ~1 voxel.
+### ⚠ Open decision — gauge and alignment convention
 
-### Conditions
+Anchor-free leaves **yaw + position (4 DoF)** free; VINS fixes roll/pitch. The
+proposal (§2.3-다) fixes it with a prior on **drone 1's first pose only**. The code
+currently priors **every** robot's first pose at σ_trans = 0.3 m, from a
+mocap-seeded initial guess — harmless when anchors dominate, but anchor-free that
+prior becomes a 0.3 m absolute reference on all three drones, comparable to the
+tr(Σ) we are trying to measure. Options:
 
-Proposal's table lists 1-drone as "VIO only / VINS-Fusion / drift as-is", i.e. no
-ranges at all. But the 1→2 step then changes two things at once (anchors appear
-*and* the first inter pair appears), while §4.9's causal claim is specifically about
-C(N,2). Adding one rung separates them:
+- **G1 (proposal-faithful, recommended)** — tight prior on robot 1 only; robots 2,3
+  enter through inter pairs. Condition A has no pairs, so each robot is then its own
+  gauge, which is the honest meaning of "1 drone alone".
+- **G2 (uniform)** — same weak prior everywhere, simplest, but injects three
+  mocap-derived absolute references and weakens the anchor-free claim.
 
-| # | condition | anchors | inter pairs | C(N,2) | role |
-|---|---|---|---|---|---|
-| 0 | VIO only | — | — | 0 | lower bound (proposal's "1대") |
-| 1 | 1 drone + anchors | ifo001 | — | 0 | isolates infrastructure ranging |
-| 2 | 2 drones | 1,2 | (1,2) | 1 | |
-| 3 | 3 drones | 1,2,3 | (1,2),(1,3),(2,3) | 3 | main result |
-| 4 | GT poses | — | — | — | upper bound (after the fix) |
+Evaluation alignment, to be applied identically in every condition:
+- **per-robot 4-DoF (yaw + translation)** for each robot's own ATE;
+- **one joint 4-DoF** for all three, with the gap between the two being the
+  *inter-robot registration error* — precisely what UWB is supposed to reduce, and a
+  cleaner collaboration metric than ATE alone.
 
-### Two sub-experiments — coverage must not be confounded with pose quality
-
-Comparing a 1-drone map to a 3-drone map changes *both* the number of cameras and
-the pose accuracy. The §4.9 causal claim is about pose accuracy only, so:
-
-- **A1 — quality at fixed coverage.** Always map with **ifo001's camera alone**, and
-  vary only how many drones' UWB constrain ifo001's poses (conditions 0–4). This is
-  the clean test of Σ → w → map quality.
-- **A2 — coverage gain.** Map with 1 / 2 / 3 cameras (the proposal's headline
-  figure). Deliberately confounded — it measures the whole collaboration benefit.
-
-Both use identical `OccCfg`/`DepthCfg`/stride/keyframe set.
+The map must be expressed in the mocap frame to be scored against the GT map, so the
+alignment choice feeds directly into the map metrics. **This needs sign-off before
+the run** — it also touches the deferred initialisation item (mocap-seeded Umeyama).
 
 ### Measurement axes
 
 | axis | metric | why |
 |---|---|---|
-| registration uncertainty | tr(Σ_pos) distribution per condition | direct evidence the pose term engages; expect divergence to 0.1–1.0 m² for unconstrained robots, so `w_pose` swings 0.72 → 0.036 at α = 0.3 |
-| map quality | **IoU** of occupied vs GT, **false-free rate** (cells the map calls free that GT calls occupied) | proposal's stated metrics |
-| coverage | mapped voxel count; recovered volume behind occlusions | A2's point |
-| localisation | ATE per condition | ties the map result back to the pose result |
+| registration uncertainty | tr(Σ_pos) distribution per condition | direct evidence the pose term engages |
+| weight response | `w_pose` distribution | does the tr(Σ) change actually move the weight (today: 0.991–0.997) |
+| map quality | IoU of occupied vs GT; **false-free rate** | proposal's stated metrics |
 | causal link | correlation of tr(Σ) with false-free rate | §4.9's stated verification method |
+| coverage | mapped voxel count, occlusion recovery | A2 only |
+| localisation | per-robot ATE + inter-robot registration error | ties map back to poses |
 
 Registration-independent cross-checks (object recall, object-voxel count, total
-occupied vs GT) should be reported alongside IoU, since they survived the frame
-error that currently invalidates per-cell scoring.
+occupied vs GT) are reported alongside IoU, since they survived the frame error that
+still limits per-cell scoring.
 
-### Sequence
+### Notes
 
-`default_3_zigzag_0` only. `obstacles_1_random3_0b` has just `ifo001.bag` — no
-ifo002/ifo003 bag or mocap — so it cannot support a multi-drone condition.
+- Condition A's tr(Σ) **will diverge along the chain**. That is correct and intended
+  here — do not confuse it with the ORB-era "regularisation artifact" pitfall, where
+  divergence came from map breaks leaving a free rotational gauge.
+- `default_3_zigzag_0` only; `obstacles_1_random3_0b` ships just `ifo001.bag`.
+- Cost: one fusion run per condition (~4 min) + one occupancy build (~6 min for A1's
+  single camera, ~17 min for A2's three). Roughly 1.5–2 h for the full grid.
 
-### Cost
-
-Conditions 1–3 are one fusion run each (~4 min) plus one occupancy build each
-(~17 min for 3 cameras, ~6 min for 1). Condition 0 needs no fusion. Roughly 1.5–2 h
-for the full A1+A2 grid.
