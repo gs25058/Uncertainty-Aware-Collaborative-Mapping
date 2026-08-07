@@ -469,7 +469,7 @@ object. **The cells weighting removes are not the real obstacles.** That is the
 question that was asked, and it is answered on registration-independent grounds; the
 per-cell adjudication is a bonus, not the basis. **β is NOT adjusted.**
 
-## §4.9 collaboration-gain experiment — DESIGN, implemented but NOT run
+## §4.9 collaboration-gain experiment — RUN 2026-08-07 (design + results)
 
 ### The main axis is ANCHOR-FREE — the anchors are inherited, not designed
 
@@ -571,3 +571,92 @@ still limits per-cell scoring.
 - Cost: one fusion run per condition (~4 min) + one occupancy build (~6 min for A1's
   single camera, ~17 min for A2's three). Roughly 1.5–2 h for the full grid.
 
+
+---
+
+## §4.9 RESULTS (2026-08-07)
+
+Predictions were written into the run script before measuring. `default_3_zigzag_0`,
+gauge = G1 (one tight prior per ungrounded component), cleaned mocap, α unchanged.
+
+### Pose stage — all five conditions
+
+| cond | C(N,2) | anchors | ATE_per | ATE_joint | reg. gap | tr(Σ) med | w_pose med | w span |
+|---|---|---|---|---|---|---|---|---|
+| **A** | 0 | — | 0.2124 | 0.2124 | 0.0000\* | **0.940** | **0.066** | 1.000 |
+| **B** | 1 | — | 0.1876 | 0.3505 | 0.1629 | **0.130** | **0.544** | 0.996 |
+| **C** | 3 | — | 0.2248 | 0.2337 | 0.0088 | **0.074** | **0.810** | 0.424 |
+| D | 3 | ✓ | 0.0748 | 0.0822 | 0.0074 | 0.0015 | 0.995 | 0.005 |
+| E | 0 | ✓ | 0.0892 | 0.1008 | 0.0116 | 0.0021 | 0.993 | 0.008 |
+
+**P1 confirmed — anchor-free costs a factor of ~3 in ATE** (0.19–0.22 m vs 0.075 m),
+exactly as predicted. This is the regime the proposal specifies (§1, disaster sites
+with no infrastructure), and it is the regime in which the pose term has anything
+to do.
+
+**P2 confirmed, decisively — tr(Σ) falls 0.940 → 0.130 → 0.074 m² as C(N,2) goes
+0 → 1 → 3.** A 13× reduction, driven purely by inter-agent pairs. This is §4.9's
+causal chain, measured.
+
+**P3 confirmed — the pose term is finally alive.** `w_pose` median moves
+0.066 → 0.544 → 0.810 across the ladder, with span 1.000 / 0.996 / 0.424, against
+**0.005** in the anchored condition D. Anchored, the term was inert; anchor-free it
+carries real dynamic range. This is why §4.9 is its venue.
+
+**P4 refuted, and the reason is worth recording.** The prediction was that
+condition A's registration gap would be huge (three unrelated frames). It is
+**0.0000**, because A has three connected components and therefore three gauge
+priors, each seeded from the mocap Umeyama initialisation — so all three robots
+already sit in the mocap frame. The mocap-seeded initialisation leaks in exactly
+here. \*The registration gap is therefore **confounded by how many gauge priors a
+condition has**, which differs by construction (A:3, B:2, C:1, D/E:0). It is
+comparable within {C, D, E} — where anchor-free 3-pair registration (0.0088 m) is
+statistically the same as the anchored system (0.0074 m), a real result — but not
+against A or B. Fixing this needs the deferred anchor-based initialisation.
+
+### Map stage A1 — quality at FIXED coverage (ifo001's camera only, every condition)
+
+| cond | occupied | IoU @0 vox | IoU @1 vox | false-free cells | false-free rate |
+|---|---|---|---|---|---|
+| GT control | 38,523 | 1.000 | 1.000 | 0 | 0 % |
+| **A** (0 pairs) | 21,655 | 0.207 | 0.306 | 18,814 | **5.98 %** |
+| **B** (1 pair) | 33,458 | 0.362 | **0.537** | 15,634 | **5.00 %** |
+| **C** (3 pairs) | 36,910 | 0.350 | 0.518 | 16,561 | 5.27 % |
+| D (3 pairs + anchors) | 39,427 | **0.412** | **0.584** | 13,712 | **4.43 %** |
+| E (anchors only) | 40,381 | 0.390 | 0.552 | 15,123 | 4.87 % |
+
+**§4.9's stated verification — "measure the correlation of tr(Σ) with false-free
+rate" — holds:**
+
+> **Spearman ρ(tr Σ, false-free rate) = +0.900**, Pearson(log tr Σ, ff) = +0.886,
+> and ρ(tr Σ, IoU) = **−0.900**.
+
+Higher registration uncertainty ⇒ more false-free cells and worse overlap, across
+five conditions spanning three orders of magnitude in tr(Σ).
+
+**But the gain saturates after the first pair.** A → B is decisive (IoU@1vox
+0.306 → 0.537, false-free 5.98 → 5.00 %); B → C is flat to slightly worse
+(0.518, 5.27 %). For a *single robot's own* map, the second and third pairs add
+nothing. The 3-pair benefit shows up in registration (P4 above) and in coverage,
+not in that robot's own map quality.
+
+**ATE does not improve monotonically either** (A 0.212, B 0.188, C 0.225 per-robot).
+Inter-agent ranges improve *registration* and shrink Σ; they do not improve each
+robot's own trajectory shape, and can slightly deform it. That is the proposal's own
+role division — **"UWB는 정합, VIO는 매핑"** (§2.2) — showing up as a measurement.
+
+### A2 — coverage (the confound A1 deliberately excludes)
+
+Same OccCfg/stride, condition D: **1 camera 39,427 occupied → 3 cameras 64,225
+(+63 %)**. This is the collaboration benefit that is *not* about Σ, and it is
+reported separately for exactly that reason.
+
+### Caveat to carry forward
+
+Condition A's map is sparse (21,655 vs GT's 38,523) partly *because* `w_pose` ≈ 0.066
+suppresses nearly all of its evidence. That is the weighting behaving as designed —
+and it is the proposal's claimed mechanism (Σ↓ ⇒ w↑ ⇒ quality↑), so it is not a
+confound in the causal chain. But it does mean the A → B map jump is *mediated by w*
+rather than by pose error alone. Separating the two needs each condition re-run with
+`weighted=False`; cheap, and worth doing before the figure is drawn. **Not done, and
+α/β were not touched.**
