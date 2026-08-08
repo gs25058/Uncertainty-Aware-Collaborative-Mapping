@@ -771,3 +771,80 @@ scaling both evidence types equally and instead let uncertainty push toward
 **unknown** — e.g. apply `w_pose` to the free term only (or more strongly there), so
 an uncertain observation can never help declare free space. That changes the §4.5
 formula and is a design decision, not a tuning knob.
+
+---
+
+## Spatial spreading of pose uncertainty — **NOT ESTABLISHED** (2026-08-08)
+
+Pre-registered in `PREREG_spatial_spread.md` and committed (`6ac161c`) before any
+implementation. Parameters frozen there; run once. Data: `results_49_spread.csv`.
+
+Implementation verified first, as §9 of the registration required: against a
+plain-loop reference, **per-cell log-odds agree to 4.4e-16** and the occupied mass is
+conserved exactly. Cost 0.21 s/frame vs 0.23 s/frame for the baseline (the shortened
+free carving offsets the extra spread samples).
+
+### The falsifier fired — P2 failed
+
+| cond | √tr(Σ) | spread (voxels) | Δ false-free | Δ precision | Δ recall | Δ occupied |
+|---|---|---|---|---|---|---|
+| A | 0.969 m | 19.4 | −5.369 pp | −0.2070 | +0.6017 | +312,231 |
+| B | 0.361 m | 7.2 | −4.320 pp | −0.2032 | +0.4943 | +141,198 |
+| C | 0.273 m | 5.5 | −4.555 pp | −0.1476 | +0.4964 | +113,807 |
+| **D** | 0.039 m | **0.8** | **−1.632 pp** | −0.0500 | +0.1635 | +20,755 |
+| **E** | 0.044 m | **0.9** | **−1.920 pp** | −0.0391 | +0.1859 | +23,809 |
+
+P1 is nominally satisfied (false-free falls on A, B, C) and P3's ordering roughly
+holds, **but P2 fails outright**: D and E move by −1.6 and −1.9 pp where the
+registration predicted ≈0. Per the registered falsifier, **no claim is made about
+spreading.**
+
+**Cause, located.** The registered rule guards the *occupied* spread with a
+sub-voxel condition (σ < res/2 ⇒ no spread) but applies the *free* truncation
+`d → d − 2σ` unconditionally. At D's σ = 0.0386 m the truncation is 0.77 voxels — and
+a counting-only diagnostic (no maps built) shows it strips **2.3 %** of free-evidence
+cells per frame on D, 2.6 % on E. Those are precisely the last cells before each
+endpoint, i.e. the free/occupied boundary. So the two halves of the rule disagree
+below one voxel and **D/E were never a genuine no-op**. The prediction was wrong
+about the registered rule's own behaviour, not about the data.
+
+### Independently, the "improvement" is degenerate
+
+The pre-registered secondary metrics — registered precisely so false-free could not
+be read alone — expose it:
+
+| cond | spread occupied | vs GT (38,523) | precision (spread → baseline) |
+|---|---|---|---|
+| A | 352,912 | **9.2×** | 0.101 ← 0.308 |
+| B | 181,705 | 4.7× | 0.193 ← 0.396 |
+| C | 155,234 | 4.0× | 0.222 ← 0.369 |
+
+False-free falls because almost nothing is left classified **free** (A: 314,975 →
+110,814 free cells) while occupied inflates to 9× ground truth and precision halves.
+That is the trivial "declare everything occupied" solution: perfectly safe and
+useless. Recall does rise (P4 satisfied, +0.49…+0.60 vs scaling's −0.145), but only
+as the same artefact seen from the other side.
+
+### Verdict and mechanism
+
+**NOT ESTABLISHED, on two independent grounds** — the negative-control falsifier
+fired, and the nominal gain is degenerate. Per the registration's single-shot rule,
+**no third variant is attempted** and the scaling result is preserved unchanged as
+the control.
+
+The mechanism statement the test was built to settle:
+
+> Encoding position uncertainty as **existence** uncertainty (scaling) defeats the
+> §4.6 safety asymmetry — measured, false-free +0.05…+0.11 pp. Encoding it as
+> **spatial spread**, in the form registered here, does **not** rescue it either:
+> it does not defeat the asymmetry, it overwhelms the map, by deleting free evidence
+> at the boundary and smearing occupied evidence over 5–19 voxels until nearly
+> everything is occupied.
+
+The category-error diagnosis may still be correct — it is not what failed here. What
+failed is this particular encoding of it: a width taken directly from √tr(Σ) is
+5–19 voxels wide on the anchor-free conditions, which is simply too coarse for a
+0.10 m grid, and truncating free carving by the same amount removes the boundary
+evidence the map depends on. **Standing conclusion is unchanged from the mediation
+test: tr(Σ) is a valid index of collaboration-driven map quality, and no encoding
+tried so far turns it into a working weight.**

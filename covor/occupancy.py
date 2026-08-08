@@ -206,6 +206,18 @@ class OccCfg:
     # wrote it (OccupancyBuilder.sigma_attribution). Turns the tr(Sigma)-vs-outcome
     # correlation from one point per condition into one point per cell.
     track_sigma_attribution: bool = False
+    # Spatial spreading of POSE position uncertainty (PREREG_spatial_spread.md).
+    # Pose covariance is a POSITION uncertainty; scaling log-odds by w encodes an
+    # EXISTENCE uncertainty, which defeats the §4.6 safety asymmetry (measured:
+    # false-free +0.05..+0.11 pp). Instead, spread the endpoint's occupied evidence
+    # along the ray over sigma = sqrt(tr Sigma_pos) -- MASS CONSERVED, so evidence
+    # is relocated, never weakened -- and stop free carving 2 sigma short of the
+    # endpoint so nothing asserts free inside the uncertain band. Width comes
+    # straight from the measurement: no coefficient, and alpha is unused here.
+    # Forces w_pose = 1 (spreading already handles pose uncertainty).
+    spread_pose_sigma: bool = False
+    spread_trunc: float = 2.0    # +-2 sigma ~ 95%; used for BOTH the spread
+                                 # support and the free-carving stop
     # alpha, beta are the proposal's "experimentally-determined" scale constants
     # (§4.5). They are set to the data's uncertainty scale so a MEDIAN-quality
     # observation keeps w~0.85 while outliers collapse toward 0:
@@ -355,7 +367,10 @@ class OccupancyBuilder:
         if not c.weighted:
             return np.ones_like(sigma_Z)
         # use_w_pose=False is the mediation arm: keep w_depth, drop w_pose.
-        w_pose = np.exp(-tr_sigma_pos / c.alpha) if c.use_w_pose else 1.0
+        # spread_pose_sigma also forces it off -- the spread handles pose
+        # uncertainty, and scaling on top would double-count it.
+        w_pose = (np.exp(-tr_sigma_pos / c.alpha)
+                  if (c.use_w_pose and not c.spread_pose_sigma) else 1.0)
         w_depth = np.exp(-(sigma_Z ** 2) / c.beta)            # per-point
         return np.clip(w_pose * w_depth, 0.0, 1.0)
 
@@ -394,12 +409,43 @@ class OccupancyBuilder:
             near = np.linalg.norm(P[:, None, :] - np.atleast_2d(teammates)[None, :, :],
                                   axis=2).min(axis=1) < c.dyn_radius
             static = ~near
-        evox = np.floor(P[static] / res).astype(np.int64)
-        ew = w[static] * c.l_occ
-
-        # free evidence: exact DDA, one contribution per (ray, pass-through cell)
-        ray, fvox = _dda_batch(t, P, res)
-        fw = w[ray] * c.l_free
+        if not c.spread_pose_sigma:
+            evox = np.floor(P[static] / res).astype(np.int64)
+            ew = w[static] * c.l_occ
+            # free evidence: exact DDA, one contribution per (ray, pass-through cell)
+            ray, fvox = _dda_batch(t, P, res)
+            fw = w[ray] * c.l_free
+        else:
+            # --- spatial spreading (PREREG_spatial_spread.md) ---
+            sig = float(np.sqrt(max(tr_sigma_pos, 0.0)))
+            trunc = c.spread_trunc * sig
+            Ps = P[static]
+            if sig < res / 2 or len(Ps) == 0:
+                # sub-voxel spread: identical to no spread (this is what makes the
+                # D/E negative controls a genuine structural prediction)
+                evox = np.floor(Ps / res).astype(np.int64)
+                ew = w[static] * c.l_occ
+            else:
+                Ls = np.linalg.norm(Ps - t, axis=1)
+                u = (Ps - t) / Ls[:, None]                 # unit ray directions
+                ns = int(np.ceil(2 * trunc / res)) + 1     # one sample per voxel step
+                off = np.linspace(-trunc, trunc, ns)
+                g = np.exp(-off ** 2 / (2 * sig ** 2))
+                g /= g.sum()                               # MASS CONSERVED: sums to 1
+                pts = (Ps[:, None, :] + u[:, None, :] * off[None, :, None])
+                evox = np.floor(pts.reshape(-1, 3) / res).astype(np.int64)
+                ew = np.repeat(w[static] * c.l_occ, ns) * np.tile(g, len(Ps))
+            # free carving stops trunc short of the endpoint: inside the uncertain
+            # band nothing may assert free.
+            L_all = np.linalg.norm(P - t, axis=1)
+            sc = np.clip((L_all - trunc) / L_all, 0.0, 1.0)
+            P_free = t + (P - t) * sc[:, None]
+            live = sc > 0
+            if live.any():
+                ray, fvox = _dda_batch(t, P_free[live], res)
+                fw = w[live][ray] * c.l_free
+            else:
+                fvox = np.zeros((0, 3), np.int64); fw = np.zeros(0)
 
         vox = np.vstack([fvox, evox])
         dlo = np.concatenate([fw, ew])
