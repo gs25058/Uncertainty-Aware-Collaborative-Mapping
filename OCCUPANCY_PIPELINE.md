@@ -660,3 +660,103 @@ confound in the causal chain. But it does mean the A → B map jump is *mediated
 rather than by pose error alone. Separating the two needs each condition re-run with
 `weighted=False`; cheap, and worth doing before the figure is drawn. **Not done, and
 α/β were not touched.**
+
+---
+
+## §4.9 mediation test — does the POSE term actually do the work? (2026-08-08)
+
+`w = w_pose · w_depth`, so `weighted=False` removes both and only re-measures the
+already-established depth term. `OccCfg.use_w_pose=False` (new) substitutes
+`w_pose = 1` and leaves `w_depth` intact, giving three arms per condition. Fixed
+coverage throughout (ifo001's camera only), one stereo pass into 16 builders.
+Predictions were recorded in the run script before measuring. **α and β untouched.**
+
+### Negative controls pass — the measurement is trustworthy
+
+D and E have `w_pose` span 0.005 / 0.008, so `full ≈ depthonly` is structurally
+guaranteed there. Measured: **d_ff = +0.000 / +0.001 pp**, d_precision +0.0004 /
++0.0006. No falsifier tripped, so the sign on the live conditions can be believed.
+
+### ★ The pose term moves the safety metric the WRONG way ★
+
+(arm1 full) − (arm2 depth-only), primary metric false-free rate, **lower is better**:
+
+| cond | w_pose span | full | depth-only | Δ false-free | Δ precision | Δ recall | Δ occupied |
+|---|---|---|---|---|---|---|---|
+| A | 1.000 | 5.978 % | 5.875 % | **+0.103 pp** | +0.0127 | **−0.1450** | −19,026 |
+| B | 0.996 | 4.999 % | 4.890 % | **+0.109 pp** | +0.0358 | −0.0416 | −7,049 |
+| C | 0.424 | 5.268 % | 5.214 % | **+0.054 pp** | +0.0199 | −0.0242 | −4,517 |
+| D | 0.005 | 4.426 % | 4.426 % | +0.000 | +0.0004 | −0.0007 | −100 |
+| E | 0.008 | 4.865 % | 4.864 % | +0.001 | +0.0006 | −0.0011 | −159 |
+
+PRED-2 holds — the magnitude orders like `w_pose` span (A > B > C ≫ D ≈ E) — but
+the sign is **positive on every live condition**: the pose term slightly *increases*
+false-free. Small (≈2 % relative) yet consistent across three conditions with the
+controls pinned at zero.
+
+**Likely mechanism.** `w_pose` is a per-frame scalar multiplying `l_occ = +0.85` and
+`l_free = −0.40` equally. A cell that takes its occupied evidence from a
+*down-weighted* (uncertain) frame and its free evidence from *up-weighted* frames has
+the larger occupied term suppressed relative to the smaller free terms, and tips to
+**free**. The §4.6 safety asymmetry `|l_free| < |l_occ|` is defeated by the weight
+ratio. The huge recall loss (−0.145 on A, 19k occupied cells) is the same effect seen
+from the other side.
+
+### The improvement survives with no weighting at all
+
+Uniform arm (w ≡ 1), so the map depends on the poses only:
+
+| cond | false-free | precision |
+|---|---|---|
+| A | 5.791 % | 0.2387 |
+| B | **4.821 %** | **0.2931** |
+| C | 5.169 % | 0.2739 |
+
+A → B improves without any weighting. **The A→B→C map gain comes from the poses
+being better, not from weighting them.**
+
+### Compared with the depth term (control)
+
+(arm2 − arm3) buys +0.070…+0.134 precision for −0.053…−0.074 recall — a far better
+trade than the pose term's +0.013…+0.036 for −0.024…−0.145.
+
+### Per-cell correlation — n≈310,000 instead of n=5
+
+Measured in the **uniform** arm on purpose: there `tr(Σ)` does not build the map, so
+this asks "does tr(Σ) predict where the map is actually wrong?" without circularity.
+Per-cell attribution = evidence-weighted mean tr(Σ) of the frames that wrote the cell
+(`OccCfg.track_sigma_attribution`). Within-condition only.
+
+| cond | n free cells | Spearman ρ | top-5 deciles, false-free rate |
+|---|---|---|---|
+| A | 310,251 | +0.0474 | 5.03 → 6.29 → 7.11 → 7.63 → **8.19 %** monotone |
+| C | 307,691 | +0.0183 | 3.29 → 4.26 → 5.59 → 5.92 → **7.78 %** monotone |
+| D | 305,282 | −0.0136 | no pattern (tr(Σ) spans only 0.00098–0.00235) |
+
+ρ is **statistically overwhelming and practically tiny** (p ~ 1e-153 at n = 310 k) —
+read the deciles, not the p-value. The upper half is cleanly monotone in both A and
+C: over the top five deciles false-free rises 1.6× (A) and 2.4× (C). The lower
+deciles are noisy and non-monotone. So **tr(Σ) is a real but weak predictor of
+false-free risk, and only in its upper range** — consistent with the earlier finding
+that it ranks poorly overall, and with a per-frame multiplicative weight being too
+blunt to exploit it. Caveat: in A, tr(Σ) grows along the odometry chain and so
+correlates with observation time and place; C's tr(Σ) is range-geometry-driven rather
+than time-driven and shows the same monotone upper half, which partly answers that.
+
+### Conclusion on the pose term — the §4.9 claim must be narrowed
+
+- **Holds:** tr(Σ) is a valid *index* linking collaboration scale to map quality.
+  ρ(tr Σ, false-free) = **+0.900** across conditions, and within a condition the
+  per-cell relation is real (monotone across the top deciles).
+- **Does not hold:** that *weighting by* tr(Σ) produces the improvement. It does not,
+  and on the safety metric it is mildly counterproductive (+0.05…+0.11 pp).
+- **Trade-off, not improvement:** the pose term buys a little precision for a lot of
+  recall (A: +0.013 precision, −0.145 recall). A map that is marginally cleaner and
+  substantially sparser. Condition A's low IoU is mostly *refusal to map*, not
+  wrongness — precision 0.321 vs uniform 0.239 while recall falls 0.399 → 0.180.
+
+**Proposed, NOT done, needs approval:** the mechanism suggests the fix is to stop
+scaling both evidence types equally and instead let uncertainty push toward
+**unknown** — e.g. apply `w_pose` to the free term only (or more strongly there), so
+an uncertain observation can never help declare free space. That changes the §4.5
+formula and is a design decision, not a tuning knob.

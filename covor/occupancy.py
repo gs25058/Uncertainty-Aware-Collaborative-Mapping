@@ -196,6 +196,16 @@ class OccCfg:
     tau_free: float = 0.0        # l < -tau_free -> free (else unknown)
     # Uncertainty weighting (proposal §4.5): w = exp(-trSig/alpha)*exp(-sZ^2/beta)
     weighted: bool = True        # ablation toggle: False -> standard OctoMap (w=1)
+    # Mediation arm for the §4.9 analysis. w is a PRODUCT of two terms, so turning
+    # `weighted` off removes both and only re-measures the already-established
+    # depth term. This flag substitutes w_pose = 1 at evaluation time, leaving
+    # w_depth intact, so (full - pose_off) isolates the pose term -- the one §4.9
+    # claims. It changes nothing about the §4.5 formula itself.
+    use_w_pose: bool = True      # False -> w = w_depth only (w_pose forced to 1)
+    # Record, per cell, the evidence-weighted mean tr(Sigma) of the frames that
+    # wrote it (OccupancyBuilder.sigma_attribution). Turns the tr(Sigma)-vs-outcome
+    # correlation from one point per condition into one point per cell.
+    track_sigma_attribution: bool = False
     # alpha, beta are the proposal's "experimentally-determined" scale constants
     # (§4.5). They are set to the data's uncertainty scale so a MEDIAN-quality
     # observation keeps w~0.85 while outliers collapse toward 0:
@@ -330,6 +340,9 @@ class OccupancyBuilder:
         self.n_frames = 0
         self.n_points = 0
         self._written = False        # write_bt is destructive; see its docstring
+        # (num, den) dicts keyed by the same packed voxel key integrate_frame uses;
+        # enabled by track_sigma_attribution.
+        self._attr = ({}, {}) if getattr(cfg, "track_sigma_attribution", False) else None
 
     def weight(self, tr_sigma_pos, sigma_Z):
         """w = exp(-tr(Sigma_pos)/alpha) * exp(-sigma_Z^2/beta)  (proposal §4.5).
@@ -341,7 +354,8 @@ class OccupancyBuilder:
         c = self.cfg
         if not c.weighted:
             return np.ones_like(sigma_Z)
-        w_pose = np.exp(-tr_sigma_pos / c.alpha)              # scalar, per-frame
+        # use_w_pose=False is the mediation arm: keep w_depth, drop w_pose.
+        w_pose = np.exp(-tr_sigma_pos / c.alpha) if c.use_w_pose else 1.0
         w_depth = np.exp(-(sigma_Z ** 2) / c.beta)            # per-point
         return np.clip(w_pose * w_depth, 0.0, 1.0)
 
@@ -395,6 +409,16 @@ class OccupancyBuilder:
         key = ((vox[:, 0] + B) * D + (vox[:, 1] + B)) * D + (vox[:, 2] + B)
         uk, inv = np.unique(key, return_inverse=True)
         acc = np.bincount(inv, weights=dlo)
+        # Optional per-cell attribution: evidence-weighted mean tr(Sigma) of the
+        # frames that wrote this cell. Lets tr(Sigma) be correlated against
+        # per-cell outcomes (thousands of points) instead of one point per
+        # condition. Off by default -- it costs a dict update per frame.
+        if self._attr is not None:
+            aw = np.bincount(inv, weights=np.abs(dlo))
+            num, den = self._attr
+            for k_, a_ in zip(uk.tolist(), aw.tolist()):
+                num[k_] = num.get(k_, 0.0) + a_ * float(tr_sigma_pos)
+                den[k_] = den.get(k_, 0.0) + a_
         iz = (uk % D) - B; uk //= D
         iy = (uk % D) - B; uk //= D
         ix = uk - B
@@ -408,6 +432,24 @@ class OccupancyBuilder:
     def finalize(self):
         self.tree.updateInnerOccupancy()
         return self.tree
+
+    def sigma_attribution(self, pts):
+        """(N,) evidence-weighted mean tr(Sigma_pos) for each of `pts`, or NaN
+        where the cell was never written. Requires track_sigma_attribution."""
+        if self._attr is None:
+            raise RuntimeError("set OccCfg.track_sigma_attribution=True first")
+        num, den = self._attr
+        res = self.cfg.resolution
+        B = 1 << 18
+        D = 1 << 19
+        v = np.floor(np.asarray(pts, float) / res).astype(np.int64)
+        keys = ((v[:, 0] + B) * D + (v[:, 1] + B)) * D + (v[:, 2] + B)
+        out = np.full(len(keys), np.nan)
+        for i, k_ in enumerate(keys.tolist()):
+            d_ = den.get(k_)
+            if d_:
+                out[i] = num[k_] / d_
+        return out
 
     # -- Step G: classification / export ----------------------------------
     def classify_points(self):

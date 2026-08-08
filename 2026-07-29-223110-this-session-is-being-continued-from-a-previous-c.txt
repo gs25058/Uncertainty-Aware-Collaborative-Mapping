@@ -1,0 +1,2206 @@
+╭─── Claude Code v2.1.220 ─────────────────────────────────────────────────────╮
+│                                                    │ Tips for getting        │
+│              Welcome back researcher!              │ started                 │
+│                                                    │ Run /init to create a … │
+│                       ▐▛███▜▌                      │ ─────────────────────── │
+│                      ▝▜█████▛▘                     │ What's new              │
+│                        ▘▘ ▝▝                       │ Bug fixes and reliabil… │
+│     Opus 4.8 · Claude Max · gs25058@gs.hs.kr's     │ Added Claude Opus 5 (`… │
+│     Organization                                   │ Added `sandbox.network… │
+│                 ~/cr_RNE/covor_slam                │ /release-notes for more │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+   Tackle your toughest work with Opus 5. Switch anytime with /model.
+
+● 게시 완료. 브라우저에서 열어봐:
+
+  🧊 CoVOR Occupancy Map — 3D Viewer
+
+  ⧉ https://claude.ai/code/artifact/3f121241-8892-4dde-a315-8bd01460a124
+
+  3대 협업 weighted 맵(default_3_zigzag_0)을 인터랙티브 WebGL2로 렌더링한 자체
+  완결형 페이지(외부 의존성 0, 데이터 임베드). repo에는 안 넣었어.
+
+  담긴 것
+  - Occupied 복셀 125,730개 — 높이별 viridis 컬러, instanced 큐브 렌더 + 면 조명
+  - Free space 40,436점 (다운샘플, 토글) — 방 내부가 비어 있음을 확인
+  - 드론 궤적 3개 — ifo001(호박)/ifo002(청록)/ifo003(자홍), UWB로 한 좌표계에
+  정합됨
+
+  조작
+  - 드래그=오빗 · 휠=줌 · 우클릭 드래그=팬
+  - 좌상단 계기판: 레이어 토글(occupied/free/궤적/그리드), 높이 슬라이스 
+  슬라이더 2개(바닥/천장 잘라 내부 단면 보기), 오토-오빗, 뷰 리셋
+  - 우하단: viridis 높이 범례 + 드론 색상 범례, 우상단: 복셀 수·FPS
+
+  참고: WebGL2 필요(요즘 브라우저 기본 지원). 어두운 뷰포트는 3D 데이터 가독성을
+  위한 의도적 단일 테마야. 데이터는 저장된 occ_3drone_weighted.bt + 융합 자세
+  npz에서 뽑았고, 다른 맵(단일 드론, uniform)으로도 같은 방식으로 뽑아줄 수
+  있어.
+
+  열어보고 렌더링/조작 이상하거나 바꾸고 싶은 거(색, 초기 줌, free 밀도, uniform
+  맵 추가 등) 있으면 말해줘 — 같은 URL로 업데이트할게.
+
+✻ Baked for 8m 19s
+
+❯ /compact                                                                      
+  ⎿  Compacted (ctrl+o to see full summary)
+  ⎿  Referenced file ../../../../tmp/claude-1339/-src-gs25058-cr-RNE-covor-slam/
+     cd0cd269-0e32-455a-a0e8-b24a268b2fb0/scratchpad/occ_viewer_template.html
+  ⎿  Read .gitignore (55 lines)
+  ⎿  Read ../../.claude/projects/-src-gs25058-cr-RNE-covor-slam/memory/occupancy
+     -pipeline.md (53 lines)
+  ⎿  Read OCCUPANCY_PIPELINE.md (118 lines)
+  ⎿  Read scripts/compare_weighting.py (138 lines)
+
+❯ 완성된 occupancy map을 3d viewer로 보니 MILUV에 사용된 방의 모습이 그다지 잘  
+  표현되지 않은 것 같아. 이유가 뭘까?                                           
+
+● 방 형태가 안 나오는 건 뷰어 문제가 아니라 입력 쪽일 가능성이 높아. 추측 말고
+  데이터로 확인해볼게.
+
+  Searched for 1 pattern, read 1 file, listed 5 directories, ran 7 shell commands (ctrl+o to expand)
+  ⎿  Interrupted · What should Claude do instead?
+
+❯ # 작업: Occupancy map 품질 진단 및 수정 (사물 소실 + 부유 큐브)               
+                                                                                
+  ## 배경                                                                       
+  직전 세션에서 계획서 §4의 불확실성 인지 occupancy 파이프라인을 end-to-end로   
+  구현했어 (`covor/occupancy.py`, `scripts/fuse_and_dump.py`,                   
+  `scripts/build_occupancy.py`, `scripts/compare_weighting.py`,                 
+  `OCCUPANCY_PIPELINE.md`). 지도는 나왔는데, 3D 뷰어로 보니 두 가지 문제가      
+  있어:                                                                         
+                                                                                
+  - **증상 A**: 방 경계(벽)는 잘 나오는데 **내부 사물이 표현되지 않음**         
+  - **증상 B**: 방 내부 공간에 **설명되지 않는 부유 큐브(occupied voxel)가      
+  다수**                                                                        
+                                                                                
+  두 증상은 같은 뿌리(occupied 증거 대비 free 증거의 불균형)일 가능성이 높아.   
+  이번 작업 목표는 **원인을 측정으로 확정한 뒤 수정**하는 거야. 추측으로        
+  파라미터를                                                                    
+  돌리지 말 것.                                                                 
+                                                                                
+  ## 현재 설정 (참고)                                                           
+  - `OccCfg`: resolution=0.10, l_occ=+0.85, l_free=−0.40, clamp=[−2.0,+3.5],    
+    tau_occ=0.0, tau_free=0.0, alpha=0.3, beta=0.5, max_ray=5.0, weighted=True  
+  - 캘리브: fx=426.88, baseline B=0.05001 m → **f·B ≈ 21.35** (σ_Z =            
+  Z²/(f·B)·Δd)                                                                  
+  - 시퀀스: `default_3_zigzag_0`                                                
+  - 직전 결과: ifo001 weighted(190 KF, stride 2) occupied 83,572 / free         
+  166,974;                                                                      
+    uniform occupied 79,991 / free 179,494; 3대 협업 464 KF, occ 125,730 / free 
+  242,611                                                                       
+  - ablation: z=0.8 슬라이스에서 uniform-free 8,251셀 중 553셀(6.7%)을          
+  weighted가 억제                                                               
+  - tr(Σ_pos): 잘 정합된 포즈 median 0.04–0.07 m², 맵브레이크 세그먼트 max      
+  100–216 m²                                                                    
+  - σ_Z median 0.67 m                                                           
+                                                                                
+  ---                                                                           
+                                                                                
+  ## Step 0. 먼저 현재 작업을 커밋 (안전 조치)                                  
+  위 5개 파일이 아직 **미커밋** 상태야. 수정 전에 현재 상태를 먼저 커밋해서     
+  "수정 전 baseline"을 git 히스토리에 남겨. (규칙대로 feature 브랜치 사용.)     
+  이후 수정은 별도 커밋으로 분리해서, 수정 전/후를 비교할 수 있게 할 것.        
+                                                                                
+  ---                                                                           
+                                                                                
+  ## Step 1. ★가설 검증: free 증거가 중복 계산되고 있는가★ (최우선)             
+                                                                                
+  ### 가설                                                                      
+  `integrate_frame`의 벡터화 버전은 광선을 `res/2`(=5cm) 간격으로 샘플링하는데  
+  voxel은 10cm야. 따라서 **축 방향 광선 하나가 같은 voxel에 2개 샘플**을,       
+  대각선은 최대 2.8개를 떨어뜨려. 그런데 `np.unique(key)` + `np.bincount`가     
+  **같은 voxel의 중복 샘플을 전부 합산**하므로, free 증거가 설계값의 2~3배로    
+  적용되고 있을 가능성이 높아.                                                  
+                                                                                
+  이게 사실이면 **계획서의 핵심인 안전 비대칭(|l_free| < |l_occ|)이 실제로는    
+  뒤집혀** 있어: 유효 l_free ≈ −0.8~−1.1 vs l_occ = +0.85. 사물 표면이 여러     
+  각도의                                                                        
+  광선에 계속 침식돼 사라지고(증상 A), 벽처럼 관측이 압도적으로 많은 면만       
+  살아남아.                                                                     
+                                                                                
+  ### 검증 방법 (측정으로 확정할 것)                                            
+  1. 빈 트리에 **광선 1개**만 integrate하고, 통과 free voxel들의 log-odds 값을  
+     출력해. 설계대로면 각 voxel이 정확히 `w·l_free` (≈ −0.40·w) 여야 함.       
+     **−0.8 근처면 가설 확정.**                                                 
+  2. 축 방향 / 대각선 / 임의 방향 광선 각각에 대해 확인 (중복 배수가 방향에     
+  따라                                                                          
+     다를 것).                                                                  
+  3. 직전 세션의 단위 테스트는 free **voxel 개수**만 확인하고 **누적값**은      
+  확인하지                                                                      
+     않았어 — 그래서 이 버그를 못 잡았음. 개수가 아니라 **값**을 볼 것.         
+                                                                                
+  결과를 먼저 보고해. 가설이 틀렸으면 다른 원인(아래 Step 3)으로 진행.          
+                                                                                
+  ---                                                                           
+                                                                                
+  ## Step 2. 이 시퀀스에 실제로 사물이 있는가 (5분, 필수 확인)                  
+  `default_3_zigzag_0`의 `default`가 **장애물 없는 환경**을 의미할 가능성이     
+  있어                                                                          
+  (MILUV에 obstacles 계열 시퀀스가 별도로 존재). 원본 `infra1` 이미지 몇        
+  장(비행                                                                       
+  중반, 서로 다른 시각)을 열어서 **방 안에 실제로 사물이 있었는지** 눈으로      
+  확인해.                                                                       
+                                                                                
+  - 원래 빈 방이었다면 → 증상 A의 상당 부분은 버그가 아님. 이 경우 증상 B에     
+  집중.                                                                         
+  - 사물이 있었다면 → Step 1의 수정으로 복원되는지 확인.                        
+                                                                                
+  이 확인 없이 "사물이 안 나온다"를 버그로 단정하지 말 것.                      
+                                                                                
+  ---                                                                           
+                                                                                
+  ## Step 3. ★결정적 진단: GT 포즈로 같은 지도 만들기★                          
+                                                                                
+  깊이/통합 로직 문제인지, 포즈 오차 문제인지를 가르는 가장 확실한 실험이야.    
+  MILUV에 mocap GT가 있으니 공짜야.                                             
+                                                                                
+  - 융합 포즈 대신 **mocap GT 포즈**로 동일 파이프라인을 돌려 지도를 생성.      
+  - GT는 불확실성이 없으므로 이 실행에서는 `w_pose = 1`로 고정 (깊이 가중       
+  w_depth만                                                                     
+    적용). 이렇게 해야 "포즈 요인"이 완전히 제거된 대조군이 됨.                 
+  - **주의**: 융합 포즈는 infra1 카메라 광학 프레임인데, mocap GT는 보통        
+  바디/마커                                                                     
+    프레임이야. MILUV config에서 **body↔infra1 extrinsic**을 찾아서 정확히      
+  변환할                                                                        
+    것. extrinsic을 못 찾으면 그 사실을 보고하고, 대안(GT 궤적을 융합 궤적에    
+  SE(3)                                                                         
+    정렬)의 한계를 명시한 뒤 진행.                                              
+                                                                                
+  ### 판정                                                                      
+  - GT 포즈로도 사물이 없고 큐브가 뜬다 → **깊이/통합 로직 문제** (Step 1, 4)   
+  - GT 포즈로는 깨끗하다 → **포즈 오차 문제** (맵브레이크 세그먼트의 스케일     
+  오차 등)                                                                      
+                                                                                
+  ---                                                                           
+                                                                                
+  ## Step 4. 수정 (Step 1~3 결과에 근거해서만)                                  
+                                                                                
+  ### 수정 4-1. free 증거 중복 제거 [Step 1에서 확정된 경우]                    
+  **요구사항**: 하나의 광선은 하나의 voxel에 free 증거를 **정확히 1회만**       
+  기여해야                                                                      
+  함 (DDA의 원래 동작). 서로 다른 광선이 같은 voxel을 지나면 각각 1회씩         
+  기여하는                                                                      
+  것은 정상(log-odds 가산성, §4.7).                                             
+                                                                                
+  - 구현 힌트: 광선별로 샘플이 순서대로 배열돼 있으므로, **같은 광선 내에서     
+  직전                                                                          
+    샘플과 voxel 키가 같으면 버리는** run-length 방식 dedup이 O(N)이고 정확해.  
+    `(ray_id, voxel_key)` 쌍 unique도 가능하나 메모리를 더 씀.                  
+  - 벡터화 성능(0.31 s/frame)을 크게 해치지 말 것.                              
+                                                                                
+  **회귀 테스트 필수** (이번 버그의 재발 방지):                                 
+  - 임의 방향 광선 여러 개에 대해, **벡터화 `integrate_frame`의 셀별 누적       
+  log-odds가                                                                    
+    기존 `_voxel_traverse`(DDA) 기반 참조 구현과 일치**하는지 assert.           
+  - 개수뿐 아니라 **값**을 비교할 것. 이 테스트를 저장소에 남겨.                
+                                                                                
+  ### 수정 4-2. tau_occ 상향 [증상 B 직격]                                      
+  현재 `tau_occ=0.0`이라 log-odds > 0이면 occupied야. 그런데 종단 voxel은 1회   
+  관측만으로 `+0.85·w > 0`이 되므로, **스테레오 오정합 픽셀 1개가 곧바로 영구   
+  큐브**가 돼.                                                                  
+                                                                                
+  - `tau_occ`를 최소 2회 이상의 일관된 관측을 요구하는 값으로 상향 (예: 0.85    
+  부근).                                                                        
+  - 근거를 남길 것: 이건 임의 튜닝이 아니라 "단발 관측을 신뢰하지 않는다"는     
+  명시적                                                                        
+    결정이고, 계획서 §4.8의 분류 임계값 설계에 해당함.                          
+  - 판단 근거 확보를 위해 **voxel별 log-odds 히스토그램**을 먼저 그려봐.        
+  `0.85·w`                                                                      
+    근처에 단발 관측 봉우리가 뚜렷하면 가설이 확인되고 임계값 선택 근거도 됨.   
+                                                                                
+  ### 수정 4-3 이후는 위 두 개의 효과를 확인한 뒤에 판단                        
+  아래는 후보이며, 4-1/4-2 적용 후에도 증상이 남을 때만 순서대로 검토:          
+  - **SGBM 필터 강화**: uniquenessRatio, speckleWindowSize/speckleRange, 좌우   
+  일관성                                                                        
+    (LR-check). 현재 설정을 먼저 확인하고 무엇이 빠졌는지 보고.                 
+  - **occupied 신뢰 거리 분리**: free carving은 5m까지 유지하되 **occupied      
+  증거는                                                                        
+    2~3m 이내만** 인정. 근거: f·B=21.35라 Z=5m에서 σ_Z≈1.17m(=12 voxel)로, 표면 
+    증거로 쓰기에 물리적으로 무리. 계획서 논리("불확실하면 약하게")의           
+  자연스러운 연장.                                                              
+  - **다른 드론 마스킹**: 3대가 동시 비행하며 서로를 관측 → 동적 물체가 공중에  
+  궤적                                                                          
+    형태의 큐브를 남김. 우리는 모든 드론의 시각별 위치를 알고 있으므로, 다른    
+  로봇                                                                          
+    위치 반경(기체 크기+여유)의 종단 증거를 제외하면 깔끔히 제거됨.             
+  - **σ_Z 공간 분산 (원리적 개선)**: 현재 σ_Z는 가중치로만 쓰고 종단 증거는 한  
+  voxel에                                                                       
+    뾰족하게 찍혀. 제대로 된 불확실성 인지 센서 모델이라면 종단 증거를 σ_Z 폭의 
+    가우시안으로 광선 방향으로 퍼뜨려야 함. 계획서 정신에 더 충실하고 논문에서  
+    "가중치뿐 아니라 증거의 공간 분포까지 불확실성을 반영"이라고 쓸 수 있는     
+  지점.                                                                         
+    **다만 설계 변경이므로 먼저 나에게 제안하고 승인받을 것.**                  
+                                                                                
+  ---                                                                           
+                                                                                
+  ## Step 5. 결과 재생성 (중요 — novelty 결과가 바뀜)                           
+                                                                                
+  수정 4-1은 유효 l_free를 바꾸므로 **직전 세션의 모든 수치가 무효**야. 재실행  
+  필요:                                                                         
+  1. 단일 드론(ifo001) weighted 지도 → occupied/free voxel 수, 시각화           
+  2. **weighted vs uniform ablation 재실행** — 억제 셀 수/비율이 6.7%에서       
+  달라질                                                                        
+     것이고, 억제 셀이 여전히 원거리·고드리프트 영역에 공간적으로 집중되는지    
+  확인.                                                                         
+     이건 계획서 §4.6 false-free 억제 논리의 핵심 증거라 반드시 재확인.         
+  3. 3대 협업 지도 재생성                                                       
+  4. **수정 전/후 비교 figure** — 같은 슬라이스에서 사물 복원과 부유 큐브       
+  감소가                                                                        
+     눈에 보이게.                                                               
+  5. `OCCUPANCY_PIPELINE.md` 갱신: 발견된 버그, 수정 내용, 갱신된 수치, tau_occ 
+  변경                                                                          
+     근거를 기록.                                                               
+                                                                                
+  ---                                                                           
+                                                                                
+  ## 진행 방식                                                                  
+  - Step 1 → 2 → 3의 **측정 결과를 먼저 보고**하고, 원인이 확정된 뒤에 Step 4로 
+  갈 것.                                                                        
+  - 각 수정은 **하나씩** 적용하고 효과를 확인 후 다음으로. 한꺼번에 바꾸면      
+  무엇이                                                                        
+    효과가 있었는지 알 수 없음.                                                 
+  - 수정마다 커밋을 분리.                                                       
+                                                                                
+  ## 하지 말 것                                                                 
+  - 원인 확정 없이 파라미터(l_occ, l_free, alpha, beta, resolution)를 조정하지  
+  말 것.                                                                        
+    "보기 좋은 그림"이 목표가 아니라 **정확한 원인 제거**가 목표.               
+  - 계획서의 설계 원칙을 훼손하지 말 것: 가중 log-odds                          
+  `w=exp(−trΣ/α)·exp(−σ_Z²/β)`,                                                 
+    안전 비대칭 |l_free|<|l_occ|, unknown≠free, weighted on/off ablation 토글   
+  유지.                                                                         
+  - 무효 깊이 화소를 free로 채우지 말 것.                                       
+  - OctoMap/OpenCV C++ 소스를 수정하지 말 것 (Python 레벨만, 계획서 §7.3).      
+  - 회귀 테스트에서 voxel **개수**만 비교하지 말 것 — 이번 버그가 그래서        
+  통과했음.(참고로 원본 MILUV 논문이 reference files에 있어)                    
+
+  Listed 1 directory, ran 1 shell command (ctrl+o to expand)
+
+● Step 0은 이미 되어 있어 — 5개 파일 전부 130b1c4로 커밋된 상태고 워킹트리
+  clean이야. 수정 전 baseline이 이미 git에 남아 있으니 바로 진단으로 간다.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● 가설 확정, 그리고 예상보다 하나 더 나쁜 버그가 같이 나왔어.
+
+  Step 1 결과 — free 증거가 중복 계산됨 (확정)
+
+  ┌──────────┬────────────────────────────┬─────────────────┬──────────────┐
+  │  광선    │     셀당 l_free 배수       │ 벡터화 free 셀  │ 참조 DDA 셀  │
+  │   방향   │        (설계=1.00)         │       수        │      수      │
+  ├──────────┼────────────────────────────┼─────────────────┼──────────────┤
+  │ 축 +x    │ min 1.0 / med 2.0 / max    │ 30              │ 29           │
+  │          │ 2.0                        │                 │              │
+  ├──────────┼────────────────────────────┼─────────────────┼──────────────┤
+  │ 대각 xy  │ min 2.0 / med 3.0 / max    │ 20              │ 39           │
+  │          │ 3.0                        │                 │              │
+  ├──────────┼────────────────────────────┼─────────────────┼──────────────┤
+  │ 대각 xyz │ min 2.0 / med 3.0 / max    │ 18              │ 53           │
+  │          │ 4.0                        │                 │              │
+  ├──────────┼────────────────────────────┼─────────────────┼──────────────┤
+  │ 임의     │ min 1.0 / med 1.0 / max    │ 32              │ 39           │
+  │ 방향     │ 3.0                        │                 │              │
+  └──────────┴────────────────────────────┴─────────────────┴──────────────┘
+
+  유효 l_free ≈ −0.8 ~ −1.6 vs l_occ = +0.85 → 안전 비대칭이 실제로 뒤집혀 
+  있었음. 계획서 §4.6의 핵심 원칙이 코드에서 반대로 작동 중.
+
+  추가로 발견된 두 번째 버그 (가설에 없던 것): 대각 방향에서 벡터화 샘플러가
+  참조 DDA 대비 셀을 누락함 (xyz 대각 18 vs 53, 임의 방향 32 vs 39). 호 길이
+  res/2 등간격 샘플링은 광선이 모서리를 스치는 voxel을 통째로 건너뛰어. 즉 free
+  증거가 일부 셀엔 2~4배로 과다, 다른 셀엔 0으로 누락 — 방향 의존적으로 편향된
+  조각(carving)이 되고 있었어. 이게 사물 표면이 방향에 따라 들쭉날쭉 침식되는
+  증상 A와 직결돼.
+
+  이 두 개는 같은 수정(정확한 DDA 시맨틱)으로 함께 고쳐야 해. Step 2·3 측정
+  이어간다.
+
+  Read 1 file, ran 4 shell commands (ctrl+o to expand)
+
+● Step 2 결과 — 방에 사물이 있음 (빈 방 가설 기각):
+
+  step2_scene_ifo001.png
+
+  보이는 것: AprilTag 기둥 4~5개(가늘고 높은 원/각기둥), 삼각대 여러 개,
+  주차·비행 중인 다른 드론, 벽면 장비/박스, 바닥 매트. 즉 default는 "빈 방"이
+  아니라 "추가 장애물 코스 없음"이고, 실제 사물은 모두 가는 구조물이야 — 0.1 m
+  voxel + 3 m에서 σ_Z≈0.4 m 조건에서는 원래도 살아남기 어려운데, 거기에 free
+  증거 2~4배 과다가 겹치면 확실히 지워져. 그리고 다른 드론이 프레임 안에 자주 
+  보임 = 증상 B(공중 부유 큐브)의 유력 후보.
+
+  Step 3(GT 포즈 대조군)으로 간다. 먼저 mocap 프레임 규약을 확정할게.
+
+  Ran 3 shell commands (ctrl+o to expand)
+
+● AprilTag config에 사물의 GT 3D 위치가 들어 있어 — 이게 증상 A의 정량 타깃이
+  된다. 먼저 프레임 규약을 이걸로 검증할게.
+  Searched for 1 pattern, read 1 file, ran 3 shell commands (ctrl+o to expand)
+
+● 프레임 검증 완벽 통과 — 모든 AprilTag 재투영이 이미지 상의 실제 태그에 정확히
+  얹혔어. mocap 바디 프레임 = px4 IMU 프레임이고 T_cam_imu
+  extrinsic·intrinsic·시간정렬 전부 정상. GT 대조군을 신뢰할 수 있어.
+
+  동시에 중요한 사실 두 가지:
+  - experiments.csv에서 default_3_zigzag_0은 obstacles_bool=false — MILUV 자체
+  메타데이터가 "장애물 없음"이라고 명시. 보이는 사물은 태그 기둥/삼각대/주변
+  장비뿐이고, 좌표를 보면 대부분 y≈±3.7, x≈±3.0 (방 가장자리). ifo001 궤적은
+  y∈[−0.09, 2.32]이라 그 사물들까지 4~6 m — σ_Z가 0.7~1.6 m인 구간이야.
+  - obstacles_1_random3_0b 시퀀스가 이미 로컬에 받아져 있어
+  (obstacles_bool=true). 사물 매핑 시연에는 이쪽이 정답인데, 이건 Step 4 이후에
+  다시 얘기하자.
+
+  Step 3 대조군 지도 만든다.
+
+  Read 2 files, ran 5 shell commands (ctrl+o to expand)
+
+● Step 3 결과 — 결정적
+
+  GT 포즈로 만든 대조군 지도:
+
+  step3_gtmap.png
+
+  ┌──────────┬────────────┬────────────────┐
+  │          │ fused 포즈 │    GT 포즈     │
+  ├──────────┼────────────┼────────────────┤
+  │ occupied │ 83,572     │ 50,701 (−39%)  │
+  ├──────────┼────────────┼────────────────┤
+  │ free     │ 166,974    │ 283,288 (+70%) │
+  └──────────┴────────────┴────────────────┘
+
+  GT 포즈로 바꾸는 것만으로 깔끔한 직사각형 방이 나와 (벽 x∈[−5,6.5], y∈[−5,7],
+  바닥 z≈0 보라, 벽 z≤2.4 노랑). 즉 융합 포즈의 회전 오차가 지도의 상당 부분을
+  망치고 있는 건 사실이야. 하지만 판정에 중요한 건 이거야:
+
+  - GT 포즈로도 사물(★)은 여전히 free 공간 안에 있음 — occupied가 전혀 안 생김.
+  → 증상 A는 포즈 문제가 아니라 깊이/통합 로직 문제로 확정. Step 4-1 대상.
+  - GT 포즈로도 내부 부유 큐브가 남아 있음(슬라이스 내부 산발 빨강) — 다만 융합
+  대비 크게 감소. → 증상 B는 포즈 오차 + 단발 관측 둘 다가 원인.
+  - 로그오즈 분포: 전체 leaf 333,989개 중 occupied(l>0) 15.2%, 그중 (0, 0.9] 
+  단발 관측 밴드가 8.9%p — 즉 occupied voxel의 58.6%가 관측 1회짜리. Step 4-2의
+  τ_occ 상향 근거가 측정으로 확보됨.
+
+  정량 지표 두 개만 더 뽑고 수정 들어갈게.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● 측정이 내 앞선 시각적 판독을 정정해. 사물은 실제로 매핑되고 있음 — 마커가
+  작아서 슬라이스에서 안 보였을 뿐이야.
+
+  Step 3 최종 판정 (사물 기둥 13개, 반경 0.4 m·0.2<z<1.5 내 occupied voxel 수)
+
+  ┌───────────────────────────┬─────────────────────┬────────┐
+  │ 기둥까지 궤적 최근접 거리 │        fused        │   GT   │
+  ├───────────────────────────┼─────────────────────┼────────┤
+  │ 0.6~1.6 m (근거리 5개)    │ 1, 1, 2, 4, 5, 7, 7 │ 24~73  │
+  ├───────────────────────────┼─────────────────────┼────────┤
+  │ 2.0~3.8 m (원거리 6개)    │ 17~81               │ 21~132 │
+  └───────────────────────────┴─────────────────────┴────────┘
+
+  GT 포즈는 13/13 기둥 전부 복원(21~132 voxel). 융합 포즈는 가까운 기둥일수록 더
+  심하게 사라짐(1~7 voxel) — 이건 free 과다계산의 정확한 지문이야. 가까운
+  사물일수록 여러 각도에서 옆을 스치는 광선이 많고, 그 광선마다 free 증거가
+  2~4배로 들어가서 표면이 침식돼.
+
+  부유 큐브 (방 내부 |x|,|y|<3, 0.35<z<2.0의 occupied voxel)
+
+  ┌────────────────────────┬────────────────┬───────────────┬─────┐
+  │                        │ fused weighted │ fused uniform │ GT  │
+  ├────────────────────────┼────────────────┼───────────────┼─────┤
+  │ 내부 occupied          │ 2,053          │ 2,175         │ 183 │
+  ├────────────────────────┼────────────────┼───────────────┼─────┤
+  │ 그중 고립(26이웃 없음) │ 209            │ 242           │ 49  │
+  └────────────────────────┴────────────────┴───────────────┴─────┘
+
+  → 부유 큐브의 91%는 포즈 오차 산물. 나머지는 단발 관측(occupied의 58.6%가 관측
+  1회)과 다른 드론.
+
+  원인 확정 요약
+  - 증상 A = free 증거 2~4배 중복 + 방향 의존 누락 (Step 1 버그, 근거리 사물
+  직격) + 포즈 회전 오차
+  - 증상 B = 포즈 회전 오차(median 21~34°, 지배적) + τ_occ=0으로 인한 단발 관측 
+  큐브
+
+  Step 4-1 들어간다. 정확한 벡터화 DDA로 교체.
+
+● Update(covor/occupancy.py)
+  ⎿  Added 5 lines, removed 1 line
+      201  
+      202  
+      203  def _voxel_traverse(o, e, res):
+      204 -    """Amanatides & Woo 3D DDA. Yield integer voxel indices fr
+          -om o to e,                                                    
+      204 +    """Amanatides & Woo 3D DDA for ONE ray -- the reference im
+          +plementation.                                                 
+      205 +                                                              
+      206 +    Kept as the ground truth that ``_dda_batch`` (the vectoriz
+          +ed version used in                                            
+      207 +    the hot loop) is asserted against, cell-by-cell AND value-
+          +by-value, in                                                  
+      208 +    tests/test_ray_traversal.py. Yield integer voxel indices f
+          +rom o to e,                                                   
+      209      EXCLUDING the terminal voxel (returned separately as the o
+           ccupied cell).
+      210  
+      211      o, e: world points (m). res: voxel size. Returns (free_idx
+            (M,3) int,
+
+● Update(covor/occupancy.py)
+  ⎿  Added 44 lines
+      239      return free_idx, ei
+      240  
+      241  
+      242 +def _dda_batch(o, P, res):                                    
+      243 +    """Vectorized Amanatides & Woo DDA from a shared origin ``
+          +o`` to every point                                            
+      244 +    in ``P`` (N,3). Returns (ray, vox): ``vox`` (M,3) are the 
+          +PASS-THROUGH voxel                                            
+      245 +    indices, ``ray`` (M,) the index of the ray each one belong
+          +s to. Origin and                                              
+      246 +    endpoint cells are excluded -- identical semantics to ``_v
+          +oxel_traverse``.                                              
+      247 +                                                              
+      248 +    Every ray visits every cell it crosses EXACTLY ONCE, which
+          + is what makes the                                            
+      249 +    free evidence contributed by one beam to one cell exactly 
+          +``w * l_free``                                                
+      250 +    (proposal §4.5). The previous implementation sampled each 
+          +beam at res/2 in                                              
+      251 +    arc length instead, which both (a) dropped 2-4x the intend
+          +ed free evidence                                              
+      252 +    into cells containing several samples -- inverting the saf
+          +ety asymmetry                                                 
+      253 +    |l_free| < |l_occ| of §4.6 -- and (b) skipped cells the be
+          +am only clipped,                                              
+      254 +    biasing the carving by ray direction. All rays share one o
+          +rigin (the camera                                             
+      255 +    centre), so tMax/tDelta are set up once and the loop march
+          +es the whole active                                           
+      256 +    set in lockstep, shrinking as rays reach their endpoint.  
+      257 +    """                                                       
+      258 +    N = len(P)                                                
+      259 +    d = P - o                                                 
+      260 +    oi = np.floor(o / res).astype(np.int64)                   
+      261 +    ei = np.floor(P / res).astype(np.int64)                   
+      262 +    step = np.sign(d).astype(np.int64)                        
+      263 +    cur = np.tile(oi, (N, 1))                                 
+      264 +    nz = step != 0                                            
+      265 +    with np.errstate(divide="ignore", invalid="ignore"):      
+      266 +        nxt = (cur + (step > 0)) * res              # next bou
+          +ndary per axis                                                
+      267 +        tmax = np.where(nz, (nxt - o) / d, np.inf)            
+      268 +        tdelta = np.where(nz, res / np.abs(d), np.inf)        
+      269 +    act = np.nonzero(~np.all(cur == ei, axis=1))[0]           
+      270 +    max_steps = int(np.abs(ei - oi).sum(axis=1).max()) + 2 if 
+          +N else 0                                                      
+      271 +    rays, voxs = [], []                                       
+      272 +    for _ in range(max_steps):                                
+      273 +        if act.size == 0:                                     
+      274 +            break                                             
+      275 +        a = np.argmin(tmax[act], axis=1)            # axis of 
+          +the nearest crossing                                          
+      276 +        cur[act, a] += step[act, a]                           
+      277 +        tmax[act, a] += tdelta[act, a]                        
+      278 +        act = act[~np.all(cur[act] == ei[act], axis=1)]   # dr
+          +op rays that arrived                                          
+      279 +        rays.append(act.copy())                               
+      280 +        voxs.append(cur[act].copy())                          
+      281 +    if not rays:                                              
+      282 +        return np.empty(0, np.int64), np.empty((0, 3), np.int6
+          +4)                                                            
+      283 +    return np.concatenate(rays), np.concatenate(voxs)         
+      284 +                                                              
+      285 +                                                              
+      286  class OccupancyBuilder:
+      287      """Reusable slam_to_occupancy module (proposal Phase 1-6).
+      288  
+
+● Now replace the sampling block in integrate_frame:
+
+● Update(covor/occupancy.py)
+  ⎿  Added 7 lines, removed 6 lines
+      321          T_wc: 4x4 world<-camera pose (fused). tr_sigma_pos: po
+           se position-cov
+      322          trace. P_cam: (N,3) camera-frame points (raw infra1). 
+           sigma_Z: (N,).
+      323  
+      324 -        Equivalent to casting one ray per point (free evidence
+          - w*l_free along the                                           
+      325 -        beam, occupied evidence w*l_occ at the endpoint) and a
+          -dding the weighted                                            
+      326 -        log-odds per cell, but samples each ray at res/2 and s
+          -catter-adds in numpy                                          
+      327 -        so a full keyframe integrates in ~0.1 s instead of sec
+          -onds. Per-cell                                                
+      328 -        evidence from all rays is summed (log-odds additivity,
+          - §4.7); a cell that                                           
+      329 -        is an endpoint for one ray and pass-through for anothe
+          -r sums both.                                                  
+      324 +        Casts one ray per point (free evidence w*l_free along 
+          +the beam, occupied                                            
+      325 +        evidence w*l_occ at the endpoint) with an exact vector
+          +ized DDA, and                                                 
+      326 +        scatter-adds the weighted log-odds per cell. Per-cell 
+          +evidence from all                                             
+      327 +        rays is summed (log-odds additivity, §4.7): a cell cro
+          +ssed by two beams                                             
+      328 +        gets 2*w*l_free, and a cell that is an endpoint for on
+          +e ray and                                                     
+      329 +        pass-through for another sums both. But a SINGLE beam 
+          +contributes to a                                              
+      330 +        cell exactly once -- see ``_dda_batch``.              
+      331          """
+      332          c = self.cfg
+      333          res = c.resolution
+
+● Update(covor/occupancy.py)
+  ⎿  Added 3 lines, removed 8 lines
+      347          evox = np.floor(P / res).astype(np.int64)
+      348          ew = w * c.l_occ
+      349  
+      350 -        # free-space samples along each ray at res/2, excludin
+          -g the endpoint voxel                                          
+      351 -        step = res * 0.5                                      
+      352 -        S = int(np.ceil(L.max() / step)) + 1                  
+      353 -        ts = (np.arange(S) + 0.5) * step                      
+          - # (S,)                                                       
+      354 -        valid = ts[None, :] < (L[:, None] - res * 0.5)        
+          - # (N,S) exclude end                                          
+      355 -        pts = t[None, None, :] + u[:, None, :] * ts[None, :, N
+          -one]   # (N,S,3)                                              
+      356 -        fvox = np.floor(pts / res).astype(np.int64)[valid]    
+          - # (M,3)                                                      
+      357 -        fw = np.broadcast_to(w[:, None], valid.shape)[valid] *
+          - c.l_free                                                     
+      350 +        # free evidence: exact DDA, one contribution per (ray,
+          + pass-through cell)                                           
+      351 +        ray, fvox = _dda_batch(t, P, res)                     
+      352 +        fw = w[ray] * c.l_free                                
+      353  
+      354          vox = np.vstack([fvox, evox])
+      355          dlo = np.concatenate([fw, ew])
+
+  Read 1 file (ctrl+o to expand)
+
+● Update(covor/occupancy.py)
+  ⎿  Added 2 lines, removed 4 lines
+      334          R = T_wc[:3, :3]; t = T_wc[:3, 3]
+      335          P = P_cam @ R.T + t                                   
+            # §3③: R P_cam + t
+      336          w = self.weight(tr_sigma_pos, sigma_Z)
+      337 -        d = P - t                                             
+      338 -        L = np.linalg.norm(d, axis=1)                         
+      337 +        L = np.linalg.norm(P - t, axis=1)                     
+      338          keep = (L > res) & (L <= c.max_ray)
+      340 -        P, w, d, L = P[keep], w[keep], d[keep], L[keep]       
+      339 +        P, w = P[keep], w[keep]                               
+      340          if len(P) == 0:
+      341              self.n_frames += 1
+      342              return 0
+      344 -        u = d / L[:, None]                                    
+      343  
+      344          # occupied endpoints
+      345          evox = np.floor(P / res).astype(np.int64)
+
+● Now the regression test — comparing values, not counts:
+
+● Write(tests/test_ray_traversal.py)
+  ⎿  Wrote 154 lines to tests/test_ray_traversal.py
+       1 #!/usr/bin/env python3
+       3 
+         d each beam at
+       5 res/2 in arc length instead of doing a real DDA. That dropped 2-
+       6 free evidence into every cell containing several samples, and sk
+       7 beam only clipped. Effective l_free became -0.8..-1.6 against l_
+       8 the safety asymmetry |l_free| < |l_occ| of proposal §4.6 was sil
+         ently INVERTED,
+         e only compared
+         cell log-odds
+     … +186 lines (ctrl+o to expand)
+
+  Read 1 file, ran 1 shell command (ctrl+o to expand)
+
+● Update(covor/occupancy.py)
+  ⎿  Added 2 lines, removed 2 lines
+      296          import octomap
+      297          self.cfg = cfg or OccCfg()
+      298          self.tree = octomap.OcTree(self.cfg.resolution)
+      299 -        self.tree.setClampingThresMin(1.0 / (1 + np.exp(-self.
+          -cfg.clamp_min)))                                              
+      300 -        self.tree.setClampingThresMax(1.0 / (1 + np.exp(-self.
+          -cfg.clamp_max)))                                              
+      299 +        self.tree.setClampingThresMin(_sigmoid(self.cfg.clamp_
+          +min))                                                         
+      300 +        self.tree.setClampingThresMax(_sigmoid(self.cfg.clamp_
+          +max))                                                         
+      301          self.n_frames = 0
+      302          self.n_points = 0
+      303  
+
+● Update(covor/occupancy.py)
+  ⎿  Added 8 lines
+      200      max_ray: float = 5.0         # m; cap ray length (matches 
+           depth z_max)
+      201  
+      202  
+      203 +def _sigmoid(x):                                              
+      204 +    """log-odds -> probability, without overflowing for large 
+          +|x|."""                                                       
+      205 +    if x >= 0:                                                
+      206 +        return 1.0 / (1.0 + np.exp(-x))                       
+      207 +    e = np.exp(x)                                             
+      208 +    return e / (1.0 + e)                                      
+      209 +                                                              
+      210 +                                                              
+      211  def _voxel_traverse(o, e, res):
+      212      """Amanatides & Woo 3D DDA for ONE ray -- the reference im
+           plementation.
+      213  
+
+  Ran 2 shell commands (ctrl+o to expand)
+● 수정 4-1 완료 및 검증
+
+  ┌──────────┬────────────────────┬────────────────────────────────┐
+  │   광선   │  셀당 l_free 배수  │ free 셀 수 (벡터화 / 참조 DDA) │
+  ├──────────┼────────────────────┼────────────────────────────────┤
+  │ 축 +x    │ 1.00 / 1.00 / 1.00 │ 29 / 29 ✓                      │
+  ├──────────┼────────────────────┼────────────────────────────────┤
+  │ 대각 xy  │ 1.00 / 1.00 / 1.00 │ 39 / 39 ✓                      │
+  ├──────────┼────────────────────┼────────────────────────────────┤
+  │ 대각 xyz │ 1.00 / 1.00 / 1.00 │ 53 / 53 ✓                      │
+  ├──────────┼────────────────────┼────────────────────────────────┤
+  │ 임의     │ 1.00 / 1.00 / 1.00 │ 39 / 39 ✓                      │
+  └──────────┴────────────────────┴────────────────────────────────┘
+
+  과다계산·누락 둘 다 해소, 안전 비대칭 복원. 회귀 테스트 6개 전부 통과(개수 +
+  셀별 log-odds 값 비교). 성능 0.31 → 0.37 s/frame로 유지.
+
+  커밋하고 효과 측정한다.
+
+  Ran 6 shell commands (ctrl+o to expand)
+
+● 수정 4-1 효과 (사물 기둥 occupied voxel 총합)
+
+  ┌───────┬─────┬──────┬──────┐
+  │       │ PRE │ POST │      │
+  ├───────┼─────┼──────┼──────┤
+  │ fused │ 309 │ 383  │ +24% │
+  ├───────┼─────┼──────┼──────┤
+  │ GT    │ 640 │ 833  │ +30% │
+  └───────┴─────┴──────┴──────┘
+
+  전체 occupied는 fused 83,572 → 91,561 (+9.6%), free는 176,811로 거의 동일.
+  근거리 기둥이 가장 크게 회복(+125%, +100%, +86%). 다만 증상 A의 잔여분은 포즈
+  오차(fused)와 스테레오 사거리(GT)가 지배하고, 부유 큐브는 오히려 소폭
+  증가(2,053→2,393) — free 침식이 줄었으니 당연한 방향이고, 이제 4-2가 그걸
+  맡는다.
+
+  Step 4-2 근거 확보: log-odds 히스토그램.
+
+  Read 1 file, ran 1 shell command (ctrl+o to expand)
+
+● 히스토그램이 명확해: fused occupied voxel의 75%가 단발 관측(GT도 56%), 그리고
+  l=3.5(clamp) 스파이크가 반복 확인된 진짜 구조물이야.
+
+  τ_occ 선택은 튜닝이 아니라 정의로 잡을 수 있어. 단발 관측의 기여는 w·l_occ ≤ 
+  l_occ = 0.85이므로, τ_occ = l_occ = 0.85로 두면 w 값과 무관하게 **"관측
+  1회로는 occupied가 원리적으로 불가능"**해져. 87,006 → 22,066개(25%)로 줄고,
+  탈락분은 free가 아니라 unknown이 되므로 §4.8의 "unknown은 통행 가능으로
+  간주하지 않는다"에 따라 경로 계획상 안전 등가야 (occupied→unknown 강등은 통행
+  가능성을 넓히지 않음).
+
+● Update(covor/occupancy.py)
+  ⎿  Added 9 lines, removed 1 line
+      184      clamp_min: float = -2.0      # octomap default log clamp (
+           prob 0.12)
+      185      clamp_max: float = 3.5       # octomap default log clamp (
+           prob 0.97)
+      186      # Classification thresholds (proposal §4.8)
+      187 -    tau_occ: float = 0.0         # l > +tau_occ -> occupied   
+      187 +    # tau_occ = l_occ is a DEFINITION, not a tuned value: a si
+          +ngle observation                                              
+      188 +    # contributes w*l_occ <= l_occ, so l > tau_occ is unreacha
+          +ble from one                                                  
+      189 +    # observation whatever w is. "Occupied requires more evide
+          +nce than one ideal                                            
+      190 +    # observation can provide." Measured on default_3_zigzag_0
+          +/ifo001, 75% of the                                           
+      191 +    # cells that tau_occ=0 called occupied were single-observa
+          +tion cells -- one                                             
+      192 +    # stereo mismatch became a permanent floating cube. Demoti
+          +ng them is safe in                                            
+      193 +    # the proposal's terms: they become UNKNOWN, not free, and
+          + §4.8 forbids                                                 
+      194 +    # treating unknown as traversable, so nothing gains traver
+          +sability.                                                     
+      195 +    tau_occ: float = 0.85        # l > +tau_occ -> occupied  (
+          +== l_occ)                                                     
+      196      tau_free: float = 0.0        # l < -tau_free -> free (else
+            unknown)
+      197      # Uncertainty weighting (proposal §4.5): w = exp(-trSig/al
+           pha)*exp(-sZ^2/beta)
+      198      weighted: bool = True        # ablation toggle: False -> s
+           tandard OctoMap (w=1)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Update(covor/occupancy.py)
+  ⎿  Added 3 lines
+      314          self.tree = octomap.OcTree(self.cfg.resolution)
+      315          self.tree.setClampingThresMin(_sigmoid(self.cfg.clamp_
+           min))
+      316          self.tree.setClampingThresMax(_sigmoid(self.cfg.clamp_
+           max))
+      317 +        # keep OctoMap's own notion of "occupied" (isNodeOccup
+          +ied, .bt export)                                              
+      318 +        # identical to the §4.8 classification below, so every
+          + consumer agrees                                              
+      319 +        self.tree.setOccupancyThres(_sigmoid(self.cfg.tau_occ)
+          +)                                                             
+      320          self.n_frames = 0
+      321          self.n_points = 0
+      322  
+
+  Ran 5 shell commands (ctrl+o to expand)
+
+● 수정 4-2 적용 결과 (τ_occ = l_occ = 0.85, OctoMap 자체 임계값도 동일하게 맞춰
+  .bt/isNodeOccupied/classify_points 일치)
+
+  ┌─────────────┬────────┬────────┬────────┬──────┬────────┬──────┬────────┐
+  │             │ fused  │ 사물   │ 내부   │      │        │ GT   │  GT    │
+  │             │  occ   │ voxel  │  부유  │ 고립 │ GT occ │ 사물 │ 내부   │
+  │             │        │        │        │      │        │      │  부유  │
+  ├─────────────┼────────┼────────┼────────┼──────┼────────┼──────┼────────┤
+  │ PRE         │ 83,572 │ 309    │ 2,053  │ 209  │ 49,049 │ 640  │ 183    │
+  │ (baseline)  │        │        │        │      │        │      │        │
+  ├─────────────┼────────┼────────┼────────┼──────┼────────┼──────┼────────┤
+  │ +4-1 정확   │ 91,561 │ 383    │ 2,393  │ 226  │ 54,318 │ 833  │ 225    │
+  │ DDA         │        │        │        │      │        │      │        │
+  ├─────────────┼────────┼────────┼────────┼──────┼────────┼──────┼────────┤
+  │ +4-2 τ_occ  │ 21,926 │ 112    │ 1,242  │ 176  │ 23,947 │ 468  │ 98     │
+  └─────────────┴────────┴────────┴────────┴──────┴────────┴──────┴────────┘
+
+  부유 큐브 48%(fused) / 56%(GT) 감소. 사물은 밀도는 줄지만 검출은 유지 — GT
+  기준 13/13 기둥이 여전히 ≥3 voxel(중앙값 45→34), fused 10/13→9/13.
+  τ_occ=0.85는 "관측 1회로는 occupied 불가"를 만족하는 최소값이라 더 낮추면
+  요구조건 자체가 깨져.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● 4-3 후보 중 어느 게 실제 근거가 있는지 측정할게. GT 지도에 남은 내부 부유 큐브
+  98개가 다른 드론인지부터.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● 다른 드론이 부유 큐브의 주범으로 확정
+
+  ┌──────────┬─────────────┬──────────────────────────┬────────────────────┐
+  │          │ 내부 부유   │ ifo002/3 GT 위치 0.4 m   │ ifo001 자기 경로   │
+  │          │    voxel    │            내            │      0.4 m 내      │
+  ├──────────┼─────────────┼──────────────────────────┼────────────────────┤
+  │ GT +4-2  │ 98          │ 77 (79%)                 │ 27 (28%)           │
+  ├──────────┼─────────────┼──────────────────────────┼────────────────────┤
+  │ fused    │ 1,242       │ 452 (36%) — 0.6 m 기준   │ 87 (7%)            │
+  │ +4-2     │             │ 746 (60%)                │                    │
+  └──────────┴─────────────┴──────────────────────────┴────────────────────┘
+
+  GT 지도의 잔여 부유 큐브 79%가 다른 드론이야. 이건 스테레오 노이즈가 아니라
+  "동적 물체를 정확히 관측한 결과"라서, 정적 점유지도에 남으면 안 되는 것. 4-3
+  후보 중 이게 근거가 가장 확실하니 이것부터 적용할게. 그리고 이 마스킹이 가능한
+  이유 자체가 협업 융합이야 — CoVOR가 모든 드론을 한 좌표계에 두기 때문에 동료
+  위치를 알 수 있어(계획서 §4.7의 부수 효과).
+
+● Update(covor/occupancy.py)
+  ⎿  Added 10 lines
+      206      alpha: float = 0.3           # pose-covariance scale (m^2)
+           ; tr(Sigma_pos) units
+      207      beta: float = 0.5            # depth-uncertainty scale (m^
+           2); sigma_Z^2 units
+      208      max_ray: float = 5.0         # m; cap ray length (matches 
+           depth z_max)
+      209 +    # Teammate (dynamic-object) exclusion. The drones fly toge
+          +ther and see each                                             
+      210 +    # other constantly; a beam terminating on a teammate is a 
+          +correct observation                                           
+      211 +    # of a MOVING object, which has no place in a static occup
+          +ancy map. Measured                                            
+      212 +    # on default_3_zigzag_0/ifo001 with GT poses, 79% of the o
+          +ccupied voxels left                                           
+      213 +    # floating inside the room sit within 0.4 m of a teammate'
+          +s position at the                                             
+      214 +    # time of the observation. Only the endpoint (occupied) ev
+          +idence is dropped;                                            
+      215 +    # the free evidence along the beam is kept, since that spa
+          +ce really was                                                 
+      216 +    # traversed. This is available only because the CoVOR fusi
+          +on puts every robot                                           
+      217 +    # in one frame -- a side benefit of §4.7's collaborative a
+          +ccumulation.                                                  
+      218 +    dyn_radius: float = 0.35     # m; drone half-size + pose e
+          +rror. 0 disables.                                             
+      219  
+      220  
+      221  def _sigmoid(x):
+
+● Update(covor/occupancy.py)
+  ⎿  Added 4 lines, removed 1 line
+      344          w_depth = np.exp(-(sigma_Z ** 2) / c.beta)            
+           # per-point
+      345          return np.clip(w_pose * w_depth, 0.0, 1.0)
+      346  
+      347 -    def integrate_frame(self, T_wc, tr_sigma_pos, P_cam, sigma
+          -_Z):                                                          
+      347 +    def integrate_frame(self, T_wc, tr_sigma_pos, P_cam, sigma
+          +_Z, teammates=None):                                          
+      348          """Integrate one keyframe's observation (proposal §4.4
+           -4.7), vectorized.
+      349  
+      350          T_wc: 4x4 world<-camera pose (fused). tr_sigma_pos: po
+           se position-cov
+      351          trace. P_cam: (N,3) camera-frame points (raw infra1). 
+           sigma_Z: (N,).
+      352 +        teammates: (K,3) world positions of the OTHER robots a
+          +t this instant, or                                            
+      353 +        None. Beams ending within cfg.dyn_radius of one contri
+          +bute free evidence                                            
+      354 +        but no occupied evidence (see OccCfg.dyn_radius).     
+      355  
+      356          Casts one ray per point (free evidence w*l_free along 
+           the beam, occupied
+      357          evidence w*l_occ at the endpoint) with an exact vector
+           ized DDA, and
+
+● Update(covor/occupancy.py)
+  ⎿  Added 8 lines, removed 3 lines
+      373              self.n_frames += 1
+      374              return 0
+      375  
+      376 -        # occupied endpoints                                  
+      377 -        evox = np.floor(P / res).astype(np.int64)             
+      378 -        ew = w * c.l_occ                                      
+      376 +        # occupied endpoints, minus the ones that landed on a 
+          +flying teammate                                               
+      377 +        static = np.ones(len(P), bool)                        
+      378 +        if teammates is not None and len(teammates) and c.dyn_
+          +radius > 0:                                                   
+      379 +            near = np.linalg.norm(P[:, None, :] - np.atleast_2
+          +d(teammates)[None, :, :],                                     
+      380 +                                  axis=2).min(axis=1) < c.dyn_
+          +radius                                                        
+      381 +            static = ~near                                    
+      382 +        evox = np.floor(P[static] / res).astype(np.int64)     
+      383 +        ew = w[static] * c.l_occ                              
+      384  
+      385          # free evidence: exact DDA, one contribution per (ray,
+            pass-through cell)
+      386          ray, fvox = _dda_batch(t, P, res)
+
+● Now wire it into the driver:
+
+● Update(scripts/build_occupancy.py)
+  ⎿  Added 26 lines, removed 1 line
+      58      return cache[key].get(tval)
+      59  
+      60  
+      61 -def process_robot(builder, robot, depth_cfg, stride, max_frames
+         -=None):                                                        
+      61 +class Teammates:                                               
+      62 +    """Where the other robots were, in the fused frame, at any 
+         +instant.                                                       
+      63 +                                                               
+      64 +    Only knowable because CoVOR fuses every robot into one fram
+         +e (§4.7); used to                                              
+      65 +    keep observations of flying teammates out of the static map
+         + (OccCfg.dyn_radius).                                          
+      66 +    """                                                        
+      67 +    def __init__(self, robot, others):                         
+      68 +        self.tracks = []                                       
+      69 +        for o in others:                                       
+      70 +            if o == robot:                                     
+      71 +                continue                                       
+      72 +            npz = np.load(f"{VO}/occ_{SEQ}_{o}.npz")           
+      73 +            self.tracks.append((npz["t"], npz["T"][:, :3, 3])) 
+      74 +                                                               
+      75 +    def at(self, t, tol=0.5):                                  
+      76 +        """(K,3) teammate positions at time t; a track is skipp
+         +ed if its nearest                                              
+      77 +        pose is more than tol away in time (we then simply do n
+         +ot mask it)."""                                                
+      78 +        out = []                                               
+      79 +        for ts, ps in self.tracks:                             
+      80 +            i = int(np.abs(ts - t).argmin())                   
+      81 +            if abs(ts[i] - t) <= tol:                          
+      82 +                out.append(ps[i])                              
+      83 +        return np.array(out) if out else None                  
+      84 +                                                               
+      85 +                                                               
+      86 +def process_robot(builder, robot, depth_cfg, stride, max_frames
+         +=None, mates=None):                                            
+      87      npz = np.load(f"{VO}/occ_{SEQ}_{robot}.npz")
+      88      t, T, tr = npz["t"], npz["T"], npz["tr_sigma_pos"]
+      89      calib = load_stereo_calib(robot)
+
+● Update(scripts/build_occupancy.py)
+  ⎿  Added 2 lines, removed 1 line
+      107          if valid.sum() < 100:
+      108              continue
+      109          P_cam, sZp = sd.backproject(Z, sZ, valid, downsample=4
+           )
+      110 -        builder.integrate_frame(T[i], float(tr[i]), P_cam, sZp
+          -)                                                             
+      110 +        builder.integrate_frame(T[i], float(tr[i]), P_cam, sZp
+          +,                                                             
+      111 +                                teammates=mates.at(t[i]) if ma
+          +tes else None)                                                
+      112          traj.append(T[i][:3, 3])
+      113          used += 1
+      114          if max_frames and used >= max_frames:
+
+● Update(scripts/build_occupancy.py)
+  ⎿  Added 4 lines, removed 1 line
+      158      ap.add_argument("--stride", type=int, default=2)
+      159      ap.add_argument("--res", type=float, default=0.10)
+      160      ap.add_argument("--tag", default="")
+      161 +    ap.add_argument("--no-mask-dynamic", action="store_true", 
+      162 +                    help="keep observations of flying teammate
+          +s in the static map")                                         
+      163      args = ap.parse_args()
+      164      weighted = not args.uniform          # default weighted un
+           less --uniform
+      165      drones = args.drones.split(",")
+      166  
+      165 -    occ_cfg = OccCfg(resolution=args.res, weighted=weighted)  
+      167 +    occ_cfg = OccCfg(resolution=args.res, weighted=weighted,  
+      168 +                     dyn_radius=0.0 if args.no_mask_dynamic el
+          +se OccCfg.dyn_radius)                                         
+      169      builder = OccupancyBuilder(occ_cfg)
+      170      depth_cfg = DepthCfg()
+      171      print("=== build_occupancy drones=%s weighted=%s stride=%d
+            res=%.2f ===" % (
+
+● Update(scripts/build_occupancy.py)
+  ⎿  Added 3 lines, removed 1 line
+      172          drones, weighted, args.stride, args.res))
+      173      t0 = time.time()
+      174      trajs = []
+      175 +    ALL = ["ifo001", "ifo002", "ifo003"]                      
+      176      for rob in drones:
+      176 -        n, traj = process_robot(builder, rob, depth_cfg, args.
+          -stride)                                                       
+      177 +        mates = None if args.no_mask_dynamic else Teammates(ro
+          +b, ALL)                                                       
+      178 +        n, traj = process_robot(builder, rob, depth_cfg, args.
+          +stride, mates=mates)                                          
+      179          trajs.append(traj)
+      180          print("  %s: %d keyframes integrated" % (rob, n))
+      181      builder.finalize()
+  Ran 2 shell commands (ctrl+o to expand)
+
+● GT 포즈에서 내부 부유 큐브 98 → 35 (−64%), 드론 위치 일치분 77 → 14, 사물
+  voxel은 468 그대로. 정확히 의도한 외과적 제거야.
+
+  fused에서는 1,242 → 1,236으로 거의 효과 없음 — 마스킹 구가 융합 teammate
+  위치(오차 median 0.2~0.26 m, 최대 3.4 m)를 쓰는 데다, 관측자 자신의 회전 오차
+  20~34°로 종단점이 애초에 엉뚱한 곳에 찍히기 때문. 이건 "fused의 부유 큐브는
+  동적 물체가 아니라 포즈 오차 산물"이라는 앞선 판정을 한 번 더 확인해주는
+  결과라서, 그대로 유지하고 정직하게 기록할게.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Step 5로 간다. 먼저 ablation 스크립트를 마스킹과 일치시키고, 재생성 3건을
+  병렬로 돌릴게.
+
+● Update(scripts/compare_weighting.py)
+  ⎿  Added 1 line, removed 1 line
+      25  sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam")
+      26  from covor.occupancy import (load_stereo_calib, StereoDepth, De
+          pthCfg,
+      27                               OccupancyBuilder, OccCfg)
+      28 -from build_occupancy import FrameIndex, _fname_for, SEQ, DATA, 
+         -VO, OUTDIR                                                     
+      28 +from build_occupancy import FrameIndex, Teammates, _fname_for, 
+         +SEQ, DATA, VO, OUTDIR                                          
+      29  
+      30  
+      31  def build_pair(drones, stride):
+
+● Update(scripts/compare_weighting.py)
+  ⎿  Added 1 line
+      40          t, T, tr = npz["t"], npz["T"], npz["tr_sigma_pos"]
+      41          sd = StereoDepth(load_stereo_calib(rob), depth_cfg)
+      42          idx = FrameIndex(rob)
+      43 +        mates = Teammates(rob, ["ifo001", "ifo002", "ifo003"]) 
+      44          traj = []
+      45          for i in range(0, len(t), stride):
+      46              tval = idx.pair(t[i])
+
+● Update(scripts/compare_weighting.py)
+  ⎿  Added 3 lines, removed 2 lines
+      57              if valid.sum() < 100:
+      58                  continue
+      59              P_cam, sZp = sd.backproject(Z, sZ, valid, downsampl
+          e=4)
+      60 -            wb.integrate_frame(T[i], float(tr[i]), P_cam, sZp) 
+      61 -            ub.integrate_frame(T[i], float(tr[i]), P_cam, sZp) 
+      60 +            tm = mates.at(t[i])                                
+      61 +            wb.integrate_frame(T[i], float(tr[i]), P_cam, sZp, 
+         +teammates=tm)                                                  
+      62 +            ub.integrate_frame(T[i], float(tr[i]), P_cam, sZp, 
+         +teammates=tm)                                                  
+      63              traj.append(T[i][:3, 3])
+      64          trajs.append(np.array(traj))
+      65      wb.finalize(); ub.finalize()
+
+  Read 1 file, ran 2 shell commands (ctrl+o to expand)
+
+● GT AFTER 패널이 결과를 잘 보여줘 — 13개 기둥 전부 뚜렷한 파란 덩어리로 
+  매핑되고 방 윤곽이 직사각형으로 정리됨.
+
+  ┌─────────────────┬───────────────┬─────────┬───────────────┬────────────┐
+  │                 │   밴드 내     │ 사물 위 │ 방 내부 부유  │ 사물/부유  │
+  │                 │   occupied    │         │               │     비     │
+  ├─────────────────┼───────────────┼─────────┼───────────────┼────────────┤
+  │ fused BEFORE →  │ 12,786 →      │ 267 →   │ 1,094 → 736   │ 0.24 →     │
+  │ AFTER           │ 4,133         │ 100     │ (−33%)        │ 0.14       │
+  ├─────────────────┼───────────────┼─────────┼───────────────┼────────────┤
+  │ GT BEFORE →     │ 11,028 →      │ 574 →   │ 130 → 29      │ 4.4 → 14.0 │
+  │ AFTER           │ 6,077         │ 405     │ (−78%)        │            │
+  └─────────────────┴───────────────┴─────────┴───────────────┴────────────┘
+
+  재생성 작업 확인할게.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● 재생성 수치에서 불일치를 발견했어 — single 빌드는 free=172,802인데 동일 설정의
+  ablation은 free=495,241. 확인해볼게.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● 확인됨 — write_bt가 트리를 파괴적으로 변경해. octomap의 writeBinary는
+  내부적으로 toMaxLikelihood() + prune()을 수행: log-odds가 2개 값으로 붕괴하고
+  leaf가 0.1/0.2/0.4 m로 병합돼. build_occupancy.py가 write_bt() 다음에
+  visualize()를 호출하고 있어서, 이 드라이버가 출력한 모든 occupied/free 수치는 
+  병합 후 leaf 개수였어 (셀 개수가 아님). 내 .bt 기반 지표도 같은 편향이 있었고
+  — 비교는 동일 조건이라 방향성은 유효하지만 절대값은 틀렸어. 고칠게.
+
+● Update(covor/occupancy.py)
+  ⎿  Added 7 lines
+      414  
+      415          occupied: l > +tau_occ; free: l < -tau_free; unknown o
+           therwise (not
+      416          returned). Unknown is never conflated with free (propo
+           sal §4.8).
+      417 +                                                              
+      418 +        Must be called BEFORE write_bt (see its docstring).   
+      419          """
+      420 +        if self._written:                                     
+      421 +            raise RuntimeError(                               
+      422 +                "classify_points() after write_bt(): the tree 
+          +has been collapsed "                                          
+      423 +                "to max-likelihood and pruned, so log-odds and
+          + cell counts are "                                            
+      424 +                "no longer meaningful. Classify first, export 
+          +last.")                                                       
+      425          c = self.cfg
+      426          occ, free = [], []
+      427          self.tree.updateInnerOccupancy()
+
+● Update(covor/occupancy.py)
+  ⎿  Added 9 lines
+      437          return occ, free
+      438  
+      439      def write_bt(self, path):
+      440 +        """Export the binary .bt map. DESTRUCTIVE and therefor
+          +e TERMINAL.                                                   
+      441 +                                                              
+      442 +        OctoMap's writeBinary converts the tree to its maximum
+          +-likelihood estimate                                          
+      443 +        (every log-odds collapses to the min/max clamp) and pr
+          +unes it (uniform                                              
+      444 +        octants merge into single coarse leaves, so leaves no 
+          +longer correspond                                             
+      445 +        one-to-one with cells at ``resolution``). Anything tha
+          +t reads log-odds or                                           
+      446 +        counts cells must run BEFORE this call -- classify_poi
+          +nts() enforces that.                                          
+      447 +        """                                                   
+      448          self.tree.updateInnerOccupancy()
+      449          self.tree.writeBinary(path.encode() if isinstance(path
+           , str) else path)
+      450 +        self._written = True                                  
+
+● Update(covor/occupancy.py)
+  ⎿  Added 1 line
+      329          self.tree.setOccupancyThres(_sigmoid(self.cfg.tau_occ)
+           )
+      330          self.n_frames = 0
+      331          self.n_points = 0
+      332 +        self._written = False        # write_bt is destructive
+          +; see its docstring                                           
+      333  
+      334      def weight(self, tr_sigma_pos, sigma_Z):
+      335          """w = exp(-tr(Sigma_pos)/alpha) * exp(-sigma_Z^2/beta
+           )  (proposal §4.5).
+
+● Update(scripts/build_occupancy.py)
+  ⎿  Added 4 lines, removed 2 lines
+      181      builder.finalize()
+      182      mode = "weighted" if weighted else "uniform"
+      183      tag = args.tag or ("_".join(drones) + "_" + mode)
+      184 -    bt = f"{OUTDIR}/occ_{tag}.bt"                             
+      185 -    builder.write_bt(bt); print("  wrote", bt)                
+      184 +    # classify/plot BEFORE exporting: write_bt collapses the t
+          +ree to                                                        
+      185 +    # max-likelihood and prunes it, which destroys log-odds an
+          +d cell counts                                                 
+      186      visualize(builder, trajs,
+      187                "CoVOR->occupancy | %s | %s | %.1fs" % (",".join
+           (drones), mode, time.time() - t0),
+      188                f"{OUTDIR}/occ_{tag}.png")
+      189 +    bt = f"{OUTDIR}/occ_{tag}.bt"                             
+      190 +    builder.write_bt(bt); print("  wrote", bt)                
+      191  
+      192  
+      193  if __name__ == "__main__":
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● occupied 쪽 오차는 1~3%에 불과해서 지금까지의 사물/부유 큐브 결론은 그대로
+  유효해. 크게 틀렸던 건 free 카운트(균일한 자유공간이 대량으로 병합됨) — 그래서
+  single 빌드가 172,802, ablation이 495,241로 갈렸던 거야. 순서 고쳤으니
+  재생성한다.
+
+  Read 3 files, ran 3 shell commands (ctrl+o to expand)
+● 문서와 저장소 갱신할게. GT 포즈 대조군은 재현 가능해야 하니 스크립트로 남긴다.
+
+● Write(scripts/gt_pose_control.py)
+  ⎿  Wrote 159 lines to scripts/gt_pose_control.py
+       1 #!/usr/bin/env python3
+         T poses.
+       3 
+         m "the poses are
+         tion, ray
+       6 casting, weighted log-odds -- is identical to build_occupancy.py
+       7 source changes. GT carries no registration uncertainty, so w_pos
+         e is forced to 1
+       9 
+         appens to
+     … +194 lines (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Now the docs:
+
+● Update(OCCUPANCY_PIPELINE.md)
+  ⎿  Added 2 lines
+      21  | `covor/occupancy.py` · `OccupancyBuilder` | ray traversal + *
+          *weighted log-odds** into an OctoMap tree; classify; `.bt` expo
+          rt | §4.4–4.8, Phase 1-5 / 3-2 |
+      22  | `scripts/build_occupancy.py` | driver: 1 / 2 / 3-drone map + 
+          top-down and slice viz | Phase 1-6 / 3-3 |
+      23  | `scripts/compare_weighting.py` | ablation: uncertainty-weight
+          ed vs uniform (standard OctoMap) | Phase 3-7 |
+      24 +| `scripts/gt_pose_control.py` | control: same map from mocap G
+         +T poses; scores objects and floating voxels against GT | diagno
+         +stic |                                                         
+      25 +| `tests/test_ray_traversal.py` | regression: per-cell log-odds
+         + vs the reference DDA | diagnostic |                           
+      26  
+      27  `OccupancyBuilder` is the reusable `slam_to_occupancy` module (
+          Phase 1-6): the
+      28  same instance ingests any number of `(pose, Σ, depth)` observat
+          ions from one or
+
+● Update(OCCUPANCY_PIPELINE.md)
+  ⎿  Error editing file
+
+  Read 1 file (ctrl+o to expand)
+
+● Update(OCCUPANCY_PIPELINE.md)
+  ⎿  Added 41 lines, removed 1 line
+      47    data's uncertainty scale so a median-quality observation keep
+          s `w ≈ 0.85` and
+      48    outliers collapse toward 0 (see `OccCfg` for the derivation).
+      49  - **Safety asymmetry** `|l_free| < |l_occ|` (`l_free=−0.40`, `l
+          _occ=+0.85`): free
+      50 -  space is asserted conservatively, occupied readily ⇒ fewer fa
+         -lse-free.                                                      
+      50 +  space is asserted conservatively, occupied readily ⇒ fewer fa
+         +lse-free. This                                                 
+      51 +  holds only if the traversal contributes `l_free` to a cell **
+         +exactly once per                                               
+      52 +  beam** — see "Ray traversal" below.                          
+      53  - Weighting toggles off (`OccCfg.weighted=False` ⇒ `w≡1`) to re
+          cover a standard
+      54    OctoMap update, making the ablation structural.
+      55  
+      56  `unknown` is never conflated with `free`: pixels with no valid 
+          disparity cast no
+      57  ray (`Z=NaN`), and cells below the free threshold stay unknown 
+          (§4.8).
+      58  
+      59 +### Ray traversal                                              
+      60 +                                                               
+      61 +`_dda_batch` is a vectorized Amanatides & Woo traversal: all be
+         +ams share the                                                  
+      62 +camera origin, so tMax/tDelta are set up once and the active ra
+         +y set marches in                                               
+      63 +lockstep, shrinking as beams reach their endpoint. One beam con
+         +tributes to one                                                
+      64 +cell exactly once; different beams still accumulate (log-odds a
+         +dditivity, §4.7).                                              
+      65 +`_voxel_traverse` is the single-ray reference kept for `tests/t
+         +est_ray_traversal.py`,                                         
+      66 +which asserts per-cell log-odds **values** (not just cell count
+         +s) against it.                                                 
+      67 +                                                               
+      68 +### Classification thresholds (§4.8)                           
+      69 +                                                               
+      70 +`tau_occ = l_occ = 0.85` is a definition, not a tuned value: on
+         +e observation                                                  
+      71 +contributes `w·l_occ ≤ l_occ` whatever `w` is, so `l > tau_occ`
+         + is unreachable                                                
+      72 +from a single observation — and 0.85 is the *smallest* threshol
+         +d with that                                                    
+      73 +property. Demoted cells become **unknown, not free**, and §4.8 
+         +forbids treating                                               
+      74 +unknown as traversable, so nothing gains traversability.       
+      75 +                                                               
+      76 +This subsumes a separate "trust occupied evidence only within 2
+         +–3 m" rule: with                                               
+      77 +`f·B = 21.7 px·m`, `w_depth = exp(−σ_Z²/β)` is already 0.94 / 0
+         +.71 / 0.34 / 0.07                                              
+      78 +at `Z` = 2 / 3 / 4 / 5 m, so clearing `tau_occ` takes roughly 2
+         + / 2 / 4 / 17                                                  
+      79 +observations at those ranges — a graded range dependence rather
+         + than a hard cutoff.                                           
+      80 +                                                               
+      81 +### Dynamic teammates                                          
+      82 +                                                               
+      83 +The drones see each other constantly, and a beam ending on a te
+         +ammate is a                                                    
+      84 +correct observation of a *moving* object that a static map shou
+         +ld not keep.                                                   
+      85 +`integrate_frame(..., teammates=...)` drops the endpoint eviden
+         +ce for beams                                                   
+      86 +ending within `OccCfg.dyn_radius = 0.35 m` of another robot, ke
+         +eping the free                                                 
+      87 +evidence along the beam (that space really was traversed). Know
+         +ing where the                                                  
+      88 +teammates are is possible only because the CoVOR fusion puts ev
+         +ery robot in one                                               
+      89 +frame — a side benefit of §4.7, not an extra sensor.           
+      90 +                                                               
+      91 +### Export is terminal                                         
+      92 +                                                               
+      93 +OctoMap's `writeBinary` converts the tree to its maximum-likeli
+         +hood estimate and                                              
+      94 +prunes it, so `write_bt()` destroys log-odds and merges cells. 
+         +Classify and plot                                              
+      95 +first; `classify_points()` raises if called afterwards.        
+      96 +                                                               
+      97  ## How to run
+      98  
+      99  ```bash
+
+● Update(OCCUPANCY_PIPELINE.md)
+  ⎿  Added 35 lines
+      110  
+      111  # 2c) 3-drone collaborative map (Phase 3-3)
+      112  $PY scripts/build_occupancy.py --drones ifo001,ifo002,ifo003 -
+           -weighted --stride 3
+      113 +                                                              
+      114 +# 3) diagnostics                                              
+      115 +$PY tests/test_ray_traversal.py                      # travers
+          +al regression                                                 
+      116 +$PY scripts/gt_pose_control.py --robot ifo001        # pose-er
+          +ror vs mapping-error                                          
+      117  ```
+      118  
+      119 +## Results (`default_3_zigzag_0`, res 0.10 m)                 
+      120 +                                                              
+      121 +| map | keyframes | occupied | free |                         
+      122 +|---|---|---|---|                                             
+      123 +| ifo001, weighted | 190 | 22,055 | 495,241 |                 
+      124 +| ifo001, uniform (standard OctoMap) | 190 | 62,327 | 501,973 
+          +|                                                             
+      125 +| 3 drones, weighted | 464 | 40,780 | 721,556 |               
+      126 +| ifo001, **GT poses** (control) | 190 | 24,626 | 282,484 |   
+      127 +                                                              
+      128 +Ablation at the `z = 0.8 m` slice: of 8,497 cells the uniform 
+          +map calls *free*,                                             
+      129 +473 (5.6 %) are held unknown/occupied by the weighted map, and
+          + they stay                                                    
+      130 +spatially concentrated in the far / high-drift region — the fa
+          +lse-free that §4.6                                            
+      131 +targets.                                                      
+      132 +                                                              
+      133 +MILUV has no occupancy ground truth, but it does pin down the 
+          +two things that                                               
+      134 +were visibly wrong, so both are scored directly:              
+      135 +                                                              
+      136 +- **objects** — `config/apriltags/apriltags.yaml` gives the 3D
+          + positions of the                                             
+      137 +  13 elevated tag stands, the room's only real objects (`exper
+          +iments.csv` marks                                             
+      138 +  this sequence `obstacles_bool = false`; the obstacle sequenc
+          +es are                                                        
+      139 +  `obstacles_1_random3_0b` and the `cirObstacles_*` set).     
+      140 +- **floating cubes** — occupied voxels strictly inside the roo
+          +m and above the                                               
+      141 +  floor, and how many coincide with a teammate's position.    
+      142 +                                                              
+      143 +| | objects w/ ≥3 voxels | object voxels | floating inside | o
+          +f which on a teammate |                                       
+      144 +|---|---|---|---|---|                                         
+      145 +| fused poses, before the fixes | 10/13 | 272 | 1,101 | 36 % |
+      146 +| fused poses, after | 9/13 | 100 | 736 | — |                 
+      147 +| **GT poses, before** | 13/13 | 584 | 130 | 79 % |           
+      148 +| **GT poses, after** | 13/13 | 419 | **29** | 43 % |         
+      149 +                                                              
+      150  ## Faithfulness checklist (proposal §4 / §7.3)
+      151  
+      152  | element | proposal | ours | verdict |
+
+  Read 1 file (ctrl+o to expand)
+
+● Update(OCCUPANCY_PIPELINE.md)
+  ⎿  Added 1 line, removed 1 line
+      157  | Depth uncertainty | `σ_Z=Z²/(f·B)·Δd` | same | **match** |
+      158  | Back-projection | `P_cam=[(u−cᵤ)Z/f, …]`, 4×4 downsample | s
+           ame | **match** |
+      159  | World transform | `P_world=R·P_cam+t` (§3③) | same (pose = i
+           nfra1 camera frame) | **match** |
+      160 -| Ray casting | free = pass-through, occupied = endpoint, unkn
+          -own behind | vectorized voxel traversal (§4.4 Bresenham-equiva
+          -lent) | **match** |                                           
+      160 +| Ray casting | free = pass-through, occupied = endpoint, unkn
+          +own behind | `_dda_batch`, vectorized Amanatides & Woo (§4.4 B
+          +resenham-equivalent), regression-tested against the single-ray
+          + reference | **match** |                                      
+      161  | **Weighted log-odds** | §4.5 ★ `w=exp(−trΣ/α)exp(−σ_Z²/β)`, 
+           `updateNode` direct | same, `updateNode(cell, w·l_meas)` | **m
+           atch** |
+      162  | **Safety asymmetry** | §4.6 ★ `|l_free|<|l_occ|` | `l_free=−
+           0.40 < l_occ=0.85` | **match** |
+      163  | Multi-drone accumulation | §4.7 log-odds additive into one t
+           ree | same builder, all robots | **match** |
+
+● Update(OCCUPANCY_PIPELINE.md)
+  ⎿  Added 1 line, removed 1 line
+      161  | **Weighted log-odds** | §4.5 ★ `w=exp(−trΣ/α)exp(−σ_Z²/β)`, 
+           `updateNode` direct | same, `updateNode(cell, w·l_meas)` | **m
+           atch** |
+      162  | **Safety asymmetry** | §4.6 ★ `|l_free|<|l_occ|` | `l_free=−
+           0.40 < l_occ=0.85` | **match** |
+      163  | Multi-drone accumulation | §4.7 log-odds additive into one t
+           ree | same builder, all robots | **match** |
+      164 -| Classification | occ / free / unknown, unknown≠free | `tau_o
+          -cc`, `tau_free` thresholds | **match** |                      
+      164 +| Classification | occ / free / unknown, unknown≠free | `tau_o
+          +cc = l_occ` (one observation can never suffice), `tau_free = 0
+          +` | **match** |                                               
+      165  | Ablation | Phase 3-7 uniform vs weighted | `weighted` flag +
+            `compare_weighting.py` | **match** |
+      166  | Optimiser / tooling | GTSAM + OpenCV + OctoMap-python, no C+
+           + edits | same | **match** |
+      167  
+
+● Update(OCCUPANCY_PIPELINE.md)
+  ⎿  Added 66 lines, removed 4 lines
+      184  
+      185  ## What this stage shows
+      186  
+      187 -On `default_3_zigzag_0`, a single drone yields a clean navigat
+          -ion occupancy map —                                           
+      188 -free interior, occupied walls, unknown beyond — from CoVOR fus
+          -ed poses + stereo.                                            
+      189 -The uncertainty weighting **changes the map in the safety dire
+          -ction**: in the                                               
+      190 -`z=0.8 m` slice, ~6–7 % of the cells that the standard (unifor
+          -m) map declares                                               
+      187 +On `default_3_zigzag_0`, a single drone yields a navigation oc
+          +cupancy map — free                                            
+      188 +interior, occupied walls, unknown beyond — from CoVOR fused po
+          +ses + stereo. The                                             
+      189 +uncertainty weighting **changes the map in the safety directio
+          +n**: in the                                                   
+      190 +`z=0.8 m` slice, 5.6 % of the cells that the standard (uniform
+          +) map declares                                                
+      191  *free* are held *unknown/occupied* by the weighted map, and th
+           ose suppressed cells
+      192  are spatially concentrated in the far / high-drift regions — e
+           xactly the
+      193  false-free that §4.6 targets. Quantitative IoU / false-free ev
+           aluation against GT
+      194  is the simulator stage (proposal §4.2, Phase 1-6/3-3), not MIL
+           UV.
+      195 +                                                              
+      196 +## Defects found and fixed (2026-07-23)                       
+      197 +                                                              
+      198 +The first version of this pipeline produced a map whose room b
+          +oundary looked                                                
+      199 +right but whose interior objects were missing and which was li
+          +ttered with                                                   
+      200 +floating occupied voxels. Diagnosed by measurement, in this or
+          +der.                                                          
+      201 +                                                              
+      202 +1. **Free evidence was counted 2–4× per cell.** `integrate_fra
+          +me` sampled each                                              
+      203 +   beam at `res/2` in *arc length* instead of doing a voxel tr
+          +aversal. Cells                                                
+      204 +   containing several samples of the same beam accumulated sev
+          +eral times the                                                
+      205 +   intended `l_free` (measured 2× on axis-aligned rays, up to 
+          +4× on diagonals),                                             
+      206 +   so effective `l_free` was −0.8…−1.6 against `l_occ = +0.85`
+          + — the §4.6 safety                                            
+      207 +   asymmetry was silently **inverted**. Arc-length sampling al
+          +so *skipped* cells a                                          
+      208 +   beam only clips (18 of 53 found on a body diagonal), biasin
+          +g the carving by ray                                          
+      209 +   direction. Fixed with `_dda_batch`; the object voxel count 
+          +rose 24 % (fused)                                             
+      210 +   and 30 % (GT), with the largest gains on the stands nearest
+          + the trajectory,                                              
+      211 +   which are seen from the most angles.                       
+      212 +2. **`tau_occ = 0` made one stereo mismatch a permanent cube.*
+          +* 75 % of the cells                                           
+      213 +   classified occupied were reachable by a single observation.
+          + Fixed by                                                     
+      214 +   `tau_occ = l_occ` (see above); floating voxels 2,393 → 1,24
+          +2 (fused) and                                                 
+      215 +   225 → 98 (GT).                                             
+      216 +3. **Teammate observations were mapped as static structure.** 
+          +79 % of the                                                   
+      217 +   floating voxels remaining in the GT map sat within 0.4 m of
+          + another drone.                                               
+      218 +   Fixed by `OccCfg.dyn_radius`; floating voxels 98 → 35 (GT) 
+          +with the object                                               
+      219 +   count untouched. On fused poses this changes nothing (1,242
+          + → 1,236), because                                            
+      220 +   the exclusion sphere is placed from an imprecise fused team
+          +mate position and                                             
+      221 +   the observer's own rotation error already puts the endpoint
+          + elsewhere.                                                   
+      222 +4. **`build_occupancy.py` reported post-pruning leaf counts.**
+          + `write_bt` is                                                
+      223 +   destructive (max-likelihood + prune) and ran before `visual
+          +ize`. Occupied                                                
+      224 +   structure barely prunes (1–3 % undercount, so the conclusio
+          +ns above are                                                  
+      225 +   unaffected) but free space prunes heavily — the same run re
+          +ported 172,802 free                                           
+      226 +   from this driver against 495,241 when classified first.    
+      227 +                                                              
+      228 +### Diagnosis: which failures are the map's, and which are the
+          + pose's                                                       
+      229 +                                                              
+      230 +`scripts/gt_pose_control.py` rebuilds the map from mocap GT po
+          +ses with everything                                           
+      231 +downstream unchanged, which splits the two. Against the fused 
+          +poses (median                                                 
+      232 +position error 0.19–0.26 m, median **rotation** error 21–34° a
+          +fter the best                                                 
+      233 +constant camera–body offset, since UWB ranges constrain positi
+          +on only and the                                               
+      234 +mono front-end has no gravity reference):                     
+      235 +                                                              
+      236 +- **Objects** are recovered by GT poses at 13/13 stands (media
+          +n 38 voxels each)                                             
+      237 +  but only 9–10/13 under fused poses, worst on the *nearest* s
+          +tands. Part                                                   
+      238 +  mapping bug (fixed above), part pose error.                 
+      239 +- **Floating cubes** are overwhelmingly a pose artefact: 736 r
+          +emain inside the                                              
+      240 +  room under fused poses against 29 under GT poses.           
+      241 +                                                              
+      242 +So the remaining gap between this map and a clean one is the f
+          +ront-end, not the                                             
+      243 +mapping stage — consistent with the deviation recorded below. 
+      244 +                                                              
+      245 +### Not changed, and why                                      
+      246 +                                                              
+      247 +- **SGBM settings** already include the left–right consistency
+          + check                                                        
+      248 +  (`disp12MaxDiff=1`), `uniquenessRatio=10` and speckle filter
+          +ing                                                           
+      249 +  (`speckleWindowSize=100`, `speckleRange=2`). Left as-is: the
+          + task is the                                                  
+      250 +  proposal's design, not a stereo bake-off.                   
+      251 +- **A hard "occupied only within 2–3 m" cutoff** is unnecessar
+          +y — `w_depth`                                                 
+      252 +  plus `tau_occ` already impose a graded version of it (see ab
+          +ove).                                                         
+      253 +- **Spreading the endpoint evidence over a σ_Z-wide Gaussian a
+          +long the beam**                                               
+      254 +  would be a more complete uncertainty-aware sensor model than
+          + weighting alone.                                             
+      255 +  It is a design change beyond the current §4.5 formula and is
+          + *not* implemented;                                           
+      256 +  flagged as the natural next step.                           
+
+● Update(OCCUPANCY_PIPELINE.md)
+  ⎿  Added 7 lines
+      181    pipeline runs as designed and that the weighting changes the
+            map in the
+      182    safety-conservative direction, rather than reporting an IoU/
+           false-free number
+      183    (which requires the simulator stage).
+      184 +- **The room has almost nothing in it.** `experiments.csv` mar
+          +ks                                                            
+      185 +  `default_3_zigzag_0` as `obstacles_bool = false`; the only r
+          +eal objects are the                                           
+      186 +  13 AprilTag stands, and they sit at the room perimeter, 0.6–
+          +3.8 m from the                                                
+      187 +  trajectory. Combined with `f·B = 21.7 px·m` (σ_Z = 0.42 m at
+          + 3 m, 1.15 m at                                               
+      188 +  5 m), this sequence is a weak demonstration of *object* mapp
+          +ing. The obstacle                                             
+      189 +  sequences (`obstacles_1_random3_0b`, already downloaded, and
+          + the                                                          
+      190 +  `cirObstacles_*` set) are the right target for that.        
+      191  
+      192  ## What this stage shows
+      193  
+
+  Ran 2 shell commands, wrote 1 memory (ctrl+o to expand)
+
+● 완료. 요약할게.
+
+  진단 결과
+
+  Step 1 — 가설 확정 (+ 예상 밖 두 번째 버그). 호길이 res/2 샘플링이 같은
+  voxel에 free 증거를 축 2배 / 대각 최대 4배 중복 투입 → 유효 l_free −0.8~−1.6
+  vs l_occ +0.85로 §4.6 안전 비대칭이 뒤집혀 있었음. 동시에 광선이 스치는 셀을
+  누락(대각 18/53, 임의 32/39)해서 방향 의존 편향까지 있었음.
+
+  Step 2 — 빈 방 아님, 다만 obstacles_bool=false. 태그 기둥 13개·삼각대·다른
+  드론이 실재하지만 전부 방 가장자리(궤적에서 0.6~3.8 m), f·B=21.7이라 3 m에서
+  σ_Z=0.42 m. 사물 매핑 시연에는 약한 시퀀스야.
+
+  Step 3 — 포즈 vs 매핑 분리. AprilTag 재투영으로 프레임 체인 검증 후 GT 포즈
+  대조군을 돌림. 융합 포즈는 위치 오차 median 0.19~0.26 m인데 회전 오차 median 
+  21~34° (UWB는 위치만 구속, mono 프론트엔드엔 중력 기준 없음). 결과: 사물 소실 
+  = 매핑 버그 + 포즈, 부유 큐브 = 압도적으로 포즈(내부 부유 fused 1,101 vs GT
+  130).
+
+  수정 (커밋 4개, 하나씩 분리)
+
+  ┌─────────┬─────────────────────────────┬─────────────────────────────────┐
+  │  커밋   │            내용             │           측정된 효과           │
+  ├─────────┼─────────────────────────────┼─────────────────────────────────┤
+  │         │ 정확한 벡터화 DDA           │ 사물 voxel                      │
+  │ 841147b │ (_dda_batch)                │ +24%(fused)/+30%(GT), 0.37      │
+  │         │                             │ s/frame                         │
+  ├─────────┼─────────────────────────────┼─────────────────────────────────┤
+  │ 29f8940 │ tau_occ = l_occ (관측       │ 부유 큐브 2,393→1,242(fused),   │
+  │         │ 1회로는 occupied 불가)      │ 225→98(GT)                      │
+  ├─────────┼─────────────────────────────┼─────────────────────────────────┤
+  │ 9d02784 │ 동료 드론 마스킹            │ GT 98→35, fused 변화 없음(null  │
+  │         │ (dyn_radius=0.35)           │ 결과도 기록)                    │
+  ├─────────┼─────────────────────────────┼─────────────────────────────────┤
+  │ e064866 │ write_bt 파괴적 →           │ free 카운트 172,802 → 495,241   │
+  │         │ 분류/플롯을 먼저            │ (기존 수치가 틀렸음)            │
+  └─────────┴─────────────────────────────┴─────────────────────────────────┘
+
+  회귀 테스트 tests/test_ray_traversal.py 6개 — 셀별 log-odds 값을 참조 DDA와
+  대조 (개수만 보던 기존 체크가 이 버그를 통과시켰던 게 이유).
+
+  재생성 결과
+
+  ┌──────────────────┬──────────┬─────────┐
+  │       지도       │ occupied │  free   │
+  ├──────────────────┼──────────┼─────────┤
+  │ ifo001 weighted  │ 22,055   │ 495,241 │
+  ├──────────────────┼──────────┼─────────┤
+  │ ifo001 uniform   │ 62,327   │ 501,973 │
+  ├──────────────────┼──────────┼─────────┤
+  │ 3대 협업         │ 40,780   │ 721,556 │
+  ├──────────────────┼──────────┼─────────┤
+  │ ifo001 GT 대조군 │ 24,626   │ 282,484 │
+  └──────────────────┴──────────┴─────────┘
+
+  Ablation 유지됨: z=0.8 슬라이스에서 uniform-free 8,497셀 중 473셀(5.6%, 이전
+  6.7%)을 weighted가 억제하고, 여전히 원거리·고드리프트 영역에 공간적으로 집중.
+  §4.6 false-free 억제 논리 유효.
+
+  Before/after: GT 포즈 기준 사물/부유 비가 4.4 → 14.0, 13개 기둥 전부 뚜렷한
+  덩어리로 매핑.
+
+  하지 않은 것과 이유
+
+  - SGBM 강화 — LR-check(disp12MaxDiff=1), uniquenessRatio=10, speckle 필터 이미
+  다 켜져 있음. 스테레오 튜닝은 과제 범위 밖.
+  - occupied 신뢰거리 2~3 m 하드 컷 — 불필요. w_depth가 Z=2/3/4/5 m에서
+  0.94/0.71/0.34/0.07이라 tau_occ 통과에 각각 약 2/2/4/17회 관측이 필요 — 이미
+  연속적으로 구현돼 있고 하드 컷보다 원리적으로 나음.
+  - σ_Z 공간 분산 — 설계 변경이라 승인 대기. 종단 증거를 한 voxel에 뾰족하게
+  찍는 대신 광선 방향 σ_Z 폭 가우시안으로 퍼뜨리는 건 §4.5 공식을 넘어서는
+  확장이야. 논문에서 "가중치뿐 아니라 증거의 공간 분포까지 불확실성 반영"이라고
+  쓸 수 있는 지점인데, 진행할까?
+
+  남은 제약 (정직하게)
+
+  지도 품질의 병목은 이제 매핑이 아니라 프론트엔드야. 회전 오차 21~34°가 fused
+  지도의 부유 큐브 736개(GT는 29개)와 근거리 기둥 소실을 만들고 있고, 이건
+  occupancy 단계에서 고칠 수 있는 게 아니야. 계획서가 상정한 VINS 프론트엔드면
+  중력으로 roll/pitch가 관측돼서 해소되는 문제고, 현재 문서에 deviation으로
+  기록해뒀어.
+
+  브랜치 occupancy-pipeline에 커밋만 되어 있고 main 병합·push는 안 했어 —
+  필요하면 말해줘.
+
+✻ Brewed for 32m 10s
+
+※ recap: Goal was fixing the occupancy map's missing objects and floating cubes; all four defects are diagnosed, fixed in four commits, and results regenerated with docs updated. Next: decide whether to spread endpoint evidence over a σ_Z-wide Gaussian, which needs your approval. (disable recaps in /config)
+
+❯ /export                                                                       
+  ⎿  Conversation exported to: /src/gs25058/cr_RNE/covor_slam/2026-07-23-213705-
+     covor-slam-lee-et-al-2023.txt
+
+❯ https://claude.ai/code/artifact/3f121241-8892-4dde-a315-8bd01460a124 이게     
+  수정된 occupancy map을제대로 3d viewer로 만든 게 맞아? 이전이랑 차이가 없는데 
+
+● 아니야, 그건 수정 전 지도야. 아티팩트는 어제 occ_3drone_weighted.bt(occupied
+  125,730)로 만들어 게시한 거고, 오늘 수정한 뒤로 재생성한 적이 없어. 새 3대
+  지도는 occ_v3_3drone_weighted.bt(occupied 40,780)라 데이터 자체가 다른
+  파일이야. 같은 URL로 갱신할게.
+
+  Read 1 file, ran 3 shell commands (ctrl+o to expand)
+
+● 상황 파악됐어. scripts/export_occupancy_web.py와 web/occupancy_viewer.html이
+  오늘 21:58~22:04에 만들어져 있는데(수정된 파이프라인 사용), 게시된 아티팩트는 
+  어제 22:52 버전 그대로야. 로컬에만 새 뷰어가 있고 URL에는 반영이 안 된 상태.
+  내가 템플릿을 직접 읽고 다시 생성해서 같은 URL로 올릴게.
+
+  Read 1 file (ctrl+o to expand)
+● 템플릿 확인했어 — 자체 완결형(외부 리소스 0)이고 페이로드 자리만 치환하는
+  구조야. 수정된 파이프라인으로 다시 생성한다.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Artifact(/src/gs25058/cr_RNE/covor_slam/web/occupancy_viewer.html)
+  ⎿  Error: This session hasn't viewed the latest version of the artifact. Read 
+     it first (WebFetch the URL), reapply your edits, then publish. force:true 
+     discards the other session's changes — use it only if the user asks to 
+     overwrite.
+
+● 다른 세션이 이 아티팩트를 갱신한 이력이 있어. 현재 게시된 내용부터 확인할게.
+
+● Fetch(https://claude.ai/code/artifact/3f121241-8892-4dde-a315-8bd01460a124)
+  ⎿  Received 1.8MB (200 OK)
+
+● 현재 게시본을 확인했어 — 확실히 어제 것이야: 1.8 MB(새 파일은 1.0 MB)이고,
+  subtitle이 옛 템플릿에 하드코딩된 형태(줄바꿈 포함)로 들어 있어. 새 템플릿은
+  __SUBTITLE__ 치환 방식이라 한 줄로 나와. 이제 최신본을 확인했으니 갱신할게.
+
+● Artifact(/src/gs25058/cr_RNE/covor_slam/web/occupancy_viewer.html)
+  ⎿  Updated ⧉ 
+     https://claude.ai/code/artifact/3f121241-8892-4dde-a315-8bd01460a124
+
+❯ /compact                                                                      
+
+● 맞아, 지적한 대로였어 — 아티팩트는 어제 게시본 그대로였고 수정 결과가 반영된 
+  적이 없었어. 이제 갱신했어. 브라우저를 새로고침(캐시 때문에 강력 새로고침
+  권장)하면 바뀐 게 보일 거야.
+
+  ⧉ https://claude.ai/code/artifact/3f121241-8892-4dde-a315-8bd01460a124
+
+  무엇이 바뀌었나
+
+  ┌───────────────┬───────────────────┬────────────────────────────────────┐
+  │               │   이전 게시본     │        지금 (7/23 수정 후)         │
+  │               │      (7/22)       │                                    │
+  ├───────────────┼───────────────────┼────────────────────────────────────┤
+  │ occupied      │ 125,730           │ 40,780                             │
+  │ voxel         │                   │                                    │
+  ├───────────────┼───────────────────┼────────────────────────────────────┤
+  │ 파일 크기     │ 1.8 MB            │ 1.0 MB                             │
+  ├───────────────┼───────────────────┼────────────────────────────────────┤
+  │ 적용된 수정   │ 없음              │ 정확 DDA · τ_occ=l_occ · 동료      │
+  │               │                   │ 마스킹                             │
+  └───────────────┴───────────────────┴────────────────────────────────────┘
+
+  눈으로 확인할 지점
+  - 우상단 HUD의 occupied 숫자가 40,780 — 이게 안 보이면 아직 캐시된 옛 페이지야
+  - 방 안을 채우던 부유 큐브 덩어리가 크게 줄어듦 (단발 관측 큐브 제거)
+  - 벽/바닥이 얇아지고 윤곽이 또렷해짐 (free 증거가 2~4배 과다 투입되던 게
+  정상화되면서 표면이 덜 뭉개짐)
+  - 높이 색상 범위가 −3.65~4.85 m로 재계산됨
+
+  왜 이렇게 됐는지 (재발 방지 차원)
+
+  web/occupancy_viewer.html은 오늘 22:04에 로컬에 생성돼 있었는데, 게시 단계가 
+  실행되지 않아서 URL에는 어제 것이 남아 있었어. 처음 갱신 시도에서 409 충돌이
+  났는데, 이건 다른 세션이 더 새 버전을 올려서가 아니라 이 세션이 게시본을 한 
+  번도 조회한 적이 없어서 나온 안전장치였고, 내용을 확인해보니 어제 버전이
+  맞았어.
+
+  참고
+
+  지금 뷰어는 3대 협업 융합-포즈 지도야. 앞서 진단에서 나온 대로, 남아 있는 부유
+  큐브 대부분(약 91%)은 융합 포즈의 회전 오차(median 21~34°) 산물이라 매핑
+  단계에서 더 지울 수 있는 게 아니야. GT 포즈 대조군 지도(부유 큐브 29개, 태그
+  기둥 13/13 뚜렷)를 별도 뷰어로 뽑으면 "매핑 파이프라인 자체는 정상, 병목은
+  프론트엔드"라는 걸 시각적으로 훨씬 설득력 있게 보여줄 수 있어. 필요하면
+  만들어줄게 — 그건 새 URL로 뽑는 게 나을 것 같고.
+
+✻ Baked for 4m 57s
+
+※ recap: Goal was fixing the occupancy map defects, and I've committed all fixes and just republished the 3D viewer artifact with the corrected 3-drone map. Next: you refresh the artifact URL to confirm it now shows 40,780 occupied voxels. (disable recaps in /config)
+
+❯ /compact                                                                      
+  ⎿  Compacted (ctrl+o to see full summary)
+  ⎿  Referenced file web/occupancy_viewer.template.html
+  ⎿  Read scripts/export_occupancy_web.py (161 lines)
+  ⎿  Referenced file OCCUPANCY_PIPELINE.md
+  ⎿  Read ../../.claude/projects/-src-gs25058-cr-RNE-covor-slam/memory/occupancy
+     -pipeline.md (56 lines)
+  ⎿  Read scripts/gt_pose_control.py (160 lines)
+
+❯ # 작업: MILUV의 VINS-Fusion baseline 제공 형태 조사 (실행 아님, 조사 우선)    
+                                                                                
+  ## 목적                                                                       
+  지금까지 프론트엔드는 ORB-SLAM3 mono였어. 이건 CoVOR-SLAM **재현**을 위한     
+  선택이었고, 그 재현은 `FAITHFUL_REPRODUCTION.md`로 이미 종료됐어. 이제 **본   
+  연구                                                                          
+  계획서의 원래 설계인 VINS-Fusion 프론트엔드로 전환**하려고 해.                
+                                                                                
+  계획서(`reference files/`의 연구계획서 md)에 다음이 명문화돼 있어 — 추측이    
+  아니라                                                                        
+  확인된 사실이야:                                                              
+  - 파이프라인 ① 단계 = **VINS-Fusion** (계획서 시스템 다이어그램, §① VIO)      
+  - **IMU가 스케일을 제공하므로 SE(3) 6-DoF로 단순화**, GTSAM 표준 `Pose3` 경로 
+  사용                                                                          
+    (계획서 명시). 즉 현재의 Sim(3) 우회는 재현용 임시 상태이고, 계획서 설계가  
+  아님.                                                                         
+  - VIO는 매핑, **UWB는 세 드론을 하나의 공통 좌표계로 묶는 정합** 역할 (계획서 
+  명시)                                                                         
+  - 구현 도구 표: **"① VIO = VINS-Fusion (MILUV 제공), C++, 실행만(수정         
+  없음)"**                                                                      
+  - 개발킷 설명: **"VINS-Fusion baseline 포함"**                                
+                                                                                
+  **이번 작업은 코드 전환이 아니라, 먼저 "MILUV가 VINS-Fusion을 어떤 형태로     
+  제공하는지"를 정확히 파악하는 조사야.** 이게 확정돼야 다음 작업(궤적을 fusion 
+  레이어에 연결)의 형태가 정해져. 조사 없이 실행 계획을 세우지 말 것.           
+                                                                                
+  ## 이미 확정된 사실 (재검증 불필요)                                           
+  - **IMU 캘리브는 이미 검증됨**: 직전 세션에서 AprilTag 재투영으로 T_cam_imu   
+    extrinsic·카메라 intrinsic·시간정렬이 전부 정상임을 확인했고, mocap 바디    
+  프레임                                                                        
+    = px4 IMU 프레임임도 확인됨. VI/VIO에 필요한 캘리브 기반은 이미 신뢰 가능.  
+  - **occupancy 파이프라인은 프론트엔드에 독립**: `covor/occupancy.py`의        
+    `OccupancyBuilder`는 `(pose, tr_sigma_pos, depth)` 인터페이스라 포즈 소스가 
+    바뀌어도 그대로 재사용됨. 이번 전환으로 occupancy 코드는 건드릴 필요 없음.  
+  - **현재 프론트엔드의 한계(전환 동기)**: fused 포즈의 위치 오차는 median      
+    0.19~0.26 m로 양호하나 **회전 오차가 median 21~34°**. 원인은 UWB가 위치만   
+    구속하고 mono 프론트엔드엔 중력 기준이 없어서. GT 포즈 대조군은 사물 13/13  
+  복원,                                                                         
+    방 내부 부유 큐브 130개(fused는 736개) — 즉 지도 병목이 매핑이 아니라       
+  프론트엔드                                                                    
+    회전 오차임이 측정으로 확정됨. VINS는 IMU 중력으로 roll/pitch를 관측해 이걸 
+    구조적으로 해소하는 게 목적.                                                
+                                                                                
+  ## 조사 항목 (핵심 — 이걸 먼저 확정)                                          
+                                                                                
+  ### 1. MILUV가 VINS-Fusion을 어떤 형태로 제공하는가?                          
+  데이터셋 폴더, MILUV devkit, 관련 문서/README를 뒤져서 다음 중 무엇인지 확정: 
+  - (A) **미리 계산된 VIO 궤적 파일**이 이미 있다 (드론별, 시퀀스별). 형식은?   
+  (TUM?                                                                         
+    csv? 자세만인지 공분산도 있는지, 타임스탬프 규약은?)                        
+  - (B) **실행 스크립트/런처**가 있어서 우리가 돌려야 한다 (ROS 필요 여부, 빌드 
+  상태)                                                                         
+  - (C) **VINS 설정(yaml)만** 제공하고 실행은 우리 몫이다                       
+  - (D) 그 외 / 혼합                                                            
+                                                                                
+  각 경우 실제 파일 경로와 내용 일부를 보여줘. 추측하지 말고 파일로 확인할 것.  
+                                                                                
+  ### 2. (A)라면 — 궤적 파일의 즉시 사용 가능성                                 
+  - 드론 3대 × 우리가 쓰는 시퀀스(`default_3_zigzag_0`, 그리고 이미 받아둔      
+    `obstacles_1_random3_0b`)에 대해 VIO 궤적이 실제로 존재하는가?              
+  - 자세만 있는가, 아니면 **공분산/불확실성 정보**도 있는가? (계획서 novelty가  
+    Σ 전파라 이게 중요. 없으면 어디서 얻을지 별도 논의 필요)                    
+  - 좌표계 규약(어느 프레임 기준인지), 타임스탬프가 우리 스테레오 이미지 파일명 
+    초와 정렬되는가? (현재 occupancy가 KF 시각↔스테레오 페어 매칭에 이걸 씀)    
+                                                                                
+  ### 3. (B)/(C)라면 — 실행 가능성 평가                                         
+  - ROS 의존성이 있는가? 학교 서버는 sudo 없음 — ORB-SLAM3 빌드가 지난번에      
+  어려웠던                                                                      
+    이력이 있음. VINS-Fusion 빌드/실행이 현실적인지 냉정하게 평가.              
+  - IMU 노이즈 파라미터(accel/gyro noise density, random walk)가                
+  데이터셋/설정에                                                               
+    제공되는가? VINS는 이게 있어야 제대로 동작.                                 
+  - 이미 빌드된 게 있는가? (환경 조사)                                          
+                                                                                
+  ### 4. IMU 데이터 자체                                                        
+  - MILUV의 IMU 스트림 위치·형식·rate 확인 (계획서: 드론당 IMU 2개).            
+  - 어느 IMU를 쓰는지(px4 vs 별도), 카메라와의 시간 동기 상태.                  
+                                                                                
+  ## 조사 후 산출물                                                             
+  1. 위 1~4의 **조사 결과 보고** (파일 경로·형식·가용성을 사실로). 특히 1번의   
+     A/B/C/D 판정.                                                              
+  2. 판정에 따른 **다음 작업 제안** (아직 실행하지 말 것):                      
+     - (A)면: 궤적을 fusion 레이어에 연결하는 경로. 현재 `covor/fusion.py`가 VO 
+       상대포즈 + Sim(3)를 먹는데, 이걸 VINS 절대궤적 + SE(3)로 바꾸는 범위.    
+     - (B)/(C)면: 실행 리스크 평가와 대안. (실행이 비현실적이면 그 사실도       
+  정직하게)                                                                     
+  3. **계획서 SE(3) 단순화가 코드에 미치는 영향 범위**를 미리 스케치:           
+     - `covor/factors.py`: 스케일 변수 `Sc`, `scale_prior`, odometry factor의   
+  스케일                                                                        
+       항 제거 → 순수 SE(3) pose graph                                          
+     - `fuse_and_dump.py`: 현재 Marginals가 rank-deficient 회피용으로 "모든     
+  변수에                                                                        
+       약한 prior"를 걸고 있는데, VINS면 roll/pitch가 중력으로 고정돼 남는      
+  게이지가                                                                      
+       yaw 1-DoF뿐 → 정칙화가 대폭 단순해지고, tr(Σ)가 정칙화 인공물이 아니라   
+  실제                                                                          
+       정합 불확실성이 됨 (novelty에 직접 이득)                                 
+     - `covor/occupancy.py`: 변경 없음 (인터페이스 독립)                        
+     위는 **범위 스케치만**. 실제 수정은 조사·판정 후 별도 작업.                
+                                                                                
+  ## 진행 방식 / 하지 말 것                                                     
+  - **조사 → 보고 → 제안** 순서. 조사 결과를 보고하기 전에 코드를 고치거나      
+  VINS를                                                                        
+    실행하지 말 것.                                                             
+  - ORB-SLAM3 IMU 모드(IMU_STEREO 등)로 우회하는 것을 **기본안으로 삼지 말      
+  것.**                                                                         
+    계획서가 VINS-Fusion을 명시하고 MILUV가 그걸 제공하므로, 우회는             
+  VINS-Fusion이                                                                 
+    실행 불가능함이 조사로 확인된 경우에만 대안으로 검토. (조사 전에 우회부터   
+    제안하지 말 것.)                                                            
+  - 현재 CoVOR 재현 결과(`FAITHFUL_REPRODUCTION.md`, ORB-SLAM3 mono             
+  파이프라인)를                                                                 
+    삭제·훼손하지 말 것. VINS 전환은 별도 경로이고, 재현 결과는 비교군으로      
+  보존.                                                                         
+  - occupancy 코드를 이번에 건드리지 말 것 (인터페이스가 이미 독립).            
+  - 커밋된 브랜치 상태를 확인하고, 새 작업은 적절한 브랜치에서.                 
+                                                                                
+  (참고: 원본 MILUV 논문과 연구계획서가 reference files에 있어. VINS 관련       
+  언급을                                                                        
+  논문에서도 교차 확인할 것.)                                                   
+
+● This is an investigation task — search MILUV's dataset/devkit/docs for how
+  VINS-Fusion is provided, then report and propose. No code changes, no running
+  VINS. Let me survey the ground first, then delegate the deep dives.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Rich set of hits — configs, a launcher, a Dockerfile, and paper scripts. The
+  most decisive question is whether VINS output is shipped (precomputed
+  trajectories) or must be run. Let me check the data folder and the key VINS
+  files directly.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● No precomputed VINS output in data/, and run_vins.sh runs VINS live over a
+  .bag via roslaunch — but the downloaded data has no .bag files (only extracted
+  CSVs + image folders). That's decisive-looking, but I need to confirm whether
+  VINS outputs ship separately (Figshare) or the devkit loads them. Let me
+  check the paper scripts, the MILUV DataLoader, the vins.yaml, and the build
+  setup.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● VINS output is not shipped — load_vins reads data/vins/{exp}/{robot}_vio.csv,
+  which is produced by running run_vins.sh (roslaunch) over a .bag. And the .bag
+  files aren't in the current download. So this is looking like case (B)/(C).
+  Now I need: the exact VINS output columns (covariance?), the vins.yaml (IMU
+  noise, extrinsics, topics), build feasibility, and the IMU streams. Let me
+  pull those and cross-check the proposal in parallel.
+  Ran 4 shell commands (ctrl+o to expand)
+
+● Explore(Cross-check proposal + MILUV paper on VINS)
+  ⎿  Backgrounded agent (↓ to manage · ctrl+o to expand)
+
+● The picture is now sharp. Two more things to nail down: whether the .bag files
+  exist anywhere (VINS needs them) or must be reconstructed, and whether the
+  VINS output carries covariance (it doesn't appear to). Let me confirm.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Important correction: the .bag files are present (my echo label was misleading
+  — find did list them). So the raw bags exist per sequence/robot. That changes
+  feasibility materially. Let me confirm bag sizes and whether Docker/ROS is
+  available on this server — that's the crux of the run-it-ourselves question.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Decisive feasibility facts emerging: bags exist for our sequences, but no ROS 
+  installed, and the Docker daemon isn't reachable (user lacks permission, no
+  sudo). Let me check for any escape hatch — docker group membership, rootless
+  docker, or podman.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Let me check whether there's any pre-existing VINS-Fusion build on disk (the
+  covins micromamba env hints at prior collaborative-VINS work), since that
+  would change the feasibility verdict.
+
+  Listed 1 directory (ctrl+o to expand)
+
+● A major feasibility find: there's a conda-based ROS environment (covins env
+  has setup.bash, librosbag.so, libpcl_ros_*.so — a RoboStack-style ROS) and a
+  built catkin workspace /src/gs25058/ws/covins_ws. That's a no-sudo/no-Docker
+  ROS toolchain already on disk. Let me identify the ROS distro and confirm the
+  rosbag/catkin CLI works — this is the pivot for the "can we run VINS
+  ourselves" verdict.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Let me confirm whether that conda-ROS env has the runtime CLIs
+  (roscore/roslaunch/rosbag), not just build tools — that decides whether
+  MILUV's roslaunch vins.launch + rosbag play flow can run here at all.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The conda covins env has the full ROS1 runtime (roscore/roslaunch/rosbag +
+  ros_comm) — a complete RoboStack ROS in conda, no sudo/Docker needed. That's
+  the feasibility unlock. Last technical check: the timestamp-alignment path
+  between VINS output and our stereo-image seconds.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Timestamp alignment is clean (timeshift.yaml present for both sequences;
+  load_vins rebases ns→s to the same clock as our extracted stereo images). Let
+  me confirm the ROS distro name and verify the current fusion code structure so
+  my SE(3) scope sketch is accurate, while the proposal cross-check agent
+  finishes.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● I now have all the direct evidence I need. The proposal/paper cross-check
+  agent is still finishing, but my findings come straight from the MILUV files,
+  so here is the investigation report. (I'll fold in any correction from the
+  paper cross-check when it lands.)
+
+  ---
+  조사 보고: MILUV의 VINS-Fusion 제공 형태
+
+  판정: (C) + (B) 혼합 — 설정·런처·빌드레시피는 제공, 실행 산출물은 
+  미제공(우리가 돌려야 함)
+
+  MILUV는 VINS 궤적을 미리 계산해 제공하지 않는다. 대신 (i) 드론별 VINS 설정
+  yaml, (ii) 실행 런처, (iii) VINS-Fusion을 소스에서 빌드하는 Docker 레시피,
+  (iv) 원본 rosbag을 준다. VIO 궤적은 우리가 직접 실행해 생성해야 한다.
+
+  ---
+  1. 제공 형태 (파일 근거)
+
+  ┌─────────┬─────────────────────────────┬─────────────────────────────────┐
+  │ 구성요  │            경로             │              내용               │
+  │   소    │                             │                                 │
+  ├─────────┼─────────────────────────────┼─────────────────────────────────┤
+  │ VINS    │ config/vins/ifo00{1,2,3}/vi │ IMU 노이즈·외부파라미터·토픽·td │
+  │ 설정    │ ns.yaml                     │  완비                           │
+  ├─────────┼─────────────────────────────┼─────────────────────────────────┤
+  │ 런처    │ examples/run_vins.sh,       │ roslaunch miluv vins.launch +   │
+  │         │ launch/vins.launch          │ rosbag play                     │
+  ├─────────┼─────────────────────────────┼─────────────────────────────────┤
+  │ 빌드    │ examples/vins.Dockerfile,   │ ROS Melodic 이미지에            │
+  │ 레시피  │ vins_docker_compose.yaml    │ VINS-Fusion을 git clone +       │
+  │         │                             │ catkin_make                     │
+  ├─────────┼─────────────────────────────┼─────────────────────────────────┤
+  │ 원본    │ data/<seq>/ifo00N.bag       │ 우리 시퀀스 모두 존재 (아래)    │
+  │ 데이터  │                             │                                 │
+  ├─────────┼─────────────────────────────┼─────────────────────────────────┤
+  │         │ miluv/utils.py:             │                                 │
+  │ 로더/평 │ load_vins/save_vins,        │ data/vins/<seq>/<robot>_vio[_lo │
+  │ 가      │ paper/vins_all.py,          │ op].csv를 읽음                  │
+  │         │ paper/evaluate_vins.py      │                                 │
+  └─────────┴─────────────────────────────┴─────────────────────────────────┘
+
+  결정적 사실: data/vins/ 디렉토리와 *_vio.csv는 디스크에 없다 (find로 확인).
+  run_vins.sh가 생성하는 산출물이다:
+
+  timeout $dur roslaunch miluv vins.launch robot:=$robot bag:=$bag
+  mv vio.csv       $exp_name/${robot}_vio.csv
+  mv vio_loop.csv  $exp_name/${robot}_vio_loop.csv
+
+  즉 VINS는 "MILUV 제공, 실행만(수정 없음)"이 맞다 — 계획서 문구와 정확히 일치.
+  다만 "제공"은 설정+런처+빌드레시피이고 궤적 파일은 아니다.
+
+  ---
+  2. 산출물 형식 — ⚠️ 공분산 없음 (novelty에 직접적 영향)
+
+  load_vins가 읽는 vio.csv 컬럼 (11개, utils.py:407):
+
+  timestamp, pose.position.{x,y,z}, pose.orientation.{x,y,z,w},
+  twist.linear.{x,y,z}
+
+  - 자세(pose) + 속도(twist)만. 불확실성/공분산 컬럼이 전혀 없다.
+  - 이건 VINS-Fusion vins_estimator의 표준 vio.csv 덤프 형식 그대로다 (TUM 유사
+  + 속도).
+  - 계획서 novelty가 Σ 전파인데, MILUV가 주는 VINS 산출물엔 Σ가 없다. → 별도 
+  논의 필요 (아래 §제안 3).
+
+  타임스탬프 정렬은 깨끗함: load_vins가 ns→s 변환 후 timeshift.yaml(두 시퀀스
+  모두 존재)로 재기준화한다. 이는 우리 occupancy가 쓰는 추출 스테레오 이미지
+  파일명(초 단위)과 동일 시계다. → VINS 궤적↔스테레오 KF 매칭에 추가 정렬
+  불필요.
+
+  ---
+  3. 실행 가능성 — 막힘 → 뜻밖의 탈출구 발견
+
+  의도된 경로(Docker)는 이 서버에서 막힘
+
+  - docker 바이너리는 있으나 데몬 접근 불가(그룹 gs25058만, docker 그룹 아님),
+  passwordless sudo 없음.
+  - 시스템 ROS 없음(/opt/ros 없음). rootless 컨테이너 전제인 newuidmap/newgidmap
+  부재 → podman/rootless도 사실상 불가.
+  - → MILUV의 vins.Dockerfile(ROS Melodic + nvidia + privileged) 경로는 관리자 
+  조치 없이는 불가.
+
+  그러나 — conda 기반 ROS1 Noetic이 이미 있다 (핵심 발견)
+
+  - micromamba/envs/covins 는 RoboStack ROS1 Noetic 완본:
+  roscore·roslaunch·rosbag·rosrun 런타임 + catkin_make +
+  ros_comm/rosbag_storage/pcl_ros 전부 존재. sudo·docker 불필요.
+  - /src/gs25058/ws/covins_ws 에 빌드된 catkin 워크스페이스가 있고, 그 의존성
+  세트에 ceres_catkin·opencv3_catkin·eigen_catkin·suitesparse — 즉 VINS-Fusion 
+  빌드에 필요한 것들이 이미 이 conda-ROS 안에 갖춰져 있다.
+  - 하드웨어: RTX A6000 ×2 (VINS는 GPU 불필요, CPU/Ceres).
+
+  평가: VINS-Fusion을 이 conda-Noetic 워크스페이스에서 catkin으로 소스 빌드 →
+  rosbag play + roslaunch로 우리 bag을 돌리는 경로가 현실적으로 가능하다.
+  Docker/sudo 벽을 우회한다. (ORB-SLAM3 빌드가 어려웠던 건 시스템 의존성
+  때문이었는데, 여기선 conda가 Ceres/OpenCV/Eigen을 이미 제공.) 리스크:
+  VINS-Fusion이 Melodic 기준으로 쓰였으나 Noetic(C++14/OpenCV4)에서 소소한
+  패치가 필요할 수 있음 — 알려진 흔한 이슈이고 해결 가능.
+
+  bag 가용성 (모두 존재)
+
+  default_3_zigzag_0/ifo00{1,2,3}.bag   각 1.4G
+  obstacles_1_random3_0b/ifo001.bag     961M
+  default_3_random_0/ifo00{1,2,3}.bag   ~0.4G
+
+  IMU 파라미터 (완비)
+
+  vins.yaml에 acc_n=0.0490, gyr_n=0.0234, acc_w=0.0153, gyr_w=0.0060, 
+  g_norm=9.805, td=0.000207, estimate_extrinsic:0 + body_T_cam0/1 명시. VINS가
+  제대로 동작할 조건 충족.
+
+  ---
+  4. IMU 데이터
+
+  - 스트림 2종/드론: imu_px4.csv(≈56.7k행), imu_cam.csv(≈59.2k행), 컬럼
+  timestamp, angular_velocity.{xyz}, linear_acceleration.{xyz}.
+  - VINS가 쓰는 IMU = px4 (imu_topic: /ifoNNN/mavros/imu/data_raw). imu_px4는
+  중력이 Z축(≈+9.8), imu_cam은 Y축(≈−9.74). px4 IMU = mocap 바디 프레임은 직전
+  세션에서 AprilTag 재투영으로 검증됨 → VINS의 중력정렬 결과가 우리 GT 프레임과
+  정합.
+  - 추출 CSV는 bag에서 preprocess/read_bags.py로 뽑은 것. VINS는 CSV가 아니라
+  bag의 IMU/이미지 토픽을 직접 소비.
+
+  ---
+  제안 (실행 전 — 승인 필요)
+
+  판정에 따른 다음 작업: (B)/(C)이므로 "conda-Noetic에서 VINS-Fusion 빌드 → 우리
+  bag 실행"
+
+  1. covins conda-Noetic 워크스페이스(또는 별도 catkin_ws)에 VINS-Fusion clone +
+  catkin_make. 먼저 default_3_zigzag_0/ifo001 한 개만 돌려 vio_loop.csv 산출 →
+  evaluate_vins로 mocap 대비 RMSE 확인(파이프라인 검증). 이 단계에서 빌드
+  리스크를 조기에 판정.
+  2. 성공 시 3드론 × 2시퀀스로 확장, data/vins/<seq>/<robot>_vio_loop.csv 생성.
+
+  fusion 레이어 연결 범위 (VINS 절대궤적 + SE(3))
+
+  현재 covor/factors.py는 VO 상대포즈 + per-edge 스케일 변수 Sc(k,i)(Sim(3)류)를
+  먹는다. VINS는 metric 절대궤적이므로:
+  - covor/factors.py: Sc·scale_prior·scale random-walk·odometry_factor의 s_*dt
+  항 제거 → 순수 Pose3 between-factor. VINS 궤적을 KF에서 상대포즈로 변환해
+  넣거나, 절대 prior로 직접 투입.
+  - fuse_and_dump.py: 현재 rank-deficient 회피용 "모든 변수 약한 prior(σ=10)"는
+  UWB가 위치만 구속해 회전 게이지가 자유롭기 때문. VINS면 중력으로 roll/pitch 
+  고정 → 남는 게이지 yaw 1-DoF + 위치뿐, 정칙화 대폭 단순화. 그 결과 tr(Σ_pos)가
+  정칙화 인공물이 아니라 실제 정합 불확실성이 됨 — novelty(가중 log-odds)에
+  직접 이득.
+  - covor/occupancy.py: 변경 없음 ((pose, tr_sigma_pos, depth) 인터페이스 독립).
+
+  Σ 문제 (반드시 사전 논의)
+
+  MILUV VINS 산출물엔 공분산이 없다. novelty의 pose-불확실성 항 w=exp(−trΣ/α)을
+  살리려면 소스가 필요:
+  - (a) fusion 단계 GTSAM Marginals에서 tr(Σ_pos) — 지금 방식 유지, VINS로
+  게이지가 정칙화돼 더 의미있어짐. 가장 자연스러운 경로.
+  - (b) VINS-Fusion 코드에서 marginal 공분산 덤프 추가 — 단, 계획서 "VINS 수정
+  없음" 원칙 위배.
+  - (a)가 원칙과 novelty 모두에 부합. 이 방향으로 갈지 확인 필요.
+
+  ---
+  보존/원칙 확인
+
+  - FAITHFUL_REPRODUCTION.md·ORB-SLAM3 mono 재현 결과는 비교군으로 보존 — VINS
+  전환은 별도 경로.
+  - ORB-SLAM3 IMU 모드 우회는 기본안 아님 — 위 conda-Noetic 경로로 VINS-Fusion이
+  실행 가능하다고 판단되므로 우회 불필요.
+  - occupancy 코드 미변경.
+  - 현재 브랜치 occupancy-pipeline(HEAD a0a5e07). VINS 작업은 새 브랜치에서 시작
+  권장.
+
+  ---
+  아직 아무것도 실행/수정하지 않았다. 다음 중 뭘 진행할지 알려줘: ①
+  conda-Noetic에서 VINS-Fusion 빌드 시도(zigzag/ifo001 1개로 스모크 테스트), ②
+  그 전에 Σ 경로((a) 확정) 결정, ③ 관리자에게 docker 접근 요청(대안 경로 확보).
+  병행 중인 계획서·MILUV 논문 정독 결과가 오면 §1·§2에 인용을 보강하겠다.
+
+✻ Worked for 5m 20s
+
+● Agent "Cross-check proposal + MILUV paper on VINS" finished · 5m 23s
+
+● 교차검증 완료 — 계획서·MILUV 논문 정독 결과가 보고를 확인하고, 한 곳을
+  정정한다.
+
+  인용 보강 (§1–§2 확정)
+
+  계획서 (VINS-Fusion 명문화 확인):
+  - §3 ①: "각 드론은 VINS-Fusion을 실행 … $T_{L_kC_k}\in SE(3)$", 결과는 "연속
+  키프레임 간 상대 이동 $\hat Z^k_n$으로 요약되어 다음 단계로 전달"
+  - §② 2.2 "설계 결정 — SE(3) 채택": "CoVOR는 $Sim(3)$(7-DoF) … 본 연구는 IMU가 
+  스케일 제공하므로 $SE(3)$(6-DoF)로 단순화, GTSAM 표준 Pose3 사용"
+  - §7.3 도구표: "① VIO | VINS-Fusion (MILUV 제공) | C++ | 실행만(수정 없음)"
+  - §4.1: "개발킷 … VINS-Fusion baseline 포함"
+
+  MILUV 논문 (§8.3): "The MILUV development kit employs VINS-Fusion as a VIO 
+  benchmark … utilizes the calibrated IMU and stereo-camera … each robot runs
+  its own VINS-Fusion independently." 출력은 pose 궤적 + RMSE(Table 9)뿐 — 논문 
+  전체에 "covariance"·"uncertainty" 0회.
+
+  정정: Σ 문제는 문제가 아니다 (설계상 의도됨)
+
+  앞서 §2에서 "VINS 산출물에 공분산 없음 → 별도 논의 필요"라 했는데, 계획서를
+  보니 애초에 VINS에서 Σ를 뽑을 계획이 아니었다. 계획서 §2.5가 명시:
+
+  ▎ "최적화 수렴 후 GTSAM의 marginal covariance로 각 자세의 불확실성 $\Sigma^k_n
+  ▎ = [H^{-1}]_{(k,n)}$" — "선행연구에서는 이 정보가 융합 단계에서 소비되고 
+  ▎ 폐기된다. 본 연구는 이를 ④단계로 전달한다. 이것이 핵심 기여의 출발점."
+
+  즉 VIO는 상대이동 $\hat Z^k_n$(between-factor로 "각 드론의 특징점·IMU 정보가
+  압축")만 넘기고, Σ는 우리 GTSAM 융합에서 $H^{-1}$로 산출 — 지금
+  fuse_and_dump.py가 하는 그대로다. 따라서 §제안의 Σ 경로 (a)는 "가장 자연스러운
+  선택"이 아니라 계획서가 규정한 유일한 설계다. Σ 관련 사전 결정 불필요 — 열려
+  있던 항목 하나가 닫혔다.
+
+  추가 유의점: MILUV의 Vicon 정렬을 쓰지 말 것
+
+  논문 §8.3: "VIO estimates are post-processed to be expressed w.r.t. a common …
+  Vicon frame $F_a$." → evaluate_vins가 만드는
+  _vio_loop_aligned_and_shifted.csv는 mocap(Vicon)으로 이미 정렬된 궤적이다.
+  우리는 정반대가 필요하다 — **각 드론의 원본 로컬 VINS 프레임 $L_k$**를 쓰고,
+  드론 간 정합은 **UWB(②단계)**가 하게 해야 한다(계획서 "UWB는 정합, VIO는
+  매핑"). 즉 연결 시 _vio_loop.csv(raw, 정렬 전) 또는 run_vins.sh의 원출력을
+  소비하고, MILUV의 Vicon-align 후처리는 비교·검증용으로만 쓴다.
+
+  ---
+  정정 반영하면 열린 결정은 둘뿐이야:
+  1. conda-Noetic(covins env)에서 VINS-Fusion 빌드 → default_3_zigzag_0/ifo001 
+  1개 스모크 테스트 진행할까? (빌드 리스크를 가장 먼저 판정)
+  2. 아니면 그 전에 관리자에게 docker 접근 요청해서 MILUV의 의도된 Dockerfile
+  경로를 확보하는 쪽을 선호해?
+
+  둘 다 실행 전이고, 내 판단으론 conda-Noetic 경로가 이미 손에 있으니 1번 스모크
+  테스트가 가장 빠른 진위 판정이야.
+
+✻ Crunched for 7m 20s
