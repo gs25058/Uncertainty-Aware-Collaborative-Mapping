@@ -727,17 +727,28 @@ this asks "does tr(Σ) predict where the map is actually wrong?" without circula
 Per-cell attribution = evidence-weighted mean tr(Σ) of the frames that wrote the cell
 (`OccCfg.track_sigma_attribution`). Within-condition only.
 
-| cond | n free cells | Spearman ρ | top-5 deciles, false-free rate |
-|---|---|---|---|
-| A | 310,251 | +0.0474 | 5.03 → 6.29 → 7.11 → 7.63 → **8.19 %** monotone |
-| C | 307,691 | +0.0183 | 3.29 → 4.26 → 5.59 → 5.92 → **7.78 %** monotone |
-| D | 305,282 | −0.0136 | no pattern (tr(Σ) spans only 0.00098–0.00235) |
+**Read the deciles, not ρ.** False-free is a binary outcome at ~5 % prevalence, and
+a Spearman between a continuous variable and a rare binary one is bounded far below
+1 by the tie structure. Measured ceiling under perfect separation at these
+prevalences: **0.40 / 0.38 / 0.36** for A / C / D. So the observed ρ are **12 % / 5 %
+/ 4 % of the achievable maximum** — not "near zero", and the p-values (~1e-153 at
+n = 310 k) say nothing about effect size either way.
 
-ρ is **statistically overwhelming and practically tiny** (p ~ 1e-153 at n = 310 k) —
-read the deciles, not the p-value. The upper half is cleanly monotone in both A and
-C: over the top five deciles false-free rises 1.6× (A) and 2.4× (C). The lower
-deciles are noisy and non-monotone. So **tr(Σ) is a real but weak predictor of
-false-free risk, and only in its upper range** — consistent with the earlier finding
+Decile of cell tr(Σ) → false-free rate (**the primary presentation**):
+
+| decile | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | bottom→top |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| **A** | 4.08 | 5.74 | 5.79 | 4.15 | 3.90 | 5.03 | 6.29 | 7.11 | 7.63 | **8.19** | **2.0×** |
+| **C** | 5.20 | 6.57 | 4.52 | 4.28 | 4.27 | 3.29 | 4.26 | 5.59 | 5.92 | **7.78** | 1.5× (top half **2.4×**) |
+| D | 5.06 | 5.00 | 5.93 | 4.41 | 3.70 | 3.91 | 4.69 | 4.88 | 3.71 | 4.54 | 0.9× (no pattern) |
+
+(n ≈ 310 k / 308 k / 305 k free cells; ρ = +0.0474 / +0.0183 / −0.0136.)
+
+The upper half is cleanly monotone in both A and C — a cell whose evidence came from
+the least certain poses is **1.6–2.4× more likely to be falsely called free**. The
+lower deciles are noisy. D has no pattern, which is expected: its tr(Σ) spans only
+0.00098–0.00235, so there is nothing to resolve. So **tr(Σ) is a real, moderate
+predictor of false-free risk, concentrated in its upper range** — consistent with the earlier finding
 that it ranks poorly overall, and with a per-frame multiplicative weight being too
 blunt to exploit it. Caveat: in A, tr(Σ) grows along the odometry chain and so
 correlates with observation time and place; C's tr(Σ) is range-geometry-driven rather
