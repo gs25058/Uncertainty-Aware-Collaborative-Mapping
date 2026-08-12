@@ -56,7 +56,7 @@ ifo001 **94 %** / ifo002 **93 %** / ifo003 **98 %** — the fragmentation from p
 
 Per-robot ATE-RMSE (m) vs mocap ground truth. VO baseline aligned with scale
 (Sim3, `with_scale=True`); fused trajectories are metric (`with_scale=False`).
-Reproduce with `python scripts/faithful_covor.py` (rows → `diagnosis_results.csv`).
+Reproduce with `python scripts/faithful_covor.py` (rows → `results/diagnosis_results.csv`).
 
 | config | ifo001 | ifo002 | ifo003 | mean |
 |---|---|---|---|---|

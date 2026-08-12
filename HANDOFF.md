@@ -494,7 +494,7 @@ mocap 프레임에 있다. **정합 격차 지표는 조건별 게이지 prior �
 ## 12. §4.9 매개 검정 — 포즈 항은 개선을 만들지 않는다 (2026-08-08)
 
 상세는 `OCCUPANCY_PIPELINE.md` "§4.9 mediation test". 데이터는
-`results_49_mediation.csv`, `results_49_cellcorr.csv`.
+`results/results_49_mediation.csv`, `results/results_49_cellcorr.csv`.
 
 `w = w_pose·w_depth`라 `weighted=False`는 둘 다 끄므로 이미 확립된 깊이 항을 다시 재는
 것에 그친다. **`OccCfg.use_w_pose=False` 신설**로 w_pose만 1로 대체 → 3-arm.
@@ -552,7 +552,7 @@ D는 trΣ 폭이 0.00098~0.00235뿐이라 분해할 신호가 없다(무패턴�
 ## 13. 공간 분산 대안 — 사전등록 검정 결과 **불성립** (2026-08-08)
 
 사전등록: `PREREG_spatial_spread.md`(커밋 `6ac161c`, **구현 전**). 파라미터 동결, 1회 검정.
-데이터 `results_49_spread.csv`. 상세는 `OCCUPANCY_PIPELINE.md` 말미.
+데이터 `results/results_49_spread.csv`. 상세는 `OCCUPANCY_PIPELINE.md` 말미.
 
 **구현은 먼저 검증했다**(등록 §9): 단순 루프 참조 구현과 **셀별 log-odds가 4.4e-16까지
 일치**, 질량 보존 확인. 성능 0.21 s/frame(기준 0.23).

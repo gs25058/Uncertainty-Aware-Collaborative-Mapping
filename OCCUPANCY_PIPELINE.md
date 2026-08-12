@@ -777,7 +777,7 @@ formula and is a design decision, not a tuning knob.
 ## Spatial spreading of pose uncertainty — **NOT ESTABLISHED** (2026-08-08)
 
 Pre-registered in `PREREG_spatial_spread.md` and committed (`6ac161c`) before any
-implementation. Parameters frozen there; run once. Data: `results_49_spread.csv`.
+implementation. Parameters frozen there; run once. Data: `results/results_49_spread.csv`.
 
 Implementation verified first, as §9 of the registration required: against a
 plain-loop reference, **per-cell log-odds agree to 4.4e-16** and the occupied mass is

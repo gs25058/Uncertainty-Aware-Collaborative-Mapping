@@ -25,7 +25,7 @@ from covor.fusion import CoVOR, Cfg
 from covor import evaluate as E, factors as F, data as D
 
 SEQ = sys.argv[1] if len(sys.argv) > 1 else "default_3_zigzag_0"
-OUT = "/src/gs25058/cr_RNE/covor_slam/sweep_results.csv"
+OUT = "/src/gs25058/cr_RNE/covor_slam/results/sweep_results.csv"
 MAX_ITER = 30
 
 FIELDS = ["seq", "tag", "bias_mode", "range_sigma_floor", "huber_k", "prior_every",

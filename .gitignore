@@ -10,7 +10,10 @@ orbslam_driver/mono_miluv
 reference files/
 *-reference-files*.txt
 *-covor-slam-*.txt
+*-handoffmd.txt
+*-this-session-*.txt
 과거_세션_대화_기록.txt
+untitled.txt
 
 # ---- local tooling / editor state ----
 .claude/
