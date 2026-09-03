@@ -97,6 +97,27 @@ class Cfg:
     #   inheritance, kept only as a side condition for continuity with earlier numbers.
     inter_pairs: tuple = None
     anchor_robots: tuple = None
+
+    # --- synthetic UWB observation model (scripts/sweep_uwb_noise.py) ---
+    # Replaces the measured `range` VALUE with gt_range + controlled error, so the
+    # "fusion helps only when VO error > UWB effective accuracy" proposition can be
+    # turned from a claim into a curve. TIMESTAMPS AND ASSOCIATION ARE UNTOUCHED --
+    # only the value changes. (The ORB-era failure was losing 89.9 % of the UWB
+    # association; perturbing the association structure here would confound that.)
+    # gt_range is antenna-to-antenna (verified sub-mm), so it is consistent with
+    # use_moment_arm=True.
+    #   None            -> use the real measurement, as before
+    #   dict(sigma=..., bias=bool, outlier=bool, seed=int)
+    #     sigma    Gaussian noise sigma [m]
+    #     bias     add the measured per-kind bias (anchor +0.0871, inter +0.0035)
+    #     outlier  with the measured rate (anchor 8.61 %, inter 2.17 %) add
+    #              +U(0.5, 1.8) m -- one-sided because 99.8 % of measured
+    #              |e| > 0.5 m outliers are positive
+    range_inject: dict = None
+    # sigma handed to the range factor. None -> max(csv_std, range_sigma_floor) as
+    # before. With synthetic ranges the csv `std` column describes a measurement
+    # that no longer exists, so the sweep sets this explicitly.
+    range_sigma_override: float = None
     range_sigma_floor: float = 0.3   # realistic UWB noise floor (empirical resid std)
     range_bias: float = 0.14         # systematic offset (antenna moment arm); const-mode value
     bias_mode: str = "const"         # "const" | "online" | "off": antenna-bias handling
@@ -214,6 +235,36 @@ class CoVOR:
         self.ranges = D.load_ranges(seq)
         self.arms = D.load_tag_arms()   # per-tag body-frame moment arms (tags.yaml)
         self.stats = {}
+
+    # -- synthetic observation model ----------------------------------------
+    # Measured on default_3_zigzag_0 from e = range - gt_range (n = 24,787):
+    #   anchor  bias +0.0871  std 0.2457  P(|e|>0.5) = 8.61 %
+    #   inter   bias +0.0035  std 0.1660  P(|e|>0.5) = 2.17 %
+    # 99.8 % of the |e| > 0.5 m tail is positive, magnitudes 0.50-1.78 m.
+    _BIAS = {"anchor": 0.0871, "inter": 0.0035}
+    _P_OUT = {"anchor": 0.0861, "inter": 0.0217}
+
+    def _inject_range(self, r):
+        """gt_range + bias + N(0, sigma) + outlier, per cfg.range_inject.
+
+        Deterministic in (seed, timestamp, from_id, to_id) so a row gets the same
+        perturbation regardless of iteration order or how many rows are skipped --
+        the sweep's seeds are then reproducible and comparable across conditions.
+        """
+        c = self.cfg.range_inject
+        kind = str(r["kind"])
+        z = float(r["gt_range"])
+        if c.get("bias"):
+            z += self._BIAS[kind]
+        key = (int(c.get("seed", 0)), float(r["timestamp"]),
+               int(r["from_id"]), int(r["to_id"]))
+        rng = np.random.default_rng(abs(hash(key)) % (2 ** 32))
+        sd = float(c.get("sigma", 0.0))
+        if sd > 0:
+            z += rng.normal(0.0, sd)
+        if c.get("outlier") and rng.random() < self._P_OUT[kind]:
+            z += rng.uniform(0.5, 1.8)
+        return z
 
     # -- keyframe association -------------------------------------------------
     def _assoc(self, k, t):
@@ -333,11 +384,16 @@ class CoVOR:
             ia, slop_a = self._assoc(ka, t)
             if ia is None:
                 continue
-            if c.use_gt_range:
+            if c.range_inject is not None:
+                z = self._inject_range(r)
+                sig = (c.range_sigma_override if c.range_sigma_override is not None
+                       else max(float(r["std"]), c.range_sigma_floor))
+            elif c.use_gt_range:
                 z = float(r["gt_range"]); sig = c.gt_range_sigma
             else:
                 z = float(r["range"]) - (c.range_bias if c.bias_mode == "const" else 0.0)
-                sig = max(float(r["std"]), c.range_sigma_floor)
+                sig = (c.range_sigma_override if c.range_sigma_override is not None
+                       else max(float(r["std"]), c.range_sigma_floor))
             ma = c.use_moment_arm
             la = self.arms.get(int(r.from_id)) if ma else None
             if r["kind"] == "anchor":
