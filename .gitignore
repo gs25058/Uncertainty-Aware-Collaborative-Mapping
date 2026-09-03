@@ -7,7 +7,12 @@ vscode_cli.tar.gz
 orbslam_driver/mono_miluv
 
 # ---- private session transcripts & copyrighted reference material ----
-reference files/
+# Ignore the CONTENTS (24 MB of copyrighted PDFs + private transcripts) but keep
+# RESULTS_SUMMARY.md tracked: PREREG_RESOLUTION.md §3 cites its appendix B as the
+# frozen-parameter source, so it has to be versioned. A parent dir cannot be
+# un-ignored per-file, hence "dir/*" rather than "dir/".
+reference files/*
+!reference files/RESULTS_SUMMARY.md
 *-reference-files*.txt
 *-covor-slam-*.txt
 *-handoffmd.txt
