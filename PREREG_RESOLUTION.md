@@ -17,6 +17,13 @@
 오직 **격자 해상도 축만** 움직여 §8.4가 제기한 regime 가설을 검정한다.
 새 가중식·새 자유 파라미터를 만들지 않는다.
 
+### 변경 이력
+
+| 일자 | 변경 | 사유 |
+|---|---|---|
+| 2026-09-03 | §6 성공 조건·§7 그림의 Δ 기준을 `arm − uniform` → **`arm − depth-only`** | **깊이 항 교란 분리.** `w = w_pose × w_depth` 이므로 `arm − uniform` 에는 §6.6에서 이미 양성으로 확정된 깊이 항이 섞여 있어, 포즈 항이 아무것도 하지 않아도 양수가 나온다. §8.1이 3-arm을 만든 이유가 정확히 이것이며(포즈 항 기여 = full − depth-only), 같은 문서의 P2가 이미 `spread − depth-only` 를 쓰고 있어 내부 불일치이기도 했다. **구현 착수 전 수정.** |
+| 2026-09-03 | §8에 해상도–Phase 4 양립성 문단 추가 | 결과를 본 뒤 붙이면 사후 해석이 되므로 미리 기록. |
+
 ### ⚠ 사후 가설임을 명시한다
 
 이 아이디어는 **§8.3의 결과를 본 뒤에 도출됐다**(`RESULTS_SUMMARY.md` §11-6이 이 사실과
@@ -78,6 +85,10 @@ D·E는 모든 해상도에서 ρ ≪ 1 이지만 **w_pose span이 0.005 / 0.008
 - **조건** ∈ {A, B, C, D, E} — `Cfg.inter_pairs` / `Cfg.anchor_robots` 로 지정
   (§7.1; `--drones` 는 출력 필터일 뿐이므로 쓰지 않는다 — 부록 A-13)
 - **arm** ∈ {uniform, depth-only, full(=w_pose 스케일링), spread(=공간 분산)} (4 arm)
+  - **포즈 항 기여의 기준선은 `depth-only`** 다(§8.1과 동일). `full − depth-only`,
+    `spread − depth-only` 만이 포즈 항의 순효과다.
+  - **uniform** 은 §8.1처럼 "가중이 전혀 없어도 A→B가 개선되는가"의 대조군으로만 쓴다.
+    성공 판정에는 쓰지 않는다.
 - **커버리지 교란 분리(A1)**: §7.1 그대로 — 지도는 **항상 ifo001 카메라만**, 포즈만 교체.
   스테레오 깊이는 프레임당 1회 계산해 모든 builder에 동일 입력으로 넣는다.
 - **GT 지도도 해상도별로 재생성** (`gt_pose_control.py`, w_pose ≡ 1).
@@ -160,12 +171,15 @@ trunc = c.spread_trunc * sig if spread_active else 0.0
 
 ### 성공 조건 (모두 충족해야 함)
 
-ρ ≤ 1 인 셀에서:
+ρ ≤ 1 인 셀에서, **Δ 는 전부 `arm − depth-only`** (full·spread 둘 다):
 
-1. `Δprecision(arm − uniform) > 0`
+1. `Δprecision(arm − depth-only) > 0`
 2. 거래비 `Δprecision / |Δrecall| ≥ 1.0` — 깊이 항의 거래비(precision +0.070~0.134 대
    recall −0.053~−0.074, 즉 약 **1.0~2.5**, §6.6/§8.1)보다 나쁘지 않을 것
 3. `occupied 총량 ≤ GT occupied × 1.5` (퇴화 차단)
+
+`arm − uniform` 을 쓰지 않는 이유는 §1 변경 이력 참조 — 깊이 항이 섞여 포즈 항이
+무일 때도 양수가 된다.
 
 ### 반증 조건 P2 (§8.3에서 재사용)
 
@@ -190,7 +204,7 @@ trunc = c.spread_trunc * sig if spread_active else 0.0
 2. `results/results_resolution_sweep.csv` — 열: `resolution, condition, arm, rho,
    precision, recall, iou, ff, n_free, n_occ, n_occ_gt, sqrt_trSigma`
    (append + 즉시 flush, `diagnosis_results.csv` 관행)
-3. 그림 1장: x = ρ (로그축), y = Δprecision(arm − uniform), 조건별 마커, ρ=1 수직선.
+3. 그림 1장: x = ρ (로그축), y = **Δprecision(arm − depth-only)**, 조건별 마커, ρ=1 수직선.
    **"작동 창이 있냐 없냐"가 이 그림 하나로 읽혀야 한다.**
 4. `tests/test_ray_traversal.py` 를 resolution 파라미터화. 회귀 테스트는 voxel 개수가
    아니라 **셀별 log-odds 값을 참조 DDA와 대조**하는 현재 방식을 유지한다(부록 A-4).
@@ -206,3 +220,10 @@ trunc = c.spread_trunc * sig if spread_active else 0.0
 
 둘 다 논문에 쓸 수 있다. 어느 쪽이 나오든 그대로 보고하며, §2의 검정력 한계
 (ρ ≤ 1 유효 셀 3개)를 함께 명시한다.
+
+### 해상도와 Phase 4의 양립성 (결과를 보기 전에 기록)
+
+**H가 참이어도 res ≥ 0.30 m 격자는 Phase 4(사람 진입 판정, 통과폭 ~0.5 m)와 양립하지
+않는다.** 따라서 ρ ≤ 1 달성의 실질 경로는 격자 확대가 아니라 **협업으로 √trΣ를 줄이는
+것**이며, 이는 §4.9 인과 사슬을 "있으면 좋은 개선"에서 **"0.10 m 격자 매핑의 필요조건"**
+으로 격상시킨다.
