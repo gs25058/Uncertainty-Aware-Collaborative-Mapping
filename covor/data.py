@@ -95,14 +95,25 @@ def _mocap_splines(seq: str, robot: str):
 _MOCAP_CACHE = {}
 
 
-def load_mocap(seq: str, robot: str, clean: bool = True) -> pd.DataFrame:
+def load_mocap(seq: str, robot: str, clean: bool = True) -> pd.DataFrame | None:
     """Ground-truth body pose in the mocap/world frame G.
 
     clean=True (default) returns the spline-smoothed, outlier-rejected track
     resampled on the original timestamps -- the MILUV convention. clean=False
     returns the raw csv, kept only for before/after comparisons.
+
+    Returns None if this robot has no mocap.csv for this sequence (e.g. a
+    robot that did not fly -- obstacles_1_random3_0b only has ifo001). Same
+    missing-data convention as load_vo/load_vins/load_height, so Robot.__init__
+    can build a zero-keyframe Robot for an absent robot instead of crashing;
+    align_to_world() (the only consumer of .mocap) is only ever called when
+    rb.n() > 0, and n() is 0 whenever load_vins/load_vo already returned None,
+    so a robot missing entirely never reaches the point of dereferencing this.
     """
-    raw = pd.read_csv(os.path.join(DATA, seq, robot, "mocap.csv"))
+    path = os.path.join(DATA, seq, robot, "mocap.csv")
+    if not os.path.exists(path):
+        return None
+    raw = pd.read_csv(path)
     ren = {"pose.position.x": "x", "pose.position.y": "y", "pose.position.z": "z",
            "pose.orientation.x": "qx", "pose.orientation.y": "qy",
            "pose.orientation.z": "qz", "pose.orientation.w": "qw"}
