@@ -61,6 +61,8 @@ id_ed25519
 # ---- OS cruft ----
 .DS_Store
 
-# ---- regenerated viewer payload (1 MB of base64 voxels; rebuild with
-#      scripts/export_occupancy_web.py; the template IS tracked) ----
+# ---- regenerated viewer payloads (1+ MB of base64 voxels each; rebuild with
+#      scripts/export_occupancy_web.py --in-tag <tag>; the template IS tracked) ----
 web/occupancy_viewer.html
+web/occupancy_viewer_anchorfree.html
+web/occupancy_viewer_raw.html
