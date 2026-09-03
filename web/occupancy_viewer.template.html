@@ -124,6 +124,9 @@
     <div class="row" id="tSpin" tabindex="0" role="switch" aria-checked="false">
       <span class="sw"></span><span class="nm">Auto-orbit</span>
     </div>
+    <div class="row on" id="tPretty" tabindex="0" role="switch" aria-checked="true">
+      <span class="sw"></span><span class="nm">Pretty render</span>
+    </div>
   </div>
 
   <div class="group slice">
@@ -136,7 +139,7 @@
 </div>
 
 <div id="legend" class="panel">
-  <div class="glabel">Voxel height (viridis)</div>
+  <div class="glabel" id="colorLabel">Voxel height (viridis)</div>
   <div class="cbar"></div>
   <div class="cbar-ax"><span id="zlo">0.0 m</span><span id="zhi">2.5 m</span></div>
   <div class="drones" id="droneLegend"></div>
@@ -164,6 +167,10 @@
   const res = D.res;
   const occI = b64ToArr(D.occ_idx_b64, Int16Array);   // [i,j,k]*N
   const occC = b64ToArr(D.occ_col_b64, Uint8Array);   // [r,g,b]*N
+  const occAO = D.occ_ao_b64 ? b64ToArr(D.occ_ao_b64, Uint8Array)   // baked AO, 0=isolated..255=enclosed
+    : new Uint8Array(occI.length / 3);                              // fallback: no darkening
+  const occMask = D.occ_mask_b64 ? b64ToArr(D.occ_mask_b64, Uint8Array)  // 6-bit hidden-face mask
+    : new Uint8Array(occI.length / 3);                                    // fallback: no faces hidden (mask 0)
   const freeI = b64ToArr(D.free_idx_b64, Int16Array);
   const nOcc = occI.length/3, nFree = freeI.length/3;
 
@@ -213,18 +220,73 @@
   // instanced cubes (occupied)
   const cubeVS=`#version 300 es
   layout(location=0) in vec3 aPos; layout(location=1) in vec3 aNorm;
-  layout(location=2) in vec3 aOff; layout(location=3) in vec3 aCol;
-  uniform mat4 uVP; uniform float uScale; uniform vec3 uLight; uniform vec2 uSlice;
-  out vec3 vCol; out float vSh; out float vClip;
+  layout(location=2) in vec3 aOff; layout(location=3) in vec3 aCol; layout(location=4) in float aAO;
+  layout(location=5) in uint aMask;
+  uniform mat4 uVP; uniform float uScale; uniform vec2 uSlice;
+  out vec3 vCol; out vec3 vNorm; out vec3 vWorldPos; out vec3 vLocal; out float vAO; out float vClip;
   void main(){
+    int faceIdx = gl_VertexID / 4; // cube() emits 4 verts per face, in face order
+    bool hidden = ((aMask >> uint(faceIdx)) & 1u) == 1u;
     vec3 w = aOff + aPos*uScale;
-    gl_Position = uVP*vec4(w,1.0);
-    vSh = 0.50 + 0.50*max(dot(aNorm, uLight),0.0);
+    gl_Position = hidden ? vec4(2.0,2.0,2.0,1.0) : uVP*vec4(w,1.0); // push outside clip volume
+    vNorm = aNorm; vWorldPos = w; vLocal = aPos; vAO = aAO;
     vCol = aCol; vClip = (aOff.z>=uSlice.x && aOff.z<=uSlice.y)?1.0:0.0;
   }`;
+  // hemisphere ambient (cheap IBL stand-in, no probe/texture) + one directional
+  // light (Lambert + a weak GGX speck). AO (baked offline, see bake_ao_mask in
+  // export_occupancy_web.py) multiplies the ambient term only -- direct light
+  // is untouched, so occlusion reads as "less bounce light" not "less light".
+  // No shadow map: the AO term is what carries the sense of depth here.
   const cubeFS=`#version 300 es
-  precision highp float; in vec3 vCol; in float vSh; in float vClip; out vec4 o;
-  void main(){ if(vClip<0.5) discard; o=vec4(vCol*vSh,1.0); }`;
+  precision highp float;
+  in vec3 vCol; in vec3 vNorm; in vec3 vWorldPos; in vec3 vLocal; in float vAO; in float vClip;
+  uniform vec3 uLight; uniform vec3 uEyePos; uniform vec3 uFogColor; uniform float uFogDensity;
+  uniform int uPretty; out vec4 o;
+  const vec3 SKY = vec3(0.56,0.60,0.68), GROUND = vec3(0.16,0.14,0.13);
+  // occ_col_b64 stores display-referred (sRGB) viridis bytes -- decode to linear
+  // before lighting, light in linear, then tonemap+encode back to sRGB on the
+  // way out. Skipping either half double-encodes / washes out the colour.
+  vec3 srgb2lin(vec3 c){ return mix(c/12.92, pow((c+0.055)/1.055, vec3(2.4)), step(vec3(0.04045), c)); }
+  vec3 lin2srgb(vec3 c){ return mix(c*12.92, 1.055*pow(c, vec3(1.0/2.4))-0.055, step(vec3(0.0031308), c)); }
+  vec3 acesFilm(vec3 x){
+    float a=2.51, b=0.03, c=2.43, d=0.59, e=0.14;
+    return clamp((x*(a*x+b))/(x*(c*x+d)+e), 0.0, 1.0);
+  }
+  void main(){
+    if(vClip<0.5) discard;
+    vec3 N = normalize(vNorm);
+    if(uPretty==0){
+      // raw: quantitative-figure path -- flat colour, half-lambert, no
+      // tonemap/fog/edge-darkening/gradient. AO (baked offline) stays on:
+      // it's a faithful per-voxel neighbor count, not a stylization.
+      float lambert = 0.5 + 0.5*max(dot(N, normalize(uLight)), 0.0);
+      o = vec4(vCol * lambert * (1.0 - 0.6*vAO), 1.0);
+      return;
+    }
+    vec3 albedo = srgb2lin(vCol);
+    vec3 V = normalize(uEyePos - vWorldPos);
+    vec3 L = normalize(uLight);
+    float hemi = clamp(N.z*0.5+0.5, 0.0, 1.0);
+    vec3 ambient = mix(GROUND, SKY, hemi) * (1.0 - 0.6*vAO);
+    float NdotL = max(dot(N,L), 0.0);
+    vec3 H = normalize(L+V);
+    float NdotH = max(dot(N,H), 0.0);
+    float rough = 0.85, a2 = rough*rough*rough*rough;
+    float dnom = (NdotH*NdotH*(a2-1.0)+1.0);
+    float ggx = a2 / (3.14159265*dnom*dnom + 1e-4);
+    vec3 lin = albedo*(ambient + vec3(NdotL)) + vec3(0.05)*ggx*NdotL;
+    // edge darkening: distance from this fragment to the nearest edge of its
+    // face, in the cube's local [-0.5,0.5] space (no wireframe draw needed)
+    vec3 inPlane = vLocal - N*dot(vLocal, N);
+    float edgeDist = 0.5 - max(max(abs(inPlane.x), abs(inPlane.y)), abs(inPlane.z));
+    lin *= mix(0.72, 1.0, smoothstep(0.0, 0.04, edgeDist));
+    vec3 srgb = lin2srgb(acesFilm(lin));
+    // distance fog, blended post-tonemap against the background gradient's
+    // tone so it reads as atmosphere rather than a flat overlay
+    float fog = 1.0 - exp(-length(vWorldPos - uEyePos) * uFogDensity);
+    srgb = mix(srgb, uFogColor, clamp(fog, 0.0, 0.55)); // capped so far voxels stay legible
+    o = vec4(srgb, 1.0);
+  }`;
 
   // points (free)
   const ptVS=`#version 300 es
@@ -243,7 +305,19 @@
   const lnFS=`#version 300 es
   precision highp float; uniform vec4 uColor; out vec4 o; void main(){ o=uColor; }`;
 
-  const pCube=prog(cubeVS,cubeFS), pPt=prog(ptVS,ptFS), pLn=prog(lnVS,lnFS);
+  // background: one fullscreen triangle, no vertex buffer (gl_VertexID trick),
+  // subtle vertical gradient so the void isn't a flat fill
+  const bgVS=`#version 300 es
+  void main(){
+    vec2 p = vec2((gl_VertexID<<1)&2, gl_VertexID&2);
+    gl_Position = vec4(p*2.0-1.0, 0.9999, 1.0);
+  }`;
+  const bgFS=`#version 300 es
+  precision highp float; uniform vec2 uRes; uniform vec3 uTop; uniform vec3 uBot; out vec4 o;
+  void main(){ o=vec4(mix(uBot,uTop,gl_FragCoord.y/uRes.y),1.0); }`;
+
+  const pCube=prog(cubeVS,cubeFS), pPt=prog(ptVS,ptFS), pLn=prog(lnVS,lnFS), pBg=prog(bgVS,bgFS);
+  const BG_TOP=[0.075,0.095,0.125], BG_BOT=[0.043,0.055,0.075]; // matches --bg2 / --bg
 
   // ---------- cube geometry (24 verts, 6 faces) ----------
   function cube(){
@@ -266,9 +340,15 @@
     const b=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,b); gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);
     gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc,size,type,norm,0,0);
     if(div) gl.vertexAttribDivisor(loc,div); return b; };
+  const bufI=(data,loc,size,type,div=0)=>{
+    const b=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,b); gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(loc); gl.vertexAttribIPointer(loc,size,type,0,0);
+    if(div) gl.vertexAttribDivisor(loc,div); return b; };
   buf(C.p,0,3); buf(C.n,1,3);
   buf(occOff,2,3,gl.FLOAT,false,1);
   buf(occC,3,3,gl.UNSIGNED_BYTE,true,1);
+  buf(occAO,4,1,gl.UNSIGNED_BYTE,true,1);
+  bufI(occMask,5,1,gl.UNSIGNED_BYTE,1);
   const ebo=gl.createBuffer(); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ebo);
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,C.idx,gl.STATIC_DRAW);
   gl.bindVertexArray(null);
@@ -315,7 +395,8 @@
 
   // ---------- interaction ----------
   let drag=null;
-  cv.addEventListener("pointerdown",e=>{ drag={x:e.clientX,y:e.clientY,b:e.button}; cv.setPointerCapture(e.pointerId); state.spin=false; syncSpin(); });
+  const angVel={theta:0,phi:0}; // orbit momentum, decayed each frame once released (enableDamping-alike)
+  cv.addEventListener("pointerdown",e=>{ drag={x:e.clientX,y:e.clientY,b:e.button}; cv.setPointerCapture(e.pointerId); state.spin=false; syncSpin(); angVel.theta=0; angVel.phi=0; });
   cv.addEventListener("pointerup",()=>drag=null);
   cv.addEventListener("pointermove",e=>{
     if(!drag) return; const dx=e.clientX-drag.x, dy=e.clientY-drag.y; drag.x=e.clientX; drag.y=e.clientY;
@@ -324,7 +405,8 @@
       const s=cam.r*0.0016;
       for(let i=0;i<3;i++) cam.target[i]+= (-dx*rt[i]+dy*up[i])*s;
     } else { // orbit
-      cam.theta-=dx*0.006; cam.phi=Math.max(-1.45,Math.min(1.45,cam.phi+dy*0.006));
+      angVel.theta=-dx*0.006; angVel.phi=dy*0.006;
+      cam.theta+=angVel.theta; cam.phi=Math.max(-1.45,Math.min(1.45,cam.phi+angVel.phi));
     }
   });
   cv.addEventListener("contextmenu",e=>e.preventDefault());
@@ -332,7 +414,8 @@
     cam.r=Math.max(0.6, Math.min(D.radius*8, cam.r*Math.exp(e.deltaY*0.0012))); }, {passive:false});
 
   // ---------- UI state ----------
-  const state={occ:true,free:false,traj:true,grid:true,spin:false};
+  const rawParam=new URLSearchParams(location.search).get("style")==="raw";
+  const state={occ:true,free:false,traj:true,grid:true,spin:false,pretty:!rawParam};
   const zmin=D.zmin, zmax=D.zmax, sliceLo=document.getElementById("sliceLo"), sliceHi=document.getElementById("sliceHi");
   let slice=[zmin-0.2, zmax+0.2];
   function toggle(id,key){ const el=document.getElementById(id);
@@ -341,6 +424,8 @@
     el.addEventListener("keydown",e=>{ if(e.key===" "||e.key==="Enter"){e.preventDefault();flip();} });
   }
   toggle("tOcc","occ"); toggle("tFree","free"); toggle("tTraj","traj"); toggle("tGrid","grid");
+  toggle("tPretty","pretty");
+  if(rawParam){ const el=document.getElementById("tPretty"); el.classList.remove("on"); el.setAttribute("aria-checked","false"); }
   const spinEl=document.getElementById("tSpin");
   function syncSpin(){ spinEl.classList.toggle("on",state.spin); spinEl.setAttribute("aria-checked",state.spin); }
   spinEl.addEventListener("click",()=>{state.spin=!state.spin;syncSpin();});
@@ -366,6 +451,7 @@
   const czmin=(D.czmin??zmin), czmax=(D.czmax??zmax);
   document.getElementById("zlo").textContent=czmin.toFixed(1)+" m";
   document.getElementById("zhi").textContent=czmax.toFixed(1)+" m";
+  if(D.color_label) document.getElementById("colorLabel").textContent=D.color_label;
   const dl=document.getElementById("droneLegend");
   D.trajs.forEach(t=>{ const c=`rgb(${t.color.map(x=>Math.round(x*255)).join(",")})`;
     dl.insertAdjacentHTML("beforeend",
@@ -383,19 +469,35 @@
   function frame(now){
     const dt=(now-last)/1000; last=now;
     if(state.spin) cam.theta+=dt*0.28;
+    else if(!drag && (angVel.theta||angVel.phi)){ // damped coast after release
+      cam.theta+=angVel.theta; cam.phi=Math.max(-1.45,Math.min(1.45,cam.phi+angVel.phi));
+      angVel.theta*=0.90; angVel.phi*=0.90;
+      if(Math.abs(angVel.theta)<0.00005) angVel.theta=0;
+      if(Math.abs(angVel.phi)<0.00005) angVel.phi=0;
+    }
     fAcc+=dt; fN++; if(fAcc>0.5){ document.getElementById("fps").textContent=Math.round(fN/fAcc)+" fps"; fAcc=0;fN=0; }
 
     gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
     const vp=VP();
+
+    if(state.pretty){ // raw: skip the gradient, gl.clearColor (flat BG_BOT) already shows through
+      gl.useProgram(pBg); gl.disable(gl.DEPTH_TEST);
+      gl.uniform2f(gl.getUniformLocation(pBg,"uRes"),cv.width,cv.height);
+      gl.uniform3fv(gl.getUniformLocation(pBg,"uTop"),BG_TOP);
+      gl.uniform3fv(gl.getUniformLocation(pBg,"uBot"),BG_BOT);
+      gl.drawArrays(gl.TRIANGLES,0,3);
+      gl.enable(gl.DEPTH_TEST);
+    }
 
     if(state.grid){ gl.useProgram(pLn); gl.uniformMatrix4fv(gl.getUniformLocation(pLn,"uVP"),false,vp);
       gl.uniform4f(gl.getUniformLocation(pLn,"uColor"),0.36,0.45,0.55,0.16);
       gl.bindVertexArray(gridLines.vao); gl.drawArrays(gl.LINES,0,gridLines.n); }
 
     if(state.free && nFree){ gl.useProgram(pPt); gl.uniformMatrix4fv(gl.getUniformLocation(pPt,"uVP"),false,vp);
-      gl.uniform1f(gl.getUniformLocation(pPt,"uSize"),2.0*Math.min(devicePixelRatio,2));
+      const fSize=state.pretty?1.4:2.0, fAlpha=state.pretty?0.10:0.16;
+      gl.uniform1f(gl.getUniformLocation(pPt,"uSize"),fSize*Math.min(devicePixelRatio,2));
       gl.uniform2f(gl.getUniformLocation(pPt,"uSlice"),slice[0],slice[1]);
-      gl.uniform4f(gl.getUniformLocation(pPt,"uColor"),0.42,0.60,0.78,0.16);
+      gl.uniform4f(gl.getUniformLocation(pPt,"uColor"),0.42,0.60,0.78,fAlpha);
       gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false);
       gl.bindVertexArray(vaoFree); gl.drawArrays(gl.POINTS,0,nFree);
       gl.depthMask(true); gl.disable(gl.BLEND); }
@@ -404,6 +506,10 @@
       gl.uniformMatrix4fv(gl.getUniformLocation(pCube,"uVP"),false,vp);
       gl.uniform1f(gl.getUniformLocation(pCube,"uScale"),res*0.96);
       gl.uniform3f(gl.getUniformLocation(pCube,"uLight"),light[0],light[1],light[2]);
+      const ev=eye(); gl.uniform3f(gl.getUniformLocation(pCube,"uEyePos"),ev[0],ev[1],ev[2]);
+      gl.uniform3fv(gl.getUniformLocation(pCube,"uFogColor"),BG_BOT);
+      gl.uniform1f(gl.getUniformLocation(pCube,"uFogDensity"),1.1/Math.max(D.radius,1.0));
+      gl.uniform1i(gl.getUniformLocation(pCube,"uPretty"),state.pretty?1:0);
       gl.uniform2f(gl.getUniformLocation(pCube,"uSlice"),slice[0],slice[1]);
       gl.bindVertexArray(vaoOcc); gl.drawElementsInstanced(gl.TRIANGLES,36,gl.UNSIGNED_SHORT,0,nOcc); }
 

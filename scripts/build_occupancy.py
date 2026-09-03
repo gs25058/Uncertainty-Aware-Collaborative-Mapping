@@ -68,12 +68,12 @@ class Teammates:
     Only knowable because CoVOR fuses every robot into one frame (§4.7); used to
     keep observations of flying teammates out of the static map (OccCfg.dyn_radius).
     """
-    def __init__(self, robot, others):
+    def __init__(self, robot, others, in_tag=""):
         self.tracks = []
         for o in others:
             if o == robot:
                 continue
-            npz = np.load(f"{VO}/occ_{SEQ}_{o}.npz")
+            npz = np.load(f"{VO}/occ_{SEQ}_{o}{in_tag}.npz")
             # Mask against the AIRFRAME centre, not the camera: T is world<-camera
             # and the camera sits ~0.11 m off the body origin, which is 31 % of
             # dyn_radius. Older .npz files have no p_body; fall back to T's
@@ -92,8 +92,8 @@ class Teammates:
         return np.array(out) if out else None
 
 
-def process_robot(builder, robot, depth_cfg, stride, max_frames=None, mates=None):
-    npz = np.load(f"{VO}/occ_{SEQ}_{robot}.npz")
+def process_robot(builder, robot, depth_cfg, stride, max_frames=None, mates=None, in_tag=""):
+    npz = np.load(f"{VO}/occ_{SEQ}_{robot}{in_tag}.npz")
     t, T, tr = npz["t"], npz["T"], npz["tr_sigma_pos"]
     calib = load_stereo_calib(robot)
     sd = StereoDepth(calib, depth_cfg)
@@ -167,6 +167,9 @@ def main():
     ap.add_argument("--stride", type=int, default=2)
     ap.add_argument("--res", type=float, default=0.10)
     ap.add_argument("--tag", default="")
+    ap.add_argument("--in-tag", default="",
+                    help="suffix of the input vo_output/occ_<seq>_<robot><in-tag>.npz "
+                         "to read, e.g. _af for fuse_and_dump.py --anchor-free --tag _af")
     ap.add_argument("--no-mask-dynamic", action="store_true",
                     help="keep observations of flying teammates in the static map")
     args = ap.parse_args()
@@ -183,8 +186,9 @@ def main():
     trajs = []
     ALL = ["ifo001", "ifo002", "ifo003"]
     for rob in drones:
-        mates = None if args.no_mask_dynamic else Teammates(rob, ALL)
-        n, traj = process_robot(builder, rob, depth_cfg, args.stride, mates=mates)
+        mates = None if args.no_mask_dynamic else Teammates(rob, ALL, in_tag=args.in_tag)
+        n, traj = process_robot(builder, rob, depth_cfg, args.stride, mates=mates,
+                                in_tag=args.in_tag)
         trajs.append(traj)
         print("  %s: %d keyframes integrated" % (rob, n))
     builder.finalize()

@@ -46,6 +46,10 @@ def main():
     ap.add_argument("--seq", default="default_3_zigzag_0")
     ap.add_argument("--drones", default="ifo001,ifo002,ifo003")
     ap.add_argument("--tag", default="")   # filename suffix, e.g. "_1drone"
+    ap.add_argument("--anchor-free", action="store_true",
+                    help="anchor_robots=() -- proposal's target system (§4.9 condition C: "
+                         "inter UWB only, no fixed anchors). Gauge handled by G1 "
+                         "(one prior per ungrounded connected component).")
     args = ap.parse_args()
     want = set(args.drones.split(","))
 
@@ -56,7 +60,8 @@ def main():
     # use_anchor / use_inter switches, so running the §4.9 ladder needs a per-pair
     # Cfg.inter_pairs and a per-robot Cfg.anchor_robots first (design in
     # OCCUPANCY_PIPELINE.md, "§4.9 collaboration-gain experiment").
-    cfg = Cfg(**FAITHFUL)
+    extra = dict(anchor_robots=()) if args.anchor_free else {}
+    cfg = Cfg(**FAITHFUL, **extra)
     cov = CoVOR(args.seq, cfg).build()
     print("stats:", cov.stats)
     res = cov.optimize(max_iter=100, verbose=False)
