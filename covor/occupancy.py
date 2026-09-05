@@ -215,6 +215,23 @@ class OccCfg:
     # endpoint so nothing asserts free inside the uncertain band. Width comes
     # straight from the measurement: no coefficient, and alpha is unused here.
     # Forces w_pose = 1 (spreading already handles pose uncertainty).
+    # --- free-side pose-uncertainty encoding (PREREG_free_side.md) ---
+    # POST-HOC DERIVED AFTER §8. Both §8 encodings changed the OCCUPIED evidence;
+    # the damage mechanism the proposal describes is a FREE-side one (a ray punching
+    # through a wall and painting the space behind it free). These modes put the
+    # pose uncertainty on the free evidence ONLY -- l_occ is never touched.
+    #   "off"         current behaviour
+    #   "free_scale"  l_free *= exp(-sigma_u^2 / alpha_u)          (arm_F1)
+    #   "free_trunc"  drop the last floor(k*sigma_u/res) free cells of each ray,
+    #                 leaving that band UNKNOWN                     (arm_F2)
+    # sigma_u = sqrt(u^T Sigma_pos u) is computed PER RAY -- punch-through is
+    # direction-dependent and an isotropic tr(Sigma) averages that away.
+    # Both modes carry ONE sub-voxel guard: sigma_u < res/2 -> exact no-op. (§8.3
+    # fired its falsifier because that guard was applied to one half of a rule and
+    # not the other; here it is a single decision per ray.)
+    pose_mode: str = "off"
+    alpha_u: float = None        # None -> res**2 (sigma_u = 1 voxel gives w ~ e^-1)
+    trunc_k: float = 1.0
     spread_pose_sigma: bool = False
     spread_trunc: float = 2.0    # +-2 sigma ~ 95%; used for BOTH the spread
                                  # support and the free-carving stop
@@ -355,6 +372,8 @@ class OccupancyBuilder:
         # (num, den) dicts keyed by the same packed voxel key integrate_frame uses;
         # enabled by track_sigma_attribution.
         self._attr = ({}, {}) if getattr(cfg, "track_sigma_attribution", False) else None
+        self._su = []       # per-frame arrays of per-ray sigma_u (free-side modes)
+        self._trunc = []    # per-frame arrays of per-ray truncated cell counts
 
     def weight(self, tr_sigma_pos, sigma_Z):
         """w = exp(-tr(Sigma_pos)/alpha) * exp(-sigma_Z^2/beta)  (proposal §4.5).
@@ -374,7 +393,8 @@ class OccupancyBuilder:
         w_depth = np.exp(-(sigma_Z ** 2) / c.beta)            # per-point
         return np.clip(w_pose * w_depth, 0.0, 1.0)
 
-    def integrate_frame(self, T_wc, tr_sigma_pos, P_cam, sigma_Z, teammates=None):
+    def integrate_frame(self, T_wc, tr_sigma_pos, P_cam, sigma_Z, teammates=None,
+                        sigma_pos=None):
         """Integrate one keyframe's observation (proposal §4.4-4.7), vectorized.
 
         T_wc: 4x4 world<-camera pose (fused). tr_sigma_pos: pose position-cov
@@ -411,10 +431,41 @@ class OccupancyBuilder:
             static = ~near
         if not c.spread_pose_sigma:
             evox = np.floor(P[static] / res).astype(np.int64)
-            ew = w[static] * c.l_occ
+            ew = w[static] * c.l_occ          # OCCUPIED evidence: never modified here
             # free evidence: exact DDA, one contribution per (ray, pass-through cell)
             ray, fvox = _dda_batch(t, P, res)
             fw = w[ray] * c.l_free
+            if c.pose_mode != "off":
+                # sigma_u per ray, then a single sub-voxel guard per ray.
+                if sigma_pos is None:
+                    raise ValueError("pose_mode requires sigma_pos (3x3)")
+                S = np.asarray(sigma_pos, float).reshape(3, 3)
+                U = (P - t) / np.linalg.norm(P - t, axis=1)[:, None]
+                su = np.sqrt(np.maximum(np.einsum('ni,ij,nj->n', U, S, U), 0.0))
+                su = np.where(su >= res / 2, su, 0.0)      # guard -> exact no-op
+                self._su.append(su)
+                if c.pose_mode == "free_scale":
+                    au = c.alpha_u if c.alpha_u is not None else res ** 2
+                    fw = fw * np.exp(-(su[ray] ** 2) / au)
+                elif c.pose_mode == "free_trunc":
+                    # drop the LAST floor(k*sigma_u/res) cells of each ray. _dda_batch
+                    # emits a ray's cells in origin->endpoint order (verified), so the
+                    # tail of each ray's block is the band next to the endpoint.
+                    ndrop = np.floor(c.trunc_k * su / res).astype(np.int64)
+                    if ndrop.any():
+                        order = np.argsort(ray, kind='stable')
+                        r_s = ray[order]
+                        cnt = np.bincount(r_s, minlength=len(P))
+                        start = np.concatenate([[0], np.cumsum(cnt)[:-1]])
+                        pos = np.arange(len(r_s)) - start[r_s]      # index within ray
+                        keep_s = pos < (cnt[r_s] - np.minimum(ndrop[r_s], cnt[r_s]))
+                        keep = np.zeros(len(ray), bool); keep[order] = keep_s
+                        self._trunc.append(np.minimum(ndrop, cnt).astype(float))
+                        ray, fvox, fw = ray[keep], fvox[keep], fw[keep]
+                    else:
+                        self._trunc.append(np.zeros(len(P)))
+                else:
+                    raise ValueError("unknown pose_mode %r" % c.pose_mode)
         else:
             # --- spatial spreading (PREREG_spatial_spread.md) ---
             sig = float(np.sqrt(max(tr_sigma_pos, 0.0)))
@@ -485,6 +536,19 @@ class OccupancyBuilder:
     def finalize(self):
         self.tree.updateInnerOccupancy()
         return self.tree
+
+    def sigma_u_stats(self):
+        """(median, p90) of sigma_u over every ray of every frame, or (nan, nan)."""
+        if not self._su:
+            return float('nan'), float('nan')
+        a = np.concatenate(self._su)
+        return float(np.median(a)), float(np.percentile(a, 90))
+
+    def trunc_stats(self):
+        """Mean truncated cells per ray, averaged over frames (free_trunc only)."""
+        if not self._trunc:
+            return float('nan')
+        return float(np.mean([t.mean() for t in self._trunc if len(t)]))
 
     def sigma_attribution(self, pts):
         """(N,) evidence-weighted mean tr(Sigma_pos) for each of `pts`, or NaN

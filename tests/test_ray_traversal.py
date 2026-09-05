@@ -147,6 +147,74 @@ def test_dda_batch_matches_reference_cells():
         assert len(vox[ray == k]) == len(got), "ray %d: duplicate cells emitted" % k
 
 
+# ---------------------------------------------------------------------------
+# free-side pose-uncertainty encodings (PREREG_free_side.md §7)
+# POST-HOC DERIVED AFTER §8. These check the two properties the pre-registration
+# leans on: the sub-voxel guard is an EXACT no-op, and the truncation drops
+# exactly floor(k*sigma_u/res) cells. Values, never counts, for the no-op checks
+# (appendix A-4: a count-only test once let a real traversal bug through).
+# ---------------------------------------------------------------------------
+def _free_builder(origin, pts, cfg, S):
+    b = OccupancyBuilder(cfg)
+    T = np.eye(4); T[:3, 3] = origin
+    b.integrate_frame(T, float(np.trace(S)), pts - origin, np.zeros(len(pts)),
+                      sigma_pos=S)
+    b.finalize()
+    out = {}
+    for it in b.tree.begin_leafs():
+        v = tuple(np.floor(np.array(it.getCoordinate()) / cfg.resolution).astype(np.int64))
+        out[v] = it.getValue()
+    return out
+
+
+def test_free_trunc_subvoxel_is_exact_noop():
+    """arm_F2 with sigma_u < res/2 must reproduce the unweighted map cell-for-cell."""
+    o = np.array([0.05, 0.05, 0.05])
+    pts = o + np.array([[0.93, 0.11, 0.0], [0.12, 0.81, 0.07], [-0.7, 0.3, 0.25]])
+    base = _builder_logodds(o, pts, OccCfg(resolution=RES, weighted=False))
+    sig = (RES / 2 * 0.8) ** 2                       # sigma_u = 0.04 < res/2 = 0.05
+    got = _free_builder(o, pts, OccCfg(resolution=RES, weighted=False,
+                                       pose_mode="free_trunc"), np.eye(3) * sig)
+    _compare(base, got, ctx="free_trunc sub-voxel:")
+
+
+def test_free_scale_subvoxel_noop_and_occupied_never_changes():
+    """arm_F1: sub-voxel is an exact no-op, and l_occ is invariant to sigma_u."""
+    o = np.array([0.05, 0.05, 0.05])
+    pts = o + np.array([[0.93, 0.11, 0.0], [0.12, 0.81, 0.07]])
+    cfg0 = OccCfg(resolution=RES, weighted=False)
+    cfgF = OccCfg(resolution=RES, weighted=False, pose_mode="free_scale")
+    base = _builder_logodds(o, pts, cfg0)
+    _compare(base, _free_builder(o, pts, cfgF, np.eye(3) * (RES / 2 * 0.8) ** 2),
+             ctx="free_scale sub-voxel:")
+    # occupied endpoints must be identical for ANY sigma_u
+    ends = {tuple(np.floor(p / RES).astype(np.int64)) for p in pts}
+    for s in (0.0, 0.04, 0.2, 1.0):
+        got = _free_builder(o, pts, cfgF, np.eye(3) * s ** 2)
+        for e in ends:
+            assert abs(got[e] - base[e]) < 1e-9, (
+                "free_scale changed an OCCUPIED cell at sigma_u=%.2f: %.6f vs %.6f"
+                % (s, got[e], base[e]))
+
+
+def test_free_trunc_drops_exactly_floor_k_sigma_over_res():
+    """The truncated band is exactly floor(k*sigma_u/res) cells per ray."""
+    o = np.zeros(3)
+    pts = np.array([[1.55, 0.0, 0.0], [0.0, 1.25, 0.0], [0.0, 0.0, 0.95]])
+    cfg0 = OccCfg(resolution=RES, weighted=False)
+    for s in (0.12, 0.27, 0.44):
+        n_exp = int(np.floor(1.0 * s / RES))         # trunc_k = 1
+        base = _builder_logodds(o, pts, cfg0)
+        got = _free_builder(o, pts, OccCfg(resolution=RES, weighted=False,
+                                           pose_mode="free_trunc"), np.eye(3) * s ** 2)
+        # every dropped cell is a FREE cell that vanished or lost one ray's evidence
+        dropped = sum(1 for k in base
+                      if k not in got or abs(base[k] - got[k]) > 1e-9)
+        assert dropped == n_exp * len(pts), (
+            "sigma_u=%.2f: expected %d dropped free cells (%d rays x %d), got %d"
+            % (s, n_exp * len(pts), len(pts), n_exp, dropped))
+
+
 if __name__ == "__main__":
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for f in fns:

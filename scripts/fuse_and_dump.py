@@ -97,12 +97,14 @@ def main():
         b_T_c = D.load_body_T_cam(rb.name, 0)
         N = rb.n()
         T = np.zeros((N, 4, 4)); tr = np.zeros(N); p_body = np.zeros((N, 3))
+        Sig = np.zeros((N, 3, 3))
         for i in range(N):
             pose = res.atPose3(F.X(k, i))
             p_body[i] = pose.translation()        # airframe centre
             T[i] = pose.matrix() @ b_T_c          # world<-body -> world<-camera
             cov6 = marg.marginalCovariance(F.X(k, i))   # 6x6, [rot(3), trans(3)]
-            tr[i] = float(np.trace(cov6[3:6, 3:6]))     # tr(Sigma_pos), m^2
+            Sig[i] = cov6[3:6, 3:6]                     # Sigma_pos (3x3), m^2
+            tr[i] = float(np.trace(Sig[i]))             # tr(Sigma_pos), kept as-is
         # tr(Sigma_pos) is reported at the body origin. The camera sits ~0.11 m
         # away on a rigid body, so its position uncertainty also picks up the
         # rotational block; that extra term is small next to the values above and
@@ -114,7 +116,10 @@ def main():
         # within dyn_radius = 0.35 m, so using the camera position there would be
         # 0.11 m (~31 % of that radius) off.
         path = f"{OUT}/occ_{args.seq}_{rb.name}{args.tag}.npz"
-        np.savez(path, t=rb.t, T=T, tr_sigma_pos=tr, p_body=p_body)
+        # sigma_pos is the full 3x3 so the free-side encodings can project it onto
+        # each ray (sigma_u = sqrt(u^T Sigma u)); tr_sigma_pos is kept unchanged so
+        # every existing consumer and every recorded result stays valid.
+        np.savez(path, t=rb.t, T=T, tr_sigma_pos=tr, p_body=p_body, sigma_pos=Sig)
         print("%s  N=%d  tr(Sigma_pos): min=%.4f med=%.4f max=%.4f  -> %s" % (
             rb.name, N, tr.min(), np.median(tr), tr.max(), path))
 

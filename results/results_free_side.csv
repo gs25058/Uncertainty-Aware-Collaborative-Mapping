@@ -1,0 +1,21 @@
+condition,arm,ff_rate_pct,d_ff_pp,precision,recall,iou_1vox,n_occ,n_free,n_unknown,d_free_pct,stands,floating,sigma_u_med,sigma_u_p90,trunc_len_med,P0,S1,S2,S3,S4,S5,note
+E_anchors_only,arm_base,4.8644,0.0,0.4064,0.4277,0.2632,40540,310810,,0.0,13,75,,,,PASS,,,,,,post-hoc after §8
+E_anchors_only,arm_F1,4.8644,0.0,0.4064,0.4277,0.2632,40540,310810,,0.0,13,75,0.0,0.0,,PASS,,,,,,post-hoc after §8
+E_anchors_only,arm_F2,4.8644,0.0,0.4064,0.4277,0.2632,40540,310810,,0.0,13,75,0.0,0.0,0.0,PASS,,,,,,post-hoc after §8
+E_anchors_only,uniform,4.8878,0.0234,0.295,0.4864,0.2249,63518,305968,,-1.5579,13,86,,,,PASS,,,,,,post-hoc after §8
+D_3drone_anch,arm_base,4.4259,0.0,0.4485,0.4601,0.2938,39527,309743,,0.0,12,83,,,,PASS,,,,,,post-hoc after §8
+D_3drone_anch,arm_F1,4.4259,0.0,0.4485,0.4601,0.2938,39527,309743,,0.0,12,83,0.0,0.0,,PASS,,,,,,post-hoc after §8
+D_3drone_anch,arm_F2,4.4259,0.0,0.4485,0.4601,0.2938,39527,309743,,0.0,12,83,0.0,0.0,0.0,PASS,,,,,,post-hoc after §8
+D_3drone_anch,uniform,4.5833,0.1574,0.3147,0.513,0.2423,62790,305282,,-1.4402,12,97,,,,PASS,,,,,,post-hoc after §8
+C_3drone_af,arm_base,5.2136,0.0,0.3693,0.3971,0.2366,41427,312857,,0.0,13,85,,,,,,,,,,post-hoc after §8
+C_3drone_af,arm_F1,1.6505,-3.5631,0.2352,0.7609,0.219,124643,217511,,-30.4759,13,500,0.14076,0.27049,,,PASS,FAIL,FAIL,PASS,PASS,post-hoc after §8; verdict=NOT established
+C_3drone_af,arm_F2,3.879,-1.3346,0.3444,0.5323,0.2644,59531,286646,,-8.3779,13,119,0.14076,0.27049,0.9653,,PASS,FAIL,PASS,PASS,PASS,post-hoc after §8; verdict=NOT established
+C_3drone_af,uniform,5.1691,-0.0445,0.2739,0.4616,0.2076,64920,307691,,-1.6512,12,80,,,,,,,,,,post-hoc after §8
+B_2drone_af,arm_base,4.8898,0.0,0.3964,0.4169,0.255,40507,310320,,0.0,12,74,,,,,,,,,,post-hoc after §8
+B_2drone_af,arm_F1,1.1793,-3.7105,0.2173,0.7905,0.2054,140150,197658,,-36.3051,13,679,0.17984,0.34782,,,PASS,FAIL,FAIL,PASS,PASS,post-hoc after §8; verdict=NOT established
+B_2drone_af,arm_F2,3.2295,-1.6603,0.3502,0.583,0.2801,64124,276513,,-10.8942,13,121,0.17984,0.34782,1.3493,,PASS,FAIL,PASS,PASS,PASS,post-hoc after §8; verdict=NOT established
+B_2drone_af,uniform,4.8212,-0.0686,0.2931,0.49,0.2246,64393,304945,,-1.7321,11,76,,,,,,,,,,post-hoc after §8
+A_1drone_af,arm_base,5.8751,0.0,0.3082,0.3254,0.188,40681,314975,,0.0,12,56,,,,,,,,,,post-hoc after §8
+A_1drone_af,arm_F1,1.4537,-4.4214,0.1832,0.7725,0.1738,162462,177339,,-43.6974,13,1347,0.50235,0.89007,,,PASS,FAIL,FAIL,PASS,PASS,post-hoc after §8; verdict=NOT established
+A_1drone_af,arm_F2,2.8196,-3.0555,0.2549,0.6282,0.2215,94947,241061,,-23.4666,13,170,0.50235,0.89007,4.2753,,PASS,FAIL,PASS,PASS,PASS,post-hoc after §8; verdict=NOT established
+A_1drone_af,uniform,5.7908,-0.0843,0.2387,0.3991,0.1756,64407,310251,,-1.4998,13,73,,,,,,,,,,post-hoc after §8
