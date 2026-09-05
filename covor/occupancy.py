@@ -418,11 +418,18 @@ class OccupancyBuilder:
         else:
             # --- spatial spreading (PREREG_spatial_spread.md) ---
             sig = float(np.sqrt(max(tr_sigma_pos, 0.0)))
-            trunc = c.spread_trunc * sig
+            # ONE sub-voxel decision, applied to BOTH halves of the rule.
+            # PREREG_spatial_spread.md guarded only the occupied spread and left the
+            # free truncation unconditional, so at sigma < res/2 the two halves
+            # disagreed: the spread was a no-op while the truncation still stripped
+            # ~0.78 of a voxel from every ray (2.3 % of the free evidence on D).
+            # That is what fired P2 there. With trunc forced to 0 when inactive,
+            # sc == 1 and the free carving is bit-identical to the no-spread path,
+            # so D/E are a true no-op. (PREREG_RESOLUTION.md §4)
+            spread_active = sig >= res / 2
+            trunc = c.spread_trunc * sig if spread_active else 0.0
             Ps = P[static]
-            if sig < res / 2 or len(Ps) == 0:
-                # sub-voxel spread: identical to no spread (this is what makes the
-                # D/E negative controls a genuine structural prediction)
+            if not spread_active or len(Ps) == 0:
                 evox = np.floor(Ps / res).astype(np.int64)
                 ew = w[static] * c.l_occ
             else:
