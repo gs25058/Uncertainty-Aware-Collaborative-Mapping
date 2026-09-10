@@ -164,21 +164,37 @@ def to_vins_csv(path, t, p, R_mat, v, timeshift):
                     % (int(r[0]), *r[1:]))
 
 
-def to_mocap_csv(path, t, p, R_mat):
-    """MILUV mocap.csv: the GT body pose in the world frame.
+# MILUV's own mocap runs at 100 Hz+, and data._mocap_splines' csaps smoothing
+# (smooth=0.9999) is tuned for that rate: the penalty weight scales with knot
+# spacing, so the same parameter smooths far harder on a sparse track. Measured
+# on this GT (PREREG_synth_gauge.md F4), writing mocap at the 20 Hz trajectory
+# rate made the LOADER deviate from the exact GT by 0.183-0.416 m rms (max
+# 2.10 m) -- on a trajectory that is smooth by construction. At 100 Hz the
+# deviation is 0.0003-0.0005 m. The trajectory is unchanged; only the sampling
+# of the reference file is.
+MOCAP_RATE_HZ = 100.0
 
-    Only ``fusion.Robot.align_to_world`` consumes it (the initial guess), and
-    it is passed through MILUV's spline cleaner on the way in. The EXACT GT is
-    kept separately in gt_traj_<robot>.npz -- every metric uses that, never this.
+
+def to_mocap_csv(path, t, p, R_mat, rate=MOCAP_RATE_HZ):
+    """MILUV mocap.csv: the GT body pose in the world frame, resampled to ``rate``.
+
+    Only ``fusion.Robot.align_to_world`` consumes it (the initial guess and the
+    gauge prior's mean), and it is passed through MILUV's spline cleaner on the
+    way in -- hence the rate. The EXACT GT is kept separately in gt_traj.npz;
+    every metric uses that, never this.
     """
     import os
     import pandas as pd
-    q = R.from_matrix(R_mat).as_quat()
+    from scipy.spatial.transform import Slerp
+    t = np.asarray(t, float)
+    tq = np.arange(t[0], t[-1], 1.0 / rate)
+    pq = np.stack([np.interp(tq, t, p[:, i]) for i in range(3)], 1)
+    q = Slerp(t, R.from_matrix(R_mat))(tq).as_quat()
     os.makedirs(os.path.dirname(path), exist_ok=True)
     pd.DataFrame({
-        "timestamp": t,
-        "pose.position.x": p[:, 0], "pose.position.y": p[:, 1],
-        "pose.position.z": p[:, 2],
+        "timestamp": tq,
+        "pose.position.x": pq[:, 0], "pose.position.y": pq[:, 1],
+        "pose.position.z": pq[:, 2],
         "pose.orientation.x": q[:, 0], "pose.orientation.y": q[:, 1],
         "pose.orientation.z": q[:, 2], "pose.orientation.w": q[:, 3],
     }).to_csv(path, index=False)
