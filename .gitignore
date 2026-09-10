@@ -2,6 +2,8 @@
 code
 vscode_cli.tar.gz
 *.tar.gz
+# scanned-space source meshes (64 MB unpacked); the derived GT lives in results/
+*.zip
 
 # ---- compiled driver binary (keep the .cc source) ----
 orbslam_driver/mono_miluv
@@ -19,6 +21,7 @@ reference files/*
 *-this-session-*.txt
 과거_세션_대화_기록.txt
 untitled.txt
+conversation-*.txt
 
 # ---- local tooling / editor state ----
 .claude/
