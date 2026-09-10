@@ -55,6 +55,27 @@ class Cfg:
     sigma_gauge_rot: float = 1e-3
     sigma_gauge_trans: float = 1e-3
 
+    # Where the gauge prior's MEAN comes from, and how many of them there are.
+    # PREREG_synth_gauge.md; measured in results/synth_room909/gauge_probe_seed0.json.
+    #
+    # "umeyama" (default, UNCHANGED behaviour): the mean is the robot's first VIO
+    #   pose mapped through a WHOLE-TRAJECTORY umeyama fit to mocap, and one prior
+    #   is placed per connected component of the inter-range graph. Both of those
+    #   make the drone-count ladder confounded: the number of priors then varies
+    #   with the number of UWB pairs (3 / 2 / 1 for the 0 / 1 / 3-pair conditions),
+    #   so condition A hands every robot its own absolute reference while condition
+    #   C has one. Measured effect on the pooled unaligned position error:
+    #   0.166 -> 0.489 m, which swamps the collaboration effect being measured.
+    #
+    # "first_pose": the mean is the robot's FIRST pose only (yaw + position, the
+    #   same 4 DoF init_yaw_only selects), and EVERY robot gets one prior in every
+    #   condition. Physically: the drones take off together from known positions,
+    #   so the absolute reference is identical across conditions and the ranges can
+    #   only correct drift accumulated after take-off. Changing the mean alone is
+    #   worth 0.018 m; the count is what matters. Both are changed here because
+    #   the whole-trajectory fit also leaks ground truth into the gauge.
+    gauge_init: str = "umeyama"
+
     # Gravity (roll/pitch) prior on every node -- see factors.gravity_prior for why
     # it is required rather than optional. sigma is MEASURED on cleaned mocap: the
     # VIO tilt residual is Rayleigh in magnitude, so sigma = median/1.1774 gives
@@ -211,16 +232,41 @@ class Robot:
         of feeding a mocap-aligned trajectory in as the measurement. Replacing it
         with an anchor-range-derived initialisation is a separate, later step.
         """
-        src = np.array([p.translation() for p in self.poses_vo])
-        dst = np.array([D.mocap_position_at(self.mocap, t) for t in self.t])
-        R, tvec = (umeyama_yaw(src, dst) if self.cfg.init_yaw_only
-                   else umeyama_rigid(src, dst))
+        if self.cfg.gauge_init == "first_pose":
+            R, tvec = self._first_pose_align()
+        else:
+            src = np.array([p.translation() for p in self.poses_vo])
+            dst = np.array([D.mocap_position_at(self.mocap, t) for t in self.t])
+            R, tvec = (umeyama_yaw(src, dst) if self.cfg.init_yaw_only
+                       else umeyama_rigid(src, dst))
         self.align_R, self.align_t = R, tvec
         Ralign = gtsam.Rot3(R)
         for p in self.poses_vo:
             Rw = Ralign.compose(p.rotation())
             tw = R @ p.translation() + tvec
             self.init_world.append(gtsam.Pose3(Rw, tw))
+
+    def _first_pose_align(self):
+        """L_k -> G from the robot's FIRST pose alone (yaw + position).
+
+        Same 4 DoF ``init_yaw_only`` selects, and the same reference source the
+        umeyama path uses (the cleaned mocap) -- only the first sample is read
+        instead of the whole track, so the alignment cannot absorb drift. The
+        first mocap sample survives the spline cleaner to ~1e-5 m at every rate
+        tested (PREREG_synth_gauge.md F4), so this is not sensitive to the
+        smoothing that the whole-trajectory fit is.
+        """
+        i = int(np.abs(self.mocap.timestamp.values - self.t[0]).argmin())
+        row = self.mocap.iloc[i]
+        R_gt = gtsam.Rot3.Quaternion(float(row.qw), float(row.qx),
+                                     float(row.qy), float(row.qz)).matrix()
+        R_v0 = self.poses_vo[0].rotation().matrix()
+        psi = (np.arctan2(R_gt[1, 0], R_gt[0, 0])
+               - np.arctan2(R_v0[1, 0], R_v0[0, 0]))
+        c, s = np.cos(psi), np.sin(psi)
+        R = np.array([[c, -s, 0.0], [s, c, 0.0], [0.0, 0.0, 1.0]])
+        p_gt = np.array([float(row.x), float(row.y), float(row.z)])
+        return R, p_gt - R @ self.poses_vo[0].translation()
 
 
 class CoVOR:
@@ -470,7 +516,14 @@ class CoVOR:
             comps = {}
             for k in live:
                 comps.setdefault(find(k), []).append(k)
-            for members in comps.values():
+            if c.gauge_init == "first_pose":
+                # One prior per ROBOT, in every condition: the number of absolute
+                # references must not vary with the number of UWB pairs, or the
+                # ladder measures gauge count instead of collaboration.
+                targets = [[k] for k in live]
+            else:
+                targets = list(comps.values())
+            for members in targets:
                 if grounded & set(members):
                     continue                       # anchors already fix this frame
                 k0 = min(members)                  # proposal: drone 1 of the group

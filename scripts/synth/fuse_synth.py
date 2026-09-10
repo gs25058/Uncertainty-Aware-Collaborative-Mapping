@@ -29,15 +29,24 @@ FAITHFUL = dict(use_moment_arm=True, bias_mode="off", use_height=False,
                 gauge_mode="component", anchor_robots=())
 
 
-def fuse(seq, inter_pairs, verbose=False):
+def fuse(seq, inter_pairs, verbose=False, gauge_init="umeyama",
+         uwb_sigma_override=None):
     """Run the fusion and return {robot: dict(t, T (world<-camera), tr, sigma_pos,
-    p_body)} plus the graph stats."""
+    p_body)} plus the graph stats.
+
+    gauge_init          "umeyama" (appendix-B behaviour) | "first_pose" (G1,
+                        PREREG_synth_gauge.md §2.1)
+    uwb_sigma_override  sigma handed to every range factor, for the C_noise
+                        negative control (§2.5). None keeps max(csv std, floor).
+    """
     import gtsam
     from covor.fusion import CoVOR, Cfg
     from covor import factors as F
     from covor import data as D
 
-    cfg = Cfg(**FAITHFUL, inter_pairs=inter_pairs)
+    extra = {} if uwb_sigma_override is None else \
+        dict(range_sigma_override=float(uwb_sigma_override))
+    cfg = Cfg(**FAITHFUL, inter_pairs=inter_pairs, gauge_init=gauge_init, **extra)
     cov = CoVOR(seq, cfg).build()
     res = cov.optimize(max_iter=100, verbose=verbose)
     marg = gtsam.Marginals(cov.graph, res)
