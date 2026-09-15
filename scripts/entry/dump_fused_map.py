@@ -1,0 +1,159 @@
+#!/usr/bin/env python3
+"""Rebuild one synthetic condition's fused 3D map and dump it for Phase 4.
+
+    python scripts/entry/dump_fused_map.py --cond C_3drone --coverage ii_all_cams \
+        --arm depth_only --stride 4
+
+run_experiment.py builds these maps and writes only SCALARS; the grids
+themselves are never saved, so the entry stage has nothing to read. This script
+re-runs the same fusion and the same OccupancyBuilder and saves the grid:
+3D labels, per-cell log-odds, per-column observation counts, and per-column
+sigma_xy.
+
+NOTHING EXISTING IS EDITED. covor/fusion.py, covor/occupancy.py and covor/synth/
+are imported and called. The frame loop is written out here rather than calling
+covor.synth.mapping.build_map because the per-frame recording needs a hook
+build_map does not offer (it constructs its builders internally). That is a
+duplication risk, so tests/test_entry_dump.py asserts that this loop and
+build_map produce IDENTICAL per-cell log-odds -- by value, not by cell count.
+
+NEGATIVE CONTROL. --corrupt reuses scripts/synth/gate.py's mismatch tool, which
+displaces the RENDER pose from the INTEGRATION pose. Corrupting both is a no-op:
+rendering and integrating from the same pose is self-consistent by construction
+(gate.py's header records that a 120 deg error left precision at 1.000).
+"""
+import argparse
+import json
+import os
+import sys
+import time
+
+import gtsam                       # noqa: F401  -- must precede open3d
+import numpy as np
+
+sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam")
+sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam/scripts/synth")
+from covor.entry import clean3d, sigma_map as SM
+from covor.occupancy import OccCfg, OccupancyBuilder
+from covor.synth import dataset as DS, mapping as MP, mesh_gt as MG, metrics as ME
+from covor.synth.config import SynthCfg, ROBOTS
+from covor.synth.render import DepthRenderer
+from fuse_synth import fuse, CONDITIONS
+from run_experiment import ARMS, COVERAGE
+import gate as GATE
+
+
+def build_and_record(cfg, scene, cams, poses, occ_cfg, stride, mode="ideal",
+                     teammate_pos=None, render_T=None):
+    """One pass over the frames: build the map AND record per-column evidence.
+
+    The integrate_frame call, the teammate masking and the frame stride are
+    exactly covor.synth.mapping.build_map's; only the recording is added.
+    """
+    b = OccupancyBuilder(occ_cfg)
+    rec = SM.ColumnRecorder(b.tree, occ_cfg.resolution)
+    b.tree = rec
+    ev = SM.ColumnEvidence()
+    stats = dict(frames={}, points=0)
+    for rob in cams:
+        P = poses[rob]
+        rend = DepthRenderer(scene, rob)
+        RT = (render_T or {}).get(rob)
+        n = 0
+        for i in range(0, len(P["t"]), stride):
+            Pc, sZ = rend.frame(RT[i] if RT is not None else P["T"][i], mode=mode)
+            if Pc is None:
+                continue
+            mates = (MP._mates_at(teammate_pos, rob, P["t"][i])
+                     if teammate_pos else None)
+            rec.cols = set()
+            b.integrate_frame(P["T"][i], float(P["tr"][i]), Pc, sZ, teammates=mates)
+            # a pose source without Sigma (GT poses) records n_obs but no margin
+            sig = 0.0 if P.get("sig") is None else SM.sigma_xy_from_cov(P["sig"][i])
+            ev.add_frame(rec.cols,
+                         SM.occupied_endpoint_voxels(P["T"][i], Pc, mates, occ_cfg),
+                         sig)
+            stats["points"] += len(Pc)
+            n += 1
+        stats["frames"][rob] = n
+    b.finalize()
+    return b, ev, stats
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--name", default="room909")
+    ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--cond", default="C_3drone", choices=list(CONDITIONS))
+    ap.add_argument("--coverage", default="ii_all_cams", choices=list(COVERAGE))
+    ap.add_argument("--arm", default="depth_only", choices=list(ARMS))
+    ap.add_argument("--stride", type=int, default=4)
+    ap.add_argument("--corrupt", default="none",
+                    help="negative control: none | shift<m> | yaw<deg> | nobodycam")
+    ap.add_argument("--out", default=None)
+    args = ap.parse_args()
+
+    cfg = SynthCfg(name=args.name, seq="synth_%s_0" % args.name, seed=args.seed)
+    DS.install_paths(cfg)
+    lab_gt, ijk_min, res, _, _ = MG.load_gt(cfg.gt_voxel())
+    gt = DS.load_gt_traj(cfg)
+    scene = MG.raycasting_scene(DS.world_mesh(cfg))
+
+    t0 = time.time()
+    poses, gstats = fuse(cfg.seq, CONDITIONS[args.cond])
+    ates = {}
+    for r in ROBOTS:
+        T_gt, _ = DS.gt_camera_poses(r, poses[r]["t"], gt)
+        ates[r] = ME.ate(poses[r]["T"][:, :3, 3], T_gt[:, :3, 3])["ate_rmse"]
+    trs = np.concatenate([np.sqrt(poses[r]["tr"]) for r in ROBOTS])
+    sxy = np.concatenate([[SM.sigma_xy_from_cov(S) for S in poses[r]["sig"]]
+                          for r in ROBOTS])
+    print("fusion %s: %d inter ranges, %.0fs | ATE %s | sqrt(trSigma) med %.3f | "
+          "sigma_xy med %.3f p90 %.3f"
+          % (args.cond, gstats["n_inter_range"], time.time() - t0,
+             {k: round(v, 3) for k, v in ates.items()}, np.median(trs),
+             np.median(sxy), np.percentile(sxy, 90)))
+
+    render_T = None
+    if args.corrupt != "none":
+        render_T = {r: v["T"] for r, v in GATE.corrupt(poses, args.corrupt, gt).items()}
+        print("NEGATIVE CONTROL: render pose corrupted with %r" % args.corrupt)
+
+    mates = {r: (poses[r]["t"], poses[r]["p_body"]) for r in ROBOTS}
+    occ_cfg = OccCfg(resolution=res, **ARMS[args.arm])
+    t1 = time.time()
+    b, ev, st = build_and_record(cfg, scene, COVERAGE[args.coverage], poses, occ_cfg,
+                                 args.stride, teammate_pos=mates, render_T=render_T)
+    print("map: %s frames, %d points, %.0fs" % (st["frames"], st["points"],
+                                                time.time() - t1))
+
+    M_occ, M_free = ME.map_masks(b, res, lab_gt, ijk_min)
+    lab = clean3d.labels_from_masks(M_occ, M_free)
+    n_obs, sigma_xy = ev.dense(lab.shape[:2], ijk_min)
+    tag = args.corrupt if args.corrupt != "none" else "clean"
+    out = args.out or os.path.join(cfg.outdir(), "entry", "map3d_%s_%s_%s_%s_s%d.npz"
+                                   % (args.cond, args.coverage, args.arm, tag,
+                                      args.stride))
+    os.makedirs(os.path.dirname(out), exist_ok=True)
+    np.savez_compressed(
+        out, labels=lab, M_occ=M_occ, M_free=M_free, ijk_min=ijk_min,
+        res=np.array([res]), n_obs=n_obs, sigma_xy=sigma_xy,
+        logodds=ME.logodds_grid(b, res, lab_gt.shape, ijk_min),
+        meta=json.dumps(dict(
+            cond=args.cond, coverage=args.coverage, arm=args.arm,
+            stride=args.stride, corrupt=args.corrupt, seed=args.seed,
+            occ_cfg={k: v for k, v in ARMS[args.arm].items()},
+            n_inter_range=int(gstats["n_inter_range"]), ate=ates,
+            sqrt_tr_sigma_median=float(np.median(trs)),
+            sigma_xy_median=float(np.median(sxy)),
+            sigma_xy_p90=float(np.percentile(sxy, 90)),
+            n_frames=int(sum(st["frames"].values())), n_points=int(st["points"]))))
+    print("occupied %d, free %d, unknown %d | columns observed %d, with occupied "
+          "evidence %d | -> %s"
+          % (int(M_occ.sum()), int(M_free.sum()),
+             int(lab.size - M_occ.sum() - M_free.sum()), int((n_obs > 0).sum()),
+             int((sigma_xy > 0).sum()), out))
+
+
+if __name__ == "__main__":
+    main()
