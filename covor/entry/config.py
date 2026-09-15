@@ -36,6 +36,15 @@ CLASS_NAMES = {
 }
 
 
+# DECIDED 2026-09-15, BEFORE any entry-map metric was produced: the three values
+# the measurements below call into question -- close_structure/close_iter, z_min
+# and H_crawl -- KEEP THEIR DESIGN VALUES. The costs were measured first and are
+# recorded at each field, so they are limitations of a stated design, not an
+# outcome that was tuned for. Changing any of them after a metric exists would be
+# a post-hoc threshold choice (RESULTS_SUMMARY.md §9-4) and needs its own
+# pre-registration.
+
+
 @dataclass(frozen=True)
 class EntryCfg:
     # --- grid -------------------------------------------------------------
