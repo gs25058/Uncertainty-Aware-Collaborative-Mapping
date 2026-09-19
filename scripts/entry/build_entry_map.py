@@ -20,6 +20,7 @@ import os
 import sys
 
 import numpy as np
+from scipy import ndimage
 
 sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam")
 from covor.entry import clean3d, project as PJ, inflate as IN, reach as RE
@@ -31,31 +32,75 @@ from covor.entry.config import (EntryCfg, UNKNOWN, FREE, OCCUPIED,
 BANDS = ("walk", "crawl")
 
 
-def select_floor(lab3d, peaks, cfg):
-    """The lowest occupied peak THAT HAS FREE SPACE ABOVE IT.
+def select_floors(lab3d, peaks, cfg):
+    """Every STOREY's floor row, bottom up. DESIGN §3-6.
 
-    The peak itself is the design's rule (§3-6). This adds the one structural
-    condition that tells a floor from a ceiling without a tuned constant: a floor
-    has walkable volume over it and a ceiling has nothing. It exists because the
-    ceiling once WAS selected, silently, and the map came back empty rather than
-    wrong-looking (see clean3d.floor_ceiling_rows).
+    "층이 둘이면 피크가 둘 -> 층별로 §2 반복." The occupied z histogram has many
+    more peaks than it has storeys: room909's fused map peaks at rows 6, 9, 14,
+    22, 29 and 32, of which exactly one is a floor. Taking every peak reports
+    five storeys in a single-storey room.
 
-    Raises rather than guessing when no peak qualifies -- a grid with no free
-    space above any horizontal surface is not something to publish a floor plan
-    of.
+    Two conditions separate them, and neither is a tuned constant:
+
+      1. a floor has FREE SPACE ABOVE IT, inside the band a body occupies. A
+         ceiling has nothing over it -- which is what once let the ceiling be
+         selected silently (clean3d.floor_ceiling_rows).
+      2. that free space is a volume NO LOWER STOREY ALREADY CLAIMS. This is the
+         one that matters. A first attempt used "the peak is not inside a lower
+         floor's band", which fails on any room taller than H_walk: room909's
+         ceiling is at 2.60 m and the walk band stops at 1.90 m, so a wall
+         course at 2.00 m sits above the band, has free air over it, and was
+         accepted as a second storey. Connectivity settles it without a
+         threshold -- the air over that course is the SAME 3D free component as
+         the room below it, while the air over a real inter-storey slab is a
+         different one, because the slab is what separates them.
+
+    KNOWN LIMITS, both of them the design's own scope note ("계단 연결은 향후과제"):
+      * a stairwell joins two storeys' air into one component, and the upper
+        storey is then missed. That is the same assumption as not routing
+        between storeys.
+      * a spurious peak BELOW the real floor would be accepted first and the
+        real floor skipped. It does not occur here (the histogram climbs
+        monotonically into the floor) but it is the failure to look for.
     """
-    nz = np.asarray(lab3d).shape[2]
-    tried = []
+    lab3d = np.asarray(lab3d)
+    nz = lab3d.shape[2]
+    cc, _ = ndimage.label(lab3d == FREE,
+                          structure=ndimage.generate_binary_structure(3, 1))
+    floors, claimed, tried = [], set(), []
     for p in peaks:
-        lo, hi = PJ.rows_for_band(int(p), cfg.H_walk, cfg, nz)
-        n_free = int((np.asarray(lab3d)[:, :, lo:hi] == FREE).sum())
-        tried.append((int(p), n_free))
-        if n_free > 0:
-            return int(p)
-    raise ValueError(
-        "no occupied peak has free space in the walk band above it "
-        "(row, free voxels above): %s -- this grid has no floor to stand on"
-        % tried)
+        p = int(p)
+        try:
+            lo, hi = PJ.rows_for_band(p, cfg.H_walk, cfg, nz)
+        except ValueError:
+            # the band would fall off the top of the grid: there is no volume
+            # above this peak at all, so it cannot be a floor. Reached by the
+            # top course of any wall that runs to the grid ceiling.
+            tried.append((p, 0, None))
+            continue
+        ids = cc[:, :, lo:hi]
+        ids = ids[ids > 0]
+        if ids.size == 0:
+            tried.append((p, 0, None))
+            continue
+        vals, counts = np.unique(ids, return_counts=True)
+        main = int(vals[int(np.argmax(counts))])   # the storey's air volume
+        tried.append((p, int(ids.size), main))
+        if main in claimed:
+            continue
+        claimed.add(main)
+        floors.append(p)
+    if not floors:
+        raise ValueError(
+            "no occupied peak has free space in the walk band above it "
+            "(row, free voxels above, air component): %s -- this grid has no "
+            "floor to stand on" % tried)
+    return floors
+
+
+def select_floor(lab3d, peaks, cfg):
+    """The lowest storey's floor row. See select_floors."""
+    return select_floors(lab3d, peaks, cfg)[0]
 
 
 def merged_class(bands, wc):
@@ -78,17 +123,28 @@ def merged_class(bands, wc):
 
 
 def build_entry_grid(lab3d, cfg, sigma_xy=None, n_obs=None, entry_xy=None,
-                     ijk_min=(0, 0, 0), k_sigma=None):
+                     ijk_min=(0, 0, 0), k_sigma=None, floor_row=None):
     """3D labels -> the full entry grid, as a dict of arrays + info.
 
-    sigma_xy  (nx, ny) per-column sigma_xy in metres, or None for the k = 0 case.
-    n_obs     (nx, ny) frames that wrote each column, or None (GT has no frames).
-    entry_xy  (x, y) in metres; None uses cfg.entry_xy, then reach.default_entry.
+    sigma_xy   (nx, ny) per-column sigma_xy in metres, or None for the k = 0 case.
+    n_obs      (nx, ny) frames that wrote each column, or None (GT has no frames).
+    entry_xy   (x, y) in metres; None uses cfg.entry_xy, then reach.default_entry.
+    floor_row  build this storey instead of the lowest one (see select_floors).
+               ``info["floors"]`` always lists every storey that was detected, so
+               a caller that ignores this argument can still see there were more.
     """
     ijk_min = np.asarray(ijk_min, np.int64)
     lab3d, info = clean3d.clean(np.asarray(lab3d, np.uint8), cfg)
-    floor_row = select_floor(lab3d, info["floor"]["peaks"], cfg)
-    info["floor_row"] = floor_row
+    floors = select_floors(lab3d, info["floor"]["peaks"], cfg)
+    if floor_row is None:
+        floor_row = floors[0]
+    elif int(floor_row) not in floors:
+        raise ValueError("floor row %s is not one of the detected storeys %s"
+                         % (floor_row, floors))
+    info["floors"] = [int(f) for f in floors]
+    info["floor_index"] = floors.index(int(floor_row))
+    info["floor_row"] = int(floor_row)
+    floor_row = int(floor_row)
     bands, rows = PJ.project(lab3d, floor_row, cfg)
 
     clear, wc, r, passable = {}, {}, {}, {}
@@ -151,6 +207,22 @@ def band_table(g):
             reachable=int(g["%s_reachable" % b].sum()),
         ))
     return rows
+
+
+def build_entry_grids(lab3d, cfg, **kw):
+    """One entry grid PER STOREY, bottom up (DESIGN §3-6).
+
+    Stair connection is out of scope by the design's own words, so these are
+    independent maps that happen to share a building: each has its own entry
+    point and its own reachable set, and nothing here claims you can get from
+    one to the next.
+    """
+    kw.pop("floor_row", None)
+    clean, info = clean3d.clean(np.asarray(lab3d, np.uint8), cfg)
+    out = []
+    for f in select_floors(clean, info["floor"]["peaks"], cfg):
+        out.append(build_entry_grid(lab3d, cfg, floor_row=f, **kw))
+    return out
 
 
 def load_3d(args):

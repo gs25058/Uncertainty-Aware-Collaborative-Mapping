@@ -431,6 +431,72 @@ def test_select_floor_raises_when_no_peak_has_space_above_it():
         raise AssertionError("a roof-only grid was accepted as having a floor")
 
 
+def _storeys(lab, cfg):
+    from build_entry_map import select_floors
+    return select_floors(lab, clean3d.floor_ceiling_rows(lab)[2]["peaks"], cfg)
+
+
+def test_two_storey_building_reports_both_floors():
+    """DESIGN §3-6: two floor peaks -> run §2 once per storey."""
+    nx, ny, nz = 44, 36, 64
+    lab = np.zeros((nx, ny, nz), np.uint8)
+    for base in (2, 32):
+        lab[6:38, 6:30, base] = OCCUPIED            # the slab
+        lab[6:38, 6:30, base + 1:base + 28] = FREE  # the storey standing on it
+    lab[:, :, 60] = OCCUPIED                        # the roof
+    cfg = EntryCfg(close_iter=0)
+    assert _storeys(lab, cfg) == [2, 32]
+    from build_entry_map import build_entry_grids
+    gs = build_entry_grids(lab, cfg, k_sigma=0.0)
+    assert len(gs) == 2
+    for (g, info), want in zip(gs, (2, 32)):
+        assert info["floor_row"] == want
+        assert info["floors"] == [2, 32]
+        assert int((g["walk_label"] == FREE).sum()) > 0, (
+            "storey at row %d has no free space in its band" % want)
+
+
+def test_a_wall_course_above_the_band_is_not_a_storey():
+    """The bug this rule was rewritten for.
+
+    A room 2.6 m tall has 0.7 m of air above the 1.9 m walk band. Any occupied
+    peak up there -- a wall course, a light fitting, the top of a shelf -- has
+    free space over it and sits outside the lower floor's band, so a
+    "not inside a lower band" rule calls it a second storey. room909 did exactly
+    that. Connectivity is what rejects it: the air over the course is the same
+    3D component as the room under it.
+    """
+    nx, ny, nz = 40, 30, 40
+    lab = np.zeros((nx, ny, nz), np.uint8)
+    lab[4:36, 4:26, 2] = OCCUPIED                   # floor
+    lab[4:36, 4:26, 3:28] = FREE                    # a 2.5 m room
+    lab[4:36, 4:26, 28] = OCCUPIED                  # ceiling
+    lab[4:36, 4:5, 24] = OCCUPIED                   # a wall course at ~2.2 m,
+    lab[4:36, 25:26, 24] = OCCUPIED                 # above the 1.9 m band
+    cfg = EntryCfg(close_iter=0)
+    peaks = clean3d.floor_ceiling_rows(lab)[2]["peaks"]
+    assert 24 in peaks, "fixture must make the wall course a histogram peak"
+    assert _storeys(lab, cfg) == [2], (
+        "the wall course at row 24 was taken for a storey: %s"
+        % _storeys(lab, cfg))
+
+
+def test_room909_is_one_storey():
+    """The real map, which has six occupied peaks and one floor."""
+    if not os.path.exists(GT):
+        print("SKIP: %s not built" % GT)
+        return
+    lab = np.load(GT, allow_pickle=False)["labels"]
+    cfg = EntryCfg()
+    cleaned, info = clean3d.clean(lab, cfg)
+    peaks = info["floor"]["peaks"]
+    assert len(peaks) > 3, "fixture assumption: this map has several peaks"
+    from build_entry_map import select_floors
+    assert select_floors(cleaned, peaks, cfg) == [6], (
+        "room909 is a single storey; got %s from peaks %s"
+        % (select_floors(cleaned, peaks, cfg), peaks))
+
+
 if __name__ == "__main__":
     fs = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for f in fs:
