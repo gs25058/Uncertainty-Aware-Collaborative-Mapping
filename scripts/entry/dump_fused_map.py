@@ -123,12 +123,20 @@ def main():
     ap.add_argument("--corrupt", default="none",
                     help="negative control: none | jitter<m> (per-frame, "
                          "PREREG_entry_control.md) | shift<m> | yaw<deg> | nobodycam")
+    ap.add_argument("--gt", default=None,
+                    help="gt_voxel.npz to take the grid (and hence the "
+                         "RESOLUTION) from. Default: the sequence's own 0.10 m "
+                         "grid. DESIGN §7 sanctions a 0.05 m re-integration as "
+                         "the 'final deliverable version'; PREREG_RESOLUTION.md "
+                         "forbids comparing absolute metrics ACROSS resolutions, "
+                         "so a 0.05 dump is for figures and for differences "
+                         "measured inside 0.05.")
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
 
     cfg = SynthCfg(name=args.name, seq="synth_%s_0" % args.name, seed=args.seed)
     DS.install_paths(cfg)
-    lab_gt, ijk_min, res, _, _ = MG.load_gt(cfg.gt_voxel())
+    lab_gt, ijk_min, res, _, _ = MG.load_gt(args.gt or cfg.gt_voxel())
     gt = DS.load_gt_traj(cfg)
     scene = MG.raycasting_scene(DS.world_mesh(cfg))
 
@@ -165,9 +173,10 @@ def main():
     lab = clean3d.labels_from_masks(M_occ, M_free)
     n_obs, sigma_xy = ev.dense(lab.shape[:2], ijk_min)
     tag = args.corrupt if args.corrupt != "none" else "clean"
-    out = args.out or os.path.join(cfg.outdir(), "entry", "map3d_%s_%s_%s_%s_s%d.npz"
-                                   % (args.cond, args.coverage, args.arm, tag,
-                                      args.stride))
+    out = args.out or os.path.join(
+        cfg.outdir(), "entry", "map3d_%s_%s_%s_%s_s%d%s.npz"
+        % (args.cond, args.coverage, args.arm, tag, args.stride,
+           "" if abs(res - 0.10) < 1e-9 else "_r%03d" % round(res * 1000)))
     os.makedirs(os.path.dirname(out), exist_ok=True)
     np.savez_compressed(
         out, labels=lab, M_occ=M_occ, M_free=M_free, ijk_min=ijk_min,
@@ -176,7 +185,7 @@ def main():
         meta=json.dumps(dict(
             cond=args.cond, coverage=args.coverage, arm=args.arm,
             stride=args.stride, corrupt=args.corrupt, seed=args.seed,
-            occ_cfg={k: v for k, v in ARMS[args.arm].items()},
+            res=res, occ_cfg={k: v for k, v in ARMS[args.arm].items()},
             n_inter_range=int(gstats["n_inter_range"]), ate=ates,
             sqrt_tr_sigma_median=float(np.median(trs)),
             sigma_xy_median=float(np.median(sxy)),

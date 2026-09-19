@@ -51,7 +51,7 @@ def load_map(path):
     meta = json.loads(str(z["meta"])) if "meta" in z.files else {}
     sig = z["sigma_xy"] if "sigma_xy" in z.files else None
     nobs = z["n_obs"] if "n_obs" in z.files else None
-    return lab, z["ijk_min"], sig, nobs, meta
+    return lab, z["ijk_min"], sig, nobs, meta, float(np.asarray(z["res"]).ravel()[0])
 
 
 def main():
@@ -66,6 +66,7 @@ def main():
 
     zg = np.load(args.gt, allow_pickle=False)
     lab_gt, ijk_gt = zg["labels"], zg["ijk_min"]
+    res_gt = float(np.asarray(zg["res"]).ravel()[0])
     ws = [float(v) for v in args.w.split(",")]
     out_csv = args.out or os.path.join(os.path.dirname(args.map[0].split(":")[0]),
                                        "results_entry.csv")
@@ -73,7 +74,7 @@ def main():
     for spec in args.map:
         path, _, tag = spec.partition(":")
         tag = tag or os.path.basename(path).replace("map3d_", "").replace(".npz", "")
-        lab_p, ijk_p, sig, nobs, meta = load_map(path)
+        lab_p, ijk_p, sig, nobs, meta, res_p = load_map(path)
         if not np.array_equal(np.asarray(ijk_p), np.asarray(ijk_gt)):
             raise ValueError("%s is on a different grid origin than the GT" % path)
         print("\n=== %s ===" % tag)
@@ -81,8 +82,12 @@ def main():
             print("    %s" % {k: meta[k] for k in
                               ("cond", "coverage", "arm", "stride", "corrupt")
                               if k in meta})
+        if abs(res_p - res_gt) > 1e-9:
+            raise ValueError("%s is %.3f m and the GT is %.3f m -- "
+                             "PREREG_RESOLUTION.md forbids scoring across "
+                             "resolutions" % (path, res_p, res_gt))
         for w in ws:
-            cfg = EntryCfg(w=w)
+            cfg = EntryCfg(res=res_gt, w=w)
             g_gt, i_gt = build_entry_grid(lab_gt, cfg, ijk_min=ijk_gt, k_sigma=0.0)
             door = tuple(float(v) for v in g_gt["entry_xy"])
             try:
@@ -118,7 +123,7 @@ def main():
                 append_row(out_csv, rec, fields)
                 print("    " + EM.row_text(rec))
         # the confusion matrix is per map at the design's own w
-        cfg = EntryCfg(w=0.70)
+        cfg = EntryCfg(res=res_gt, w=0.70)
         g_gt, _ = build_entry_grid(lab_gt, cfg, ijk_min=ijk_gt, k_sigma=0.0)
         g_p, _ = build_entry_grid(lab_p, cfg, sigma_xy=sig, n_obs=nobs,
                                   ijk_min=ijk_p, k_sigma=args.k_sigma)

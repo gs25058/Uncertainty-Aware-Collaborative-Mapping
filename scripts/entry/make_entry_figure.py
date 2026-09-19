@@ -33,7 +33,7 @@ def load(path):
     z = np.load(path, allow_pickle=False)
     lab = (z["labels"] if "labels" in z.files
            else clean3d.labels_from_masks(z["M_occ"], z["M_free"]))
-    return (lab, z["ijk_min"],
+    return (lab, z["ijk_min"], float(np.asarray(z["res"]).ravel()[0]),
             z["sigma_xy"] if "sigma_xy" in z.files else None,
             z["n_obs"] if "n_obs" in z.files else None,
             json.loads(str(z["meta"])) if "meta" in z.files else {})
@@ -53,12 +53,19 @@ def main():
                          "enters no decision at k_sigma = 0 and the panel says so.")
     args = ap.parse_args()
 
-    cfg = EntryCfg(w=args.w, k_sigma=args.k_sigma)
     bands = args.bands.split(",")
+    # the grid resolution comes from the DATA, never from EntryCfg's default.
+    # Handing a 0.05 m grid to a cfg that still says 0.10 puts the band at
+    # 0.05-0.95 m instead of 0.10-1.90 m and every number after it is quietly
+    # wrong -- nothing raises, the map just describes a different slab.
+    res_seen = {load(spec.partition(":")[0])[2] for spec in args.map}
+    if len(res_seen) > 1:
+        ap.error("maps are on different resolutions: %s" % sorted(res_seen))
+    cfg = EntryCfg(res=res_seen.pop(), w=args.w, k_sigma=args.k_sigma)
     maps = []
     for spec in args.map:
         path, _, lb = spec.partition(":")
-        lab, ijk, sig, nobs, meta = load(path)
+        lab, ijk, res_m, sig, nobs, meta = load(path)
         g, info = build_entry_grid(lab, cfg, sigma_xy=sig, n_obs=nobs,
                                    ijk_min=ijk, k_sigma=args.k_sigma)
         maps.append(dict(label=lb or os.path.basename(path), grid=g, info=info,
@@ -67,6 +74,10 @@ def main():
     gt_grid = None
     if args.gt:
         zg = np.load(args.gt, allow_pickle=False)
+        if abs(float(np.asarray(zg["res"]).ravel()[0]) - cfg.res) > 1e-9:
+            ap.error("the GT grid is %.3f m and the maps are %.3f m -- "
+                     "PREREG_RESOLUTION.md forbids scoring across resolutions"
+                     % (float(np.asarray(zg["res"]).ravel()[0]), cfg.res))
         gt_grid, _ = build_entry_grid(zg["labels"], cfg, ijk_min=zg["ijk_min"],
                                       k_sigma=0.0)
 

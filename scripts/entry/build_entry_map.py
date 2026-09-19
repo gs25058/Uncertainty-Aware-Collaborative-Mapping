@@ -226,14 +226,17 @@ def build_entry_grids(lab3d, cfg, **kw):
 
 
 def load_3d(args):
-    """(labels, ijk_min) from either a gt_voxel.npz or a dumped map."""
-    if args.gt:
-        z = np.load(args.gt, allow_pickle=False)
-        return z["labels"], z["ijk_min"]
-    z = np.load(args.map, allow_pickle=False)
+    """(labels, ijk_min, res) from either a gt_voxel.npz or a dumped map.
+
+    The resolution travels with the grid. EntryCfg's default is only a default:
+    a 0.05 m grid read with res = 0.10 puts the band at 0.05-0.95 m instead of
+    0.10-1.90 m, and nothing raises.
+    """
+    z = np.load(args.gt or args.map, allow_pickle=False)
+    res = float(np.asarray(z["res"]).ravel()[0])
     if "labels" in z.files:
-        return z["labels"], z["ijk_min"]
-    return clean3d.labels_from_masks(z["M_occ"], z["M_free"]), z["ijk_min"]
+        return z["labels"], z["ijk_min"], res
+    return clean3d.labels_from_masks(z["M_occ"], z["M_free"]), z["ijk_min"], res
 
 
 def main():
@@ -250,13 +253,13 @@ def main():
     if bool(args.gt) == bool(args.map):
         ap.error("give exactly one of --gt / --map")
 
-    kw = {}
+    lab, ijk_min, res = load_3d(args)
+    kw = dict(res=res)
     if args.w is not None:
         kw["w"] = args.w
     if args.cube_min_voxels is not None:
         kw["cube_min_voxels"] = args.cube_min_voxels
     cfg = EntryCfg(**kw)
-    lab, ijk_min = load_3d(args)
     sigma = n_obs = None
     if args.map:
         z = np.load(args.map, allow_pickle=False)

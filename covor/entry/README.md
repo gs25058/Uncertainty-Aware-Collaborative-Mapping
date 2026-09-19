@@ -8,11 +8,24 @@
 > **안전 판정은 전부 `entry_grid.npz`에서 끝난다. `render.py`는 이미 결정된 것을
 > 그릴 뿐이고, 라벨을 만들거나 바꾸거나 문턱을 적용하지 않는다.**
 
-그림이 격자와 다르게 보이는 곳이 있으면 그것은 `render.py`의 버그다. 벡터화되는 것은
-**벽 윤곽 하나뿐**이고(marching squares → Douglas-Peucker, ε = 0.5 voxel), 그것도
-검증 대상이다 — `tests/test_entry_render.py`가 윤곽 안쪽 셀 집합이 occupied 마스크와
-같음을 셀 단위로 단언한다. 영역 채움은 격자 그대로(1셀 = 1픽셀, `interpolation="nearest"`)
-이므로 채움이 판정과 어긋나는 것은 원리적으로 불가능하다.
+그림이 격자와 다르게 보이는 곳이 있으면 그것은 `render.py`의 버그다. 벡터로 그려지는 것은 두 가지다.
+
+- **벽 윤곽**: occupied 마스크의 marching squares → Douglas-Peucker(ε = 0.5 voxel).
+  마스크의 계단은 **실제 정보**다(분류가 바뀌는 자리) — 그래서 문턱을 넘겨 지우지 않고,
+  계단을 없애는 답은 더 고운 격자지 더 센 필터가 아니다.
+- **폭 등급 경계**: clearance는 연속장이고 walk/narrow는 그 **레벨셋**이다. 곡선이
+  매끄러운 이유가 필터가 아니라 양 자체가 매끄럽기 때문이며 sub-voxel 정확하다.
+
+영역은 **중첩 순서**로 뒤에서 앞으로 칠한다(unknown ⊃ 비장애물 ⊃ clearance≥narrow ⊃
+clearance≥walk). 각 영역이 직전 것 안에 완전히 들어가므로(장애물 셀의 clearance는 0)
+두 경계가 서로 맞을 필요가 없고 이음매도 열리지 않는다. 클래스별로 따로 벡터화하면
+독립적으로 단순화된 경계 사이에 실금이 생기는데, 그것을 피하는 구조다.
+
+`tests/test_entry_render.py`가 둘 다 묶는다 — 윤곽 안쪽 셀 집합 == occupied 마스크,
+그리고 "walk" 폴리곤 안의 셀은 clearance ≥ clear_walk(허용오차 반 voxel, find_contours가
+곡선을 옮길 수 있는 최대치이고 그 이상은 불허).
+`fills="raster"`(1셀 = 1픽셀)도 남아 있고 `plot_entry_grid.py`가 그걸 쓴다 — 그쪽 일은
+격자를 손대지 않고 보여주는 것이다.
 
 `covor/fusion.py`·`covor/occupancy.py`·`covor/synth/`는 **읽기만** 한다. 수정하지 않는다.
 
