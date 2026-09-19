@@ -1,0 +1,168 @@
+{
+  "w": 0.7,
+  "k_sigma": 0.0,
+  "lambda_route": 0.5,
+  "unknown_penalty_steps": 1.0,
+  "routes": {
+    "C  -  3 drones, inter-agent UWB/walk": {
+      "entry_ij": [
+        42,
+        130
+      ],
+      "routes": [
+        {
+          "n_cells": 169,
+          "length_m": 9.021320343559642,
+          "min_clearance_m": 0.3557886481285095,
+          "min_width_m": 0.711577296257019,
+          "min_width_at": [
+            -3.4250000000000003,
+            2.5250000000000004
+          ],
+          "median_width_m": 1.649999976158142,
+          "n_unknown_adjacent": 0,
+          "unknown_adjacent_runs": [],
+          "start_xy": [
+            -3.4250000000000003,
+            2.5250000000000004
+          ],
+          "goal_xy": [
+            4.9750000000000005,
+            1.0250000000000001
+          ],
+          "goal_ij": [
+            210,
+            100
+          ],
+          "reachable": true,
+          "route_validity": 0.7514792899408284,
+          "route_all_valid": false,
+          "n_route_cells": 169,
+          "n_route_cells_not_gt_passable": 42,
+          "gt_can_reach_goal": false,
+          "gt_shortest_m": NaN,
+          "route_length_ratio": NaN,
+          "route_min_width_m": 0.711577296257019,
+          "route_length_m": 9.021320343559642,
+          "route_n_unknown_adjacent": 0
+        },
+        {
+          "n_cells": 102,
+          "length_m": 5.629898987322332,
+          "min_clearance_m": 0.3557886481285095,
+          "min_width_m": 0.711577296257019,
+          "min_width_at": [
+            -3.4250000000000003,
+            2.5250000000000004
+          ],
+          "median_width_m": 1.6863462924957275,
+          "n_unknown_adjacent": 0,
+          "unknown_adjacent_runs": [],
+          "start_xy": [
+            -3.4250000000000003,
+            2.5250000000000004
+          ],
+          "goal_xy": [
+            1.625,
+            1.125
+          ],
+          "goal_ij": [
+            143,
+            102
+          ],
+          "reachable": true,
+          "route_validity": 0.5980392156862745,
+          "route_all_valid": false,
+          "n_route_cells": 102,
+          "n_route_cells_not_gt_passable": 41,
+          "gt_can_reach_goal": true,
+          "gt_shortest_m": 3.3863961030678924,
+          "route_length_ratio": 1.6625045670888727,
+          "route_min_width_m": 0.711577296257019,
+          "route_length_m": 5.629898987322332,
+          "route_n_unknown_adjacent": 0
+        }
+      ]
+    },
+    "C  -  3 drones, inter-agent UWB/crawl": {
+      "entry_ij": [
+        42,
+        130
+      ],
+      "routes": [
+        {
+          "n_cells": 169,
+          "length_m": 9.021320343559644,
+          "min_clearance_m": 0.3557886481285095,
+          "min_width_m": 0.711577296257019,
+          "min_width_at": [
+            4.9750000000000005,
+            1.0250000000000001
+          ],
+          "median_width_m": 1.7191805839538574,
+          "n_unknown_adjacent": 0,
+          "unknown_adjacent_runs": [],
+          "start_xy": [
+            -3.4250000000000003,
+            2.5250000000000004
+          ],
+          "goal_xy": [
+            4.9750000000000005,
+            1.0250000000000001
+          ],
+          "goal_ij": [
+            210,
+            100
+          ],
+          "reachable": true,
+          "route_validity": 0.7810650887573964,
+          "route_all_valid": false,
+          "n_route_cells": 169,
+          "n_route_cells_not_gt_passable": 37,
+          "gt_can_reach_goal": false,
+          "gt_shortest_m": NaN,
+          "route_length_ratio": NaN,
+          "route_min_width_m": 0.711577296257019,
+          "route_length_m": 9.021320343559644,
+          "route_n_unknown_adjacent": 0
+        },
+        {
+          "n_cells": 98,
+          "length_m": 5.492031021678297,
+          "min_clearance_m": 0.375,
+          "min_width_m": 0.75,
+          "min_width_at": [
+            -3.4250000000000003,
+            2.5250000000000004
+          ],
+          "median_width_m": 1.7706266641616821,
+          "n_unknown_adjacent": 0,
+          "unknown_adjacent_runs": [],
+          "start_xy": [
+            -3.4250000000000003,
+            2.5250000000000004
+          ],
+          "goal_xy": [
+            1.425,
+            0.9750000000000001
+          ],
+          "goal_ij": [
+            139,
+            99
+          ],
+          "reachable": true,
+          "route_validity": 0.6326530612244898,
+          "route_all_valid": false,
+          "n_route_cells": 98,
+          "n_route_cells_not_gt_passable": 36,
+          "gt_can_reach_goal": true,
+          "gt_shortest_m": 3.248528137423856,
+          "route_length_ratio": 1.6906213489145214,
+          "route_min_width_m": 0.75,
+          "route_length_m": 5.492031021678297,
+          "route_n_unknown_adjacent": 0
+        }
+      ]
+    }
+  }
+}
