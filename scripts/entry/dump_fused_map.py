@@ -17,10 +17,11 @@ build_map does not offer (it constructs its builders internally). That is a
 duplication risk, so tests/test_entry_dump.py asserts that this loop and
 build_map produce IDENTICAL per-cell log-odds -- by value, not by cell count.
 
-NEGATIVE CONTROL. --corrupt reuses scripts/synth/gate.py's mismatch tool, which
-displaces the RENDER pose from the INTEGRATION pose. Corrupting both is a no-op:
-rendering and integrating from the same pose is self-consistent by construction
-(gate.py's header records that a 120 deg error left precision at 1.000).
+NEGATIVE CONTROL. --corrupt displaces the RENDER pose from the INTEGRATION pose.
+Corrupting both is a no-op: rendering and integrating from the same pose is
+self-consistent by construction (gate.py's header records that a 120 deg error
+left precision at 1.000). "jitter<sigma>" is defined here (per-frame independent
+displacement, PREREG_entry_control.md); every other kind is gate.py's own.
 """
 import argparse
 import json
@@ -41,6 +42,37 @@ from covor.synth.render import DepthRenderer
 from fuse_synth import fuse, CONDITIONS
 from run_experiment import ARMS, COVERAGE
 import gate as GATE
+
+
+def corrupt_poses(poses, how, gt, seed=0):
+    """Break the pose chain on purpose. PREREG_entry_control.md §2.
+
+    "jitter<sigma>" is the kind this file adds: an INDEPENDENT isotropic
+    Gaussian displacement per frame, so two frames that see the same wall put it
+    in different cells. That is the corruption an entry map should be able to
+    feel, and the one a rigid shift is not -- a rigid transform moves a map
+    without making it inconsistent with itself, and clearance is invariant to
+    that (RESULTS_entry.md §4).
+
+    Every other kind is scripts/synth/gate.py's ``corrupt``, called unmodified.
+    The draw is seeded from (seed, robot index, sigma), so a rerun reproduces the
+    same map. sigma = 0 returns the input poses bit for bit, which is the
+    control's own control (PREREG §3 P0).
+    """
+    if not how.startswith("jitter"):
+        return GATE.corrupt(poses, how, gt)
+    sigma = float(how[6:] or 0.0)
+    out = {}
+    for k, (r, P) in enumerate(sorted(poses.items())):
+        T = np.array(P["T"], copy=True)
+        if sigma > 0:
+            # an explicit integer seed sequence, not hash(): hash() of a tuple
+            # is stable for ints but that is an implementation detail, and the
+            # pre-registration promises a rerun reproduces the same map.
+            rng = np.random.default_rng([int(seed), k, int(round(sigma * 1e6))])
+            T[:, :3, 3] += rng.normal(0.0, sigma, size=(len(T), 3))
+        out[r] = dict(P, T=T)
+    return out
 
 
 def build_and_record(cfg, scene, cams, poses, occ_cfg, stride, mode="ideal",
@@ -89,7 +121,8 @@ def main():
     ap.add_argument("--arm", default="depth_only", choices=list(ARMS))
     ap.add_argument("--stride", type=int, default=4)
     ap.add_argument("--corrupt", default="none",
-                    help="negative control: none | shift<m> | yaw<deg> | nobodycam")
+                    help="negative control: none | jitter<m> (per-frame, "
+                         "PREREG_entry_control.md) | shift<m> | yaw<deg> | nobodycam")
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
 
@@ -116,7 +149,8 @@ def main():
 
     render_T = None
     if args.corrupt != "none":
-        render_T = {r: v["T"] for r, v in GATE.corrupt(poses, args.corrupt, gt).items()}
+        render_T = {r: v["T"] for r, v in
+                    corrupt_poses(poses, args.corrupt, gt, args.seed).items()}
         print("NEGATIVE CONTROL: render pose corrupted with %r" % args.corrupt)
 
     mates = {r: (poses[r]["t"], poses[r]["p_body"]) for r in ROBOTS}
