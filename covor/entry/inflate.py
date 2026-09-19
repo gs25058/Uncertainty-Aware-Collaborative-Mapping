@@ -76,3 +76,38 @@ def passable_mask(band, clear, r):
     wide enough, not because a distance field happened to come out small.
     """
     return (np.asarray(band) == FREE) & (np.asarray(clear) >= np.asarray(r))
+
+
+def body_disk(res, radius):
+    """A disk structuring element of ``radius`` metres on a ``res`` grid."""
+    rc = int(np.ceil(radius / res))
+    yy, xx = np.mgrid[-rc:rc + 1, -rc:rc + 1]
+    return (np.hypot(xx, yy) * res) <= radius + 1e-9
+
+
+def swept_workspace(mask, cfg, radius=None):
+    """The floor a body actually covers if its CENTRE may be anywhere in ``mask``.
+
+    Ported from uacm/entry_map (the pipeline supplied in uacm.zip), which is
+    where the distinction was first drawn, and it is a real one:
+
+      * ``passable`` / ``reachable`` are CONFIGURATION SPACE -- the set of places
+        the body's centre may legally be. That is the right space to plan in.
+      * what a person looking at a floor plan means by "walkable floor" is
+        WORKSPACE -- the floor the body sweeps out, which is the centre set
+        dilated back by the body radius.
+
+    Painting only the centre set makes an open room look half blocked, because
+    every wall is surrounded by a band of floor no centre may occupy but a
+    shoulder happily passes over. uacm measured 41.7 of 58.3 m^2 of apparent
+    "missed" floor being exactly that band.
+
+    This function does NOT enter any safety decision. Passability and
+    reachability stay in configuration space, which is the conservative space;
+    the swept set is reported and drawn beside them, never instead of them.
+    """
+    mask = np.asarray(mask, bool)
+    if not mask.any():
+        return np.zeros_like(mask)
+    r = cfg.half_width() if radius is None else float(radius)
+    return ndimage.binary_dilation(mask, structure=body_disk(cfg.res, r))

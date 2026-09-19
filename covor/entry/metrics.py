@@ -180,3 +180,39 @@ def score_route(rec, gt, band, cfg):
         route_length_m=rec["length_m"],
         route_n_unknown_adjacent=rec["n_unknown_adjacent"],
     )
+
+
+def workspace_scores(pred, gt, band, cfg):
+    """Reachable-floor agreement in WORKSPACE as well as configuration space.
+
+    Ported from uacm/entry_map's evaluate_against_gt. Both numbers are returned
+    together and named apart, because they answer different questions and are
+    easy to quote as if they were the same one:
+
+      reachable_iou            centres: the set a planner may put the body in
+      reachable_iou_workspace  floor: the set the body actually sweeps
+
+    The workspace figure is always the kinder of the two -- dilating both sides
+    by the same disk merges the erosion bands that hug every wall. It is not a
+    better measurement, it is a different one, and RESULTS_entry.md quotes both.
+    """
+    from .inflate import swept_workspace
+    Rp = np.asarray(pred["%s_reachable" % band], bool)
+    Rg = np.asarray(gt["%s_reachable" % band], bool)
+    # the sweep is clipped to each map's OWN free cells. A shoulder passing over
+    # a wall cell is not floor, and a shoulder passing over an unobserved cell is
+    # not floor either -- it is the same unknown-is-not-free rule as everywhere
+    # else. uacm's version does not clip; clipping keeps the number and the
+    # picture (render.draw_band) describing the same set.
+    Wp = swept_workspace(Rp, cfg) & (np.asarray(pred["%s_label" % band]) == FREE)
+    Wg = swept_workspace(Rg, cfg) & (np.asarray(gt["%s_label" % band]) == FREE)
+    a = cfg.res ** 2
+    return dict(
+        reachable_iou_workspace=_f((Wp & Wg).sum(), (Wp | Wg).sum()),
+        n_pred_reachable_workspace=int(Wp.sum()),
+        n_gt_reachable_workspace=int(Wg.sum()),
+        area_pred_reachable_m2=float(Rp.sum() * a),
+        area_pred_reachable_workspace_m2=float(Wp.sum() * a),
+        area_gt_reachable_m2=float(Rg.sum() * a),
+        area_gt_reachable_workspace_m2=float(Wg.sum() * a),
+    )

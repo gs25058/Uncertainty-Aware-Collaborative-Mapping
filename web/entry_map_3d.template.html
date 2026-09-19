@@ -1,0 +1,741 @@
+<title>구조대원 진입 지도 3D — room909</title>
+<!-- Template ported from uacm.zip (uacm/viz3d/entry_map_3d.template.html,
+     2026-09-09). The three.js scene, the plan texture, the route tube and the
+     layer controls are unchanged. What was rewritten: the statistics rows, the
+     legend and the footer, because this map is scored by covor/entry/metrics.py
+     on a synthetic room with a real voxel ground truth, not by uacm's
+     MILUV-arena metrics. Data is baked in by scripts/entry/export_entry_3d.py. -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+  :root {
+    --bg: #0d1114;
+    --panel: #141a1e;
+    --panel-2: #1a2227;
+    --line: #253137;
+    --line-soft: #1b242a;
+    --text: #dde5e8;
+    --dim: #8ba0a9;
+    --dimmer: #61747d;
+    --accent: #4cc9e6;
+    --walk: #5fe3a1;
+    --drone: #f2a25c;
+    --wall: #8fa6b2;
+    --sans: "IBM Plex Sans", ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  }
+
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); }
+
+  #app {
+    display: grid;
+    grid-template-columns: 332px minmax(0, 1fr);
+    height: 100vh;
+    min-height: 640px;
+  }
+
+  /* ---- left rail ---- */
+  .rail {
+    background: var(--panel);
+    border-right: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding: 22px 20px 24px;
+    overflow-y: auto;
+  }
+
+  .masthead h1 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  .masthead p {
+    margin: 7px 0 0;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--dim);
+    max-width: 34ch;
+  }
+  .seq {
+    margin-top: 10px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--dimmer);
+    letter-spacing: 0.02em;
+  }
+
+  .group > .label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--dimmer);
+    display: block;
+    margin-bottom: 9px;
+  }
+
+  /* ---- variant picker ---- */
+  .variants { display: flex; flex-direction: column; gap: 7px; }
+  .variant {
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--line);
+    border-radius: 3px;
+    padding: 10px 12px 11px;
+    text-align: left;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    display: grid;
+    gap: 7px;
+  }
+  .variant:hover { border-color: #33444d; }
+  .variant[aria-pressed="true"] {
+    border-color: #2f4a52;
+    border-left-color: var(--accent);
+    background: #182228;
+  }
+  .variant:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .variant .top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+  .variant .name { font-size: 13px; font-weight: 500; }
+  .variant .area {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--walk);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .variant svg { display: block; width: 100%; height: 26px; overflow: visible; }
+
+  /* ---- readout ---- */
+  .blurb {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--dim);
+    margin: 0 0 12px;
+  }
+  .stats { display: grid; gap: 0; }
+  .stat {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 12px;
+  }
+  .stat:last-child { border-bottom: 0; }
+  .stat dt { color: var(--dim); }
+  .stat dd {
+    margin: 0;
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .stat dd .u { color: var(--dimmer); font-size: 10.5px; margin-left: 2px; }
+  .stat.hero dd { color: var(--walk); font-size: 13.5px; }
+  .stat.warn dd { color: var(--drone); }
+
+  /* ---- controls ---- */
+  .toggles { display: flex; flex-wrap: wrap; gap: 6px; }
+  .toggle {
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 11px;
+    font: inherit;
+    font-size: 11.5px;
+    color: var(--dim);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .toggle::before {
+    content: "";
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--dimmer);
+  }
+  .toggle[aria-pressed="true"] { color: var(--text); border-color: #33444d; }
+  .toggle[aria-pressed="true"]::before { background: var(--sw, var(--accent)); }
+  .toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .slider { display: grid; gap: 8px; }
+  .slider .row {
+    display: flex; align-items: baseline; justify-content: space-between;
+    font-size: 11.5px; color: var(--dim);
+  }
+  .slider .row b {
+    font-family: var(--mono); font-weight: 500; color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+  input[type="range"] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 3px; border-radius: 2px;
+    background: var(--line); outline: none; margin: 4px 0;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--accent); cursor: pointer; border: 0;
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--accent); cursor: pointer; border: 0;
+  }
+  input[type="range"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  .legend { display: grid; gap: 7px; }
+  .legend div { display: flex; align-items: center; gap: 9px; font-size: 11.5px; color: var(--dim); }
+  .legend i {
+    width: 12px; height: 12px; border-radius: 2px; flex: none;
+    display: block;
+  }
+
+  .foot {
+    margin-top: auto;
+    font-size: 11px;
+    line-height: 1.65;
+    color: var(--dimmer);
+    border-top: 1px solid var(--line-soft);
+    padding-top: 12px;
+  }
+  .foot code { font-family: var(--mono); font-size: 10.5px; color: var(--dim); }
+
+  /* ---- stage ---- */
+  .stage { position: relative; background: #0b0f12; min-width: 0; }
+  .stage canvas { display: block; width: 100%; height: 100%; }
+  .hint {
+    position: absolute; left: 18px; bottom: 16px;
+    font-family: var(--mono); font-size: 10.5px; color: #4d5f68;
+    letter-spacing: 0.02em; pointer-events: none;
+  }
+  .zbadge {
+    position: absolute; right: 18px; top: 16px;
+    font-family: var(--mono); font-size: 11px; color: var(--dim);
+    background: rgba(13, 17, 20, 0.82);
+    border: 1px solid var(--line);
+    border-radius: 3px; padding: 7px 11px;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.5;
+  }
+  .zbadge b { color: var(--text); font-weight: 500; }
+  .fail {
+    position: absolute; inset: 0; display: grid; place-content: center;
+    text-align: center; padding: 40px; color: var(--dim); font-size: 13px; gap: 8px;
+  }
+
+  @media (max-width: 860px) {
+    #app { grid-template-columns: 1fr; height: auto; }
+    .rail { border-right: 0; border-bottom: 1px solid var(--line); overflow: visible; }
+    .stage { height: 68vh; min-height: 420px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+
+<div id="app">
+  <aside class="rail">
+    <header class="masthead">
+      <h1>구조대원 진입 지도</h1>
+      <p>드론이 만든 3D 점유지도에서, 장비를 착용한 소방관이 실제로 통과할 수 있는
+        바닥만 남긴 것. 진입점은 드론이 이륙한 자리다 — 그물망 비행장에는 출입문이 없고,
+        "드론이 투입된 곳으로 들어간다"가 이 시퀀스의 정직한 해석이다.
+        빨강이 <b>정말 못 가는 곳</b>이다 — 자유공간인데 어떤 자세로도 몸이 들어가지
+        않는 바닥. 벽 옆 초록 띠는 "중심을 둘 수 없는 곳"이지 못 가는 곳이 아니다.
+        평면도가 숨기는 것 셋이 여기서 보인다: <b>자세 오차가 지도를 세로로 얼마나 늘려
+        놓았는가</b>, <b>통행 가능한 바닥이 몇 조각으로 끊겨 있는가</b>, 그리고
+        <b>제시하는 바닥 중 얼마가 아예 건물 밖인가</b> — 광선이 그물을 통과해
+        방 바깥에도 자유공간을 파 놓았다.</p>
+      <div class="seq">MILUV · default_3_random_0 · ifo001–003 · 10 cm voxel</div>
+    </header>
+
+    <div class="group">
+      <span class="label">지도</span>
+      <div class="variants" id="variants"></div>
+    </div>
+
+    <div class="group">
+      <span class="label">이 지도의 수치</span>
+      <p class="blurb" id="blurb"></p>
+      <dl class="stats" id="stats"></dl>
+    </div>
+
+    <div class="group">
+      <span class="label">레이어</span>
+      <div class="toggles">
+        <button class="toggle" id="t-slab" aria-pressed="true" style="--sw:#8fa6b2">신체 높이 장애물</button>
+        <button class="toggle" id="t-out" aria-pressed="true" style="--sw:#4a5c66">그 밖의 구조물</button>
+        <button class="toggle" id="t-floor" aria-pressed="true" style="--sw:#5fe3a1">바닥 판정</button>
+        <button class="toggle" id="t-route" aria-pressed="true" style="--sw:#f2f7f9">진입 경로</button>
+        <button class="toggle" id="t-arena" aria-pressed="true" style="--sw:#4cc9e6">스캔된 방 범위</button>
+        <button class="toggle" id="t-box" aria-pressed="false" style="--sw:#4cc9e6">슬래브 상자</button>
+      </div>
+    </div>
+
+    <div class="group slider">
+      <span class="label">높이 자르기</span>
+      <div class="row"><span>이 높이 위는 숨김</span><b id="zval">—</b></div>
+      <input type="range" id="zclip" min="0" max="1000" value="1000" step="1"
+             aria-label="이 높이 위의 복셀 숨기기">
+    </div>
+
+    <div class="group">
+      <span class="label">범례</span>
+      <div class="legend">
+        <div><i style="background:#5fe3a1"></i>설 수 있는 곳 — 몸 중심이 놓일 수 있는 위치 (c-space)</div>
+        <div><i style="background:#3a8a68"></i>몸이 닿는 바닥 — 중심은 못 두지만 어깨가 지나간다 (workspace)</div>
+        <div><i style="background:#e8cd6e"></i>몸을 틀어야 지나가는 폭 (0.30–0.45 m, 권고이지 제시 아님)</div>
+        <div><i style="background:#d65454"></i><b>자유공간인데 몸이 안 들어감</b> (&lt; 0.30 m)</div>
+        <div><i style="background:#9a7fb8"></i>폭은 되지만 진입점에서 도달 불가</div>
+        <div><i style="background:#f2f7f9"></i>진입 경로 · 진입점</div>
+        <div><i style="background:#4cc9e6"></i>스캔된 방의 범위 (GT가 아는 영역)</div>
+        <div><i style="background:#8fa6b2"></i>신체 밴드 안의 장애물</div>
+        <div><i style="background:#38464e"></i>밴드 밖 구조물 · 바닥 · 천장</div>
+      </div>
+    </div>
+
+    <div class="foot">
+      <b>판정은 격자에서 끝났다.</b> 이 뷰어는 <code>covor/entry/</code> 가 이미 정한
+      라벨을 그릴 뿐이고, 문턱을 적용하거나 라벨을 바꾸지 않는다.
+      <br><br>
+      두 가지를 같이 읽어야 한다. <b>workspace</b>(몸이 닿는 바닥)는 중심 집합을
+      몸 반경만큼 되부풀린 것이고, <b>c-space</b>(설 수 있는 곳)는 중심이 놓일 수 있는
+      집합이다. 경로 계획은 c-space에서, 사람이 보는 "걸을 수 있는 바닥"은 workspace에서
+      읽는다. 둘을 섞으면 벽을 따라 두른 침식 띠만큼 지도가 좁아 보인다.
+      <br><br>
+      <b>false-passable rate는 싣지 않았다.</b> 음성 대조군 두 종류가 모두 불통과해
+      이 데이터에서 탐지력이 없다고 판정했다(RESULTS_entry.md §4). 안전은 passable
+      recall과 도달 IoU로 읽는다.
+    </div>
+  </aside>
+
+  <div class="stage" id="stage">
+    <div class="zbadge" id="zbadge"></div>
+    <div class="hint">드래그 회전 · 휠 확대 · Shift+드래그 이동</div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const DATA = /*__DATA__*/null;
+
+/* ------------------------------------------------------------------ *
+ * payload decoding
+ * ------------------------------------------------------------------ */
+function unb64(s) {
+  const bin = atob(s);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+
+const G = DATA.grid;
+const RES = G.res;
+const OX = G.origin[0], OY = G.origin[1], OZ = G.origin[2];
+const CX = OX + G.nx * RES / 2;      // room centre, for the camera target
+const CY = OY + G.ny * RES / 2;
+
+/* plan cell classes, mirroring scripts/export_3d.py */
+const PLAN_RGBA = [
+  [0, 0, 0, 0],           // 0 unseen  -- nothing drawn, "nobody looked" is not floor
+  [34, 46, 52, 205],      // 1 wall
+  [214, 84, 84, 225],     // 2 free floor NO body can cover -- the real "cannot go"
+  [242, 162, 92, 225],    // 3 unused here: this project's drone and human radii
+                          //   are the same 0.35 m, so the class is empty by
+                          //   construction rather than by omission
+  [232, 205, 110, 220],   // 4 reachable only turned sideways (advisory)
+  [154, 127, 184, 225],   // 5 wide enough, but the entry cannot reach it
+  [58, 138, 104, 210],    // 6 the body covers it, the centre may not be there
+  [95, 227, 161, 240],    // 7 walkable: the centre may be here
+];
+
+/* ------------------------------------------------------------------ *
+ * left rail
+ * ------------------------------------------------------------------ */
+const Z_LO = DATA.z_scale[0], Z_HI = DATA.z_scale[1];   // shared span-bar scale
+const railEl = document.getElementById("variants");
+const statsEl = document.getElementById("stats");
+const blurbEl = document.getElementById("blurb");
+const zbadgeEl = document.getElementById("zbadge");
+
+function spanBar(v) {
+  const w = 288, h = 26, pad = 1;
+  const x = (z) => pad + (z - Z_LO) / (Z_HI - Z_LO) * (w - 2 * pad);
+  const ticks = [-4, -2, 0, 2, 4, 6];
+  let s = '<svg viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="' +
+          '점유 복셀의 높이 범위 ' + v.z_span[0] + '부터 ' + v.z_span[1] + ' 미터">';
+  s += '<line x1="' + pad + '" y1="14.5" x2="' + (w - pad) + '" y2="14.5" stroke="#243036" stroke-width="1"/>';
+  for (const t of ticks) {
+    s += '<line x1="' + x(t) + '" y1="11" x2="' + x(t) + '" y2="18" stroke="#243036" stroke-width="1"/>';
+    s += '<text x="' + x(t) + '" y="26" fill="#4d5f68" font-size="7.5" font-family="IBM Plex Mono, monospace" text-anchor="middle">' + t + '</text>';
+  }
+  s += '<rect x="' + x(v.z_span[0]) + '" y="9" width="' +
+       Math.max(2, x(v.z_span[1]) - x(v.z_span[0])) + '" height="11" rx="1.5" fill="' +
+       (v.is_reference ? "#4cc9e6" : "#5b727e") + '" opacity="0.85"/>';
+  s += '<line x1="' + x(v.floor_z) + '" y1="6" x2="' + x(v.floor_z) + '" y2="23" stroke="#5fe3a1" stroke-width="1.5"/>';
+  s += '</svg>';
+  return s;
+}
+
+DATA.variants.forEach((v, idx) => {
+  const b = document.createElement("button");
+  b.className = "variant";
+  b.type = "button";
+  b.setAttribute("aria-pressed", "false");
+  b.innerHTML =
+    '<span class="top"><span class="name">' + v.label + '</span>' +
+    '<span class="area">' + v.area_swept.toFixed(1) + ' m²</span></span>' +
+    spanBar(v);
+  b.addEventListener("click", () => select(idx));
+  railEl.appendChild(b);
+});
+
+function row(label, value, unit, cls) {
+  return '<div class="stat ' + (cls || "") + '"><dt>' + label + '</dt><dd>' +
+         value + (unit ? '<span class="u">' + unit + '</span>' : '') + '</dd></div>';
+}
+
+function paintStats(v) {
+  blurbEl.textContent = v.blurb;
+  const ref = v.is_reference;
+  const n = (x, d) => (x === null || x === undefined) ? "—" : x.toFixed(d);
+  statsEl.innerHTML =
+    row("몸이 닿는 바닥 (workspace)", n(v.area_swept, 2), " m²", "hero") +
+    row("설 수 있는 곳 (중심 위치, c-space)", n(v.area_passable_reach, 2), " m²") +
+    row("스캔된 방 안 / 전체", n(v.area_swept_roi, 2) + " / " + n(v.roi_m2, 1), " m²") +
+    row("방 밖으로 새어 나간 바닥", n(v.swept_outside_roi, 2), " m²",
+        v.swept_outside_roi > 1 ? "warn" : "") +
+    row("폭은 되지만 도달 불가", n(v.area_unreach, 2), " m²") +
+    row("도달 불가 구역 개수 · 최대", v.unreach_pockets + " · " +
+        n(v.unreach_largest, 1), " m²") +
+    row("몸을 틀어야 하는 곳 (권고)", n(v.area_narrow, 2), " m²") +
+    row("밴드 자유공간", n(v.area_free, 1), " m²") +
+    row("끊어진 섬의 개수", String(v.islands), " 개",
+        v.islands > 1 ? "warn" : "") +
+    row("가장 큰 섬", n(v.largest, 1), " m²") +
+    row("진입점이 닿는 깊이", n(v.reach_depth, 1), " m") +
+    row("여유 중앙값", n(v.med_clearance, 2), " m") +
+    row("검출된 바닥", (v.floor_z >= 0 ? "+" : "") + v.floor_z.toFixed(2), " m") +
+    row("점유 복셀의 높이 범위", n(v.z_span_m, 2), " m",
+        v.z_span_m > 4 ? "warn" : "") +
+    row("미관측 비율", n(v.unknown_frac, 1), " %") +
+    row("도달 IoU — workspace", ref ? "— 기준 (GT)" : n(v.iou_workspace, 3), "") +
+    row("도달 IoU — c-space", ref ? "— 기준 (GT)" : n(v.iou_cspace, 3), "") +
+    row("passable recall", ref ? "— 기준 (GT)" : n(v.recall, 3), "",
+        !ref && v.recall !== null && v.recall < 0.5 ? "warn" : "");
+}
+
+/* ------------------------------------------------------------------ *
+ * three.js scene
+ * ------------------------------------------------------------------ */
+let renderer, scene, camera, clipPlane;
+let current = -1;
+const built = [];          // per variant: {slab, out, floor, box}
+const state = { slab: true, out: true, floor: true, route: true, arena: true,
+                box: false, zclip: null };
+
+function boot() {
+  if (window.THREE) return init();
+  const s = document.createElement("script");
+  s.src = "https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js";
+  s.onload = init;
+  s.onerror = () => {
+    document.getElementById("stage").insertAdjacentHTML("beforeend",
+      '<div class="fail"><b>3D 라이브러리를 불러오지 못했습니다.</b>' +
+      '<span>왼쪽 수치와 높이 범위 막대는 그대로 읽을 수 있습니다.</span></div>');
+  };
+  document.head.appendChild(s);
+}
+
+function init() {
+  const stage = document.getElementById("stage");
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x0b0f12, 1);
+  renderer.localClippingEnabled = true;
+  stage.appendChild(renderer.domElement);
+
+  scene = new THREE.Scene();
+  scene.fog = new THREE.Fog(0x0b0f12, 42, 110);
+
+  camera = new THREE.PerspectiveCamera(42, 1, 0.1, 400);
+  camera.up.set(0, 0, 1);
+
+  scene.add(new THREE.HemisphereLight(0xbcd6e2, 0x0a0f12, 0.85));
+  const key = new THREE.DirectionalLight(0xffffff, 0.75);
+  key.position.set(9, -12, 16);
+  scene.add(key);
+  const rim = new THREE.DirectionalLight(0x6fb6cc, 0.3);
+  rim.position.set(-11, 8, 4);
+  scene.add(rim);
+
+  clipPlane = new THREE.Plane(new THREE.Vector3(0, 0, -1), 100);
+
+  DATA.variants.forEach((v) => built.push(buildVariant(v)));
+  addGrid(DATA.variants[current].floor_z);
+  select(current);                        // now that there are meshes to show
+
+  installControls(stage);
+  window.addEventListener("resize", resize);
+  resize();
+  renderer.setAnimationLoop(() => renderer.render(scene, camera));
+}
+
+function buildVariant(v) {
+  const gi = unb64(v.vox.i), gj = unb64(v.vox.j), gk = unb64(v.vox.k);
+  const n = gi.length;
+  const kLo = Math.floor((v.floor_z + DATA.cfg.body_lo - OZ) / RES + 1e-9);
+  const kHi = Math.floor((v.floor_z + DATA.cfg.body_hi - OZ) / RES + 1e-9);
+
+  let inSlab = 0;
+  for (let t = 0; t < n; t++) if (gk[t] >= kLo && gk[t] <= kHi) inSlab++;
+
+  const geo = new THREE.BoxGeometry(RES, RES, RES);
+  const mk = (color, count, opts) => {
+    const mat = new THREE.MeshLambertMaterial(Object.assign({
+      color: color, clippingPlanes: [clipPlane],
+    }, opts || {}));
+    const m = new THREE.InstancedMesh(geo, mat, count);
+    m.frustumCulled = false;
+    m.visible = false;
+    scene.add(m);
+    return m;
+  };
+  /* Two meshes, not one coloured mesh: the split IS the information. A voxel
+     inside the body slab is what stops a person; one above or below it is
+     ceiling, floor, or -- when the map is stretched -- debris. */
+  const slab = mk(0x8fa6b2, inSlab);
+  const out = mk(0x3f4f58, n - inSlab, { transparent: true, opacity: 0.5 });
+
+  const M = new THREE.Matrix4();
+  let a = 0, b = 0;
+  for (let t = 0; t < n; t++) {
+    M.setPosition(OX + (gi[t] + 0.5) * RES,
+                  OY + (gj[t] + 0.5) * RES,
+                  OZ + (gk[t] + 0.5) * RES);
+    if (gk[t] >= kLo && gk[t] <= kHi) slab.setMatrixAt(a++, M);
+    else out.setMatrixAt(b++, M);
+  }
+  slab.instanceMatrix.needsUpdate = true;
+  out.instanceMatrix.needsUpdate = true;
+
+  /* the floor verdict, as a nearest-neighbour texture on one plane */
+  const plan = unb64(v.plan);
+  const rgba = new Uint8Array(G.nx * G.ny * 4);
+  for (let p = 0; p < plan.length; p++) {
+    const c = PLAN_RGBA[plan[p]] || PLAN_RGBA[0];
+    rgba[p * 4] = c[0]; rgba[p * 4 + 1] = c[1];
+    rgba[p * 4 + 2] = c[2]; rgba[p * 4 + 3] = c[3];
+  }
+  const tex = new THREE.DataTexture(rgba, G.nx, G.ny, THREE.RGBAFormat);
+  tex.magFilter = THREE.NearestFilter;
+  tex.minFilter = THREE.NearestFilter;
+  tex.generateMipmaps = false;
+  tex.needsUpdate = true;
+
+  const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(G.nx * RES, G.ny * RES),
+    new THREE.MeshBasicMaterial({ map: tex, transparent: true,
+                                  depthWrite: false, side: THREE.DoubleSide }));
+  floor.position.set(CX, CY, v.floor_z + 0.03);
+  floor.renderOrder = 2;
+  floor.visible = false;
+  scene.add(floor);
+
+  /* the body slab itself, so "0.15-1.85 m above the floor" is a thing you see */
+  const h = DATA.cfg.body_hi - DATA.cfg.body_lo;
+  const box = new THREE.LineSegments(
+    new THREE.EdgesGeometry(new THREE.BoxGeometry(G.nx * RES, G.ny * RES, h)),
+    new THREE.LineBasicMaterial({ color: 0x2f5f6b }));
+  box.position.set(CX, CY, v.floor_z + DATA.cfg.body_lo + h / 2);
+  box.visible = false;
+  scene.add(box);
+
+  /* the route, and the pad it starts from. A line of one pixel disappears at
+     any useful zoom, so the path is a tube with real width in metres. */
+  const route = new THREE.Group();
+  route.visible = false;
+  if (v.route && v.route.length > 1) {
+    const pts = v.route.map((xy) => new THREE.Vector3(xy[0], xy[1], v.floor_z + 0.10));
+    const tube = new THREE.Mesh(
+      new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), pts.length * 2, 0.045, 8, false),
+      new THREE.MeshBasicMaterial({ color: 0xf2f7f9 }));
+    tube.renderOrder = 3;
+    route.add(tube);
+  }
+  if (v.entry_placed) {
+    const pin = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.10, 0.10, 0.5, 14),
+      new THREE.MeshBasicMaterial({ color: 0xf2f7f9 }));
+    pin.rotation.x = Math.PI / 2;
+    pin.position.set(v.entry_xy[0], v.entry_xy[1], v.floor_z + 0.25);
+    route.add(pin);
+  }
+  scene.add(route);
+
+  /* the building itself. Without it drawn, floor carved OUTSIDE the arena --
+     beams that left through the netting -- looks exactly like floor inside it. */
+  const R = DATA.roi;
+  const rp = [[R[0], R[2]], [R[1], R[2]], [R[1], R[3]], [R[0], R[3]], [R[0], R[2]]];
+  const rg = new THREE.BufferGeometry().setFromPoints(
+    rp.map((xy) => new THREE.Vector3(xy[0], xy[1], v.floor_z + 0.06)));
+  const arena = new THREE.Line(rg, new THREE.LineDashedMaterial({
+    color: 0x4cc9e6, dashSize: 0.35, gapSize: 0.2 }));
+  arena.computeLineDistances();
+  arena.visible = false;
+  scene.add(arena);
+
+  return { slab, out, floor, box, route, arena, kLo, kHi };
+}
+
+function addGrid(z) {
+  const pts = [];
+  const x0 = OX, x1 = OX + G.nx * RES, y0 = OY, y1 = OY + G.ny * RES;
+  for (let x = Math.ceil(x0); x <= x1; x++) pts.push(x, y0, z, x, y1, z);
+  for (let y = Math.ceil(y0); y <= y1; y++) pts.push(x0, y, z, x1, y, z);
+  const g = new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.Float32BufferAttribute(pts, 3));
+  scene.add(new THREE.LineSegments(g, new THREE.LineBasicMaterial({
+    color: 0x1b262c, transparent: true, opacity: 0.85 })));
+}
+
+/* ------------------------------------------------------------------ *
+ * selection + layer state
+ * ------------------------------------------------------------------ */
+function select(idx) {
+  current = idx;
+  const v = DATA.variants[idx];
+  document.querySelectorAll(".variant").forEach((el, i) =>
+    el.setAttribute("aria-pressed", String(i === idx)));
+  paintStats(v);
+
+  const zc = document.getElementById("zclip");
+  const zTop = v.z_span[1] + 0.4;
+  zc.dataset.lo = String(v.floor_z);
+  zc.dataset.hi = String(zTop);
+  zc.value = "1000";
+  state.zclip = zTop;
+  applyLayers();
+}
+
+function paintReadout() {
+  const v = DATA.variants[current];
+  document.getElementById("zval").textContent = state.zclip.toFixed(2) + " m";
+  zbadgeEl.innerHTML =
+    v.label + "<br><b>몸이 닿는 바닥 " + v.area_swept_roi.toFixed(1) +
+    " / " + v.roi_m2.toFixed(0) + " m²</b>" +
+    "<br>도달 깊이 " + (v.reach_depth === null ? "—" : v.reach_depth.toFixed(1) + " m") +
+    "<br>점유 높이 " + v.z_span[0].toFixed(2) + " … " + v.z_span[1].toFixed(2) + " m";
+}
+
+function applyLayers() {
+  paintReadout();
+  if (!built.length) return;              // three.js not up yet, or unavailable
+  built.forEach((b, i) => {
+    const on = i === current;
+    b.slab.visible = on && state.slab;
+    b.out.visible = on && state.out;
+    b.floor.visible = on && state.floor;
+    b.route.visible = on && state.route;
+    b.arena.visible = on && state.arena;
+    b.box.visible = on && state.box;
+  });
+  clipPlane.constant = state.zclip;
+}
+
+function bindToggle(id, key) {
+  const el = document.getElementById(id);
+  el.addEventListener("click", () => {
+    state[key] = !state[key];
+    el.setAttribute("aria-pressed", String(state[key]));
+    applyLayers();
+  });
+}
+bindToggle("t-slab", "slab");
+bindToggle("t-out", "out");
+bindToggle("t-floor", "floor");
+bindToggle("t-route", "route");
+bindToggle("t-arena", "arena");
+bindToggle("t-box", "box");
+
+/* Populate the rail before three.js is even asked for: if WebGL is missing the
+   numbers and the height-range bars still have to be readable. */
+const startIdx = Math.max(0, DATA.variants.findIndex((v) => v.key === "gravity"));
+select(startIdx);
+
+document.getElementById("zclip").addEventListener("input", (e) => {
+  const lo = parseFloat(e.target.dataset.lo), hi = parseFloat(e.target.dataset.hi);
+  state.zclip = lo + (hi - lo) * (parseInt(e.target.value, 10) / 1000);
+  applyLayers();
+});
+
+/* ------------------------------------------------------------------ *
+ * camera: spherical orbit with z as up
+ * ------------------------------------------------------------------ */
+const cam = { r: 26, theta: -1.05, phi: 1.02,
+              target: new THREE.Vector3(CX, CY, 0.2) };
+
+function placeCamera() {
+  const sp = Math.sin(cam.phi);
+  camera.position.set(
+    cam.target.x + cam.r * sp * Math.cos(cam.theta),
+    cam.target.y + cam.r * sp * Math.sin(cam.theta),
+    cam.target.z + cam.r * Math.cos(cam.phi));
+  camera.lookAt(cam.target);
+}
+
+function installControls(stage) {
+  let drag = null;
+  const el = renderer.domElement;
+  el.style.touchAction = "none";
+  el.addEventListener("pointerdown", (e) => {
+    drag = { x: e.clientX, y: e.clientY, pan: e.shiftKey || e.button === 2 };
+    el.setPointerCapture(e.pointerId);
+  });
+  el.addEventListener("pointermove", (e) => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    drag.x = e.clientX; drag.y = e.clientY;
+    if (drag.pan) {
+      const right = new THREE.Vector3().crossVectors(
+        new THREE.Vector3().subVectors(camera.position, cam.target).normalize(),
+        camera.up).normalize();
+      const up = new THREE.Vector3().crossVectors(right,
+        new THREE.Vector3().subVectors(camera.position, cam.target).normalize()).normalize();
+      const k = cam.r * 0.0016;
+      cam.target.addScaledVector(right, -dx * k).addScaledVector(up, dy * k);
+    } else {
+      cam.theta -= dx * 0.006;
+      cam.phi = Math.min(1.78, Math.max(0.09, cam.phi - dy * 0.006));
+    }
+    placeCamera();
+  });
+  const stop = (e) => { drag = null; try { el.releasePointerCapture(e.pointerId); } catch (_) {} };
+  el.addEventListener("pointerup", stop);
+  el.addEventListener("pointercancel", stop);
+  el.addEventListener("contextmenu", (e) => e.preventDefault());
+  el.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    cam.r = Math.min(90, Math.max(3, cam.r * Math.exp(e.deltaY * 0.0011)));
+    placeCamera();
+  }, { passive: false });
+}
+
+function resize() {
+  const stage = document.getElementById("stage");
+  const w = stage.clientWidth, h = stage.clientHeight;
+  if (!w || !h) return;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  placeCamera();
+}
+
+boot();
+</script>
