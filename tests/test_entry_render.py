@@ -151,6 +151,52 @@ def test_route_prefers_the_wide_way_when_lambda_says_so():
         "vs %.2f at lambda = 0" % (yw, yn))
 
 
+def test_vector_fills_agree_with_the_clearance_they_claim():
+    """The width-grade fills are level sets of the clearance field, so a cell
+    inside the "walk" polygon must really have clearance >= clear_walk.
+
+    The tolerance is half a voxel and no more: find_contours puts the curve
+    between samples, so a cell centre can sit on the wrong side of it by up to
+    that, and nothing else may. A looser bound would let the fills drift from
+    the labels, which is the one thing DESIGN §5 forbids.
+    """
+    cfg = EntryCfg(close_iter=0)
+    g, _ = build_entry_grid(_extrude(_room()), cfg, k_sigma=0.0)
+    clear = np.asarray(g["walk_clearance"], float)
+    ijk = np.asarray(g["ijk_min"])
+    ii, jj = np.indices(clear.shape)
+    centres = np.stack([(ii + ijk[0] + 0.5) * cfg.res,
+                        (jj + ijk[1] + 0.5) * cfg.res], -1).reshape(-1, 2)
+    for level in (cfg.clear_narrow, cfg.clear_walk):
+        path = RD.outline_path(
+            RD.field_contours(clear, level, cfg.res, ijk), cfg.res, ijk)
+        assert path is not None, "no contour at level %.2f" % level
+        inside = path.contains_points(centres).reshape(clear.shape)
+        bad = inside & (clear < level - 0.5 * cfg.res)
+        assert not bad.any(), (
+            "%d cells inside the %.2f m fill have clearance below it, worst "
+            "%.3f m" % (int(bad.sum()), level, float(clear[bad].min())))
+        out = ~inside & (clear > level + 0.5 * cfg.res)
+        assert not out.any(), (
+            "%d cells outside the %.2f m fill have clearance above it"
+            % (int(out.sum()), level))
+
+
+def test_vector_and_raster_fills_paint_the_same_story():
+    """The two fill modes are two drawings of one grid, so where the raster
+    says "walk" the vector must not say "obstacle", and so on."""
+    import matplotlib.pyplot as plt
+    cfg = EntryCfg(close_iter=0)
+    g, _ = build_entry_grid(_extrude(_room()), cfg, k_sigma=0.0)
+    before = {k: np.array(v, copy=True) for k, v in g.items()}
+    for mode in ("vector", "raster"):
+        fig, ax = plt.subplots()
+        RD.draw_band(ax, g, "walk", cfg, fills=mode)
+        plt.close(fig)
+    for k, v in before.items():
+        assert np.array_equal(np.asarray(g[k]), v), "draw_band(%s) mutated %r" % (mode, k)
+
+
 if __name__ == "__main__":
     fs = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for f in fs:

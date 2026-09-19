@@ -87,6 +87,81 @@ def outline_path(contours, res, ijk_min):
     return Path(np.array(verts), codes) if verts else None
 
 
+def field_contours(field, level, res, ijk_min, pad_value=-1.0):
+    """Iso-contours of a CONTINUOUS field, in metres.
+
+    Used for the width-grade boundaries, which come out of the clearance field
+    at exactly the thresholds config.py names. That is the difference between
+    this and smoothing: a level set of a continuous field is sub-voxel accurate,
+    so the curve is smooth because the quantity is, not because it was filtered.
+    The staircase in a binary mask is real information and is left alone (the
+    wall outline is still the mask's own contour).
+
+    Padded below the level so a region touching the grid edge still closes.
+    """
+    from skimage import measure
+    f = np.pad(np.asarray(field, float), 1, constant_values=pad_value)
+    return [(c - 1.0 + np.asarray(ijk_min[:2], float) + 0.5) * res
+            for c in measure.find_contours(f, level)]
+
+
+def _fill(ax, contours, res, ijk_min, color, z, **kw):
+    """Fill every contour as ONE even-odd path, so holes stay holes."""
+    from matplotlib.patches import PathPatch
+    path = outline_path(contours, res, ijk_min)
+    if path is None:
+        return None
+    pp = PathPatch(path, fc=color, ec=kw.pop("ec", color), lw=kw.pop("lw", 0.35),
+                   zorder=z, **kw)
+    ax.add_patch(pp)
+    return pp
+
+
+def vector_fills(ax, grid, band, cfg, ext):
+    """DESIGN §5's region fills as vectors instead of pixels.
+
+    Painted back to front in NESTED order, which is what keeps the seams shut:
+
+        unknown (the whole window)
+          > not-obstacle           binary mask, the same staircase as the wall
+            > clearance >= narrow  level set of the clearance field
+              > clearance >= walk  level set of the clearance field
+
+    Each region is strictly inside the one before it -- clearance is zero on
+    every obstacle cell, so a level set at a positive threshold cannot leave the
+    free area -- so nothing has to line up with anything and no hairline gaps
+    open between two independently simplified boundaries. That was the reason
+    not to vectorise each class on its own.
+
+    Not one label is recomputed: the thresholds are cfg's, the free mask and the
+    reachability mask are the grid's.
+    """
+    from matplotlib.patches import Rectangle
+    res = cfg.res
+    ijk = np.asarray(grid["ijk_min"])
+    lab = np.asarray(grid["%s_label" % band])
+    clear = np.asarray(grid["%s_clearance" % band], float)
+    reach = np.asarray(grid["%s_reachable" % band], bool)
+    free = lab == FREE
+
+    ax.add_patch(Rectangle((ext[0], ext[2]), ext[1] - ext[0], ext[3] - ext[2],
+                           fc=COL["unknown"], ec="none", zorder=0.5))
+    # the free area: a mask boundary, simplified exactly like the wall it abuts
+    _fill(ax, wall_outline(free, res, ijk, eps_voxels=0.5), res, ijk,
+          COL["blocked"], 1.0)
+    # the two width grades: level sets of the clearance field
+    for lv, col, z in ((cfg.clear_narrow, COL["narrow"], 1.1),
+                       (cfg.clear_walk, COL["walk"], 1.2)):
+        _fill(ax, field_contours(clear, lv, res, ijk), res, ijk, col, z)
+    # free, wide enough, but cut off from the entry -- a binary fact, so a mask
+    lost = free & (clear >= cfg.clear_narrow) & ~reach
+    if lost.any():
+        _fill(ax, wall_outline(lost, res, ijk, eps_voxels=0.5), res, ijk,
+              COL["unreached"], 1.3)
+    _fill(ax, wall_outline(lab == OCCUPIED, res, ijk, eps_voxels=0.5), res, ijk,
+          COL["occupied"], 1.4)
+
+
 # --- raster layers ---------------------------------------------------------
 def class_image(grid, band):
     """Per-cell fill index into FILL_ORDER, straight from the labels.
@@ -127,8 +202,15 @@ def extent_of(grid, res):
 
 
 # --- the figure ------------------------------------------------------------
-def draw_band(ax, grid, band, cfg, routes=None, title=None, upsample=6):
-    """One band onto one axis. Returns the wall contours it drew."""
+def draw_band(ax, grid, band, cfg, routes=None, title=None, upsample=6,
+              fills="vector"):
+    """One band onto one axis. Returns the wall contours it drew.
+
+    fills="vector" draws the regions as polygons (see vector_fills);
+    fills="raster" draws them at one pixel per cell. The raster form is the
+    unretouched grid and is what scripts/entry/plot_entry_grid.py uses; the
+    vector form is for the figures, and neither changes a label.
+    """
     import matplotlib.pyplot as plt
     from matplotlib.colors import ListedColormap, BoundaryNorm
     from matplotlib.patches import PathPatch
@@ -136,12 +218,15 @@ def draw_band(ax, grid, band, cfg, routes=None, title=None, upsample=6):
     res = float(np.asarray(grid["res"]).ravel()[0])
     ijk = np.asarray(grid["ijk_min"])
     ext = extent_of(grid, res)
-    img = class_image(grid, band)
-    cmap = ListedColormap([COL[k] for k in FILL_ORDER])
-    ax.imshow(img.T, origin="lower", extent=ext, cmap=cmap,
-              norm=BoundaryNorm(np.arange(-0.5, len(FILL_ORDER) + 0.5),
-                                len(FILL_ORDER)),
-              interpolation="nearest", zorder=1)
+    if fills == "vector":
+        vector_fills(ax, grid, band, cfg, ext)
+    else:
+        img = class_image(grid, band)
+        cmap = ListedColormap([COL[k] for k in FILL_ORDER])
+        ax.imshow(img.T, origin="lower", extent=ext, cmap=cmap,
+                  norm=BoundaryNorm(np.arange(-0.5, len(FILL_ORDER) + 0.5),
+                                    len(FILL_ORDER)),
+                  interpolation="nearest", zorder=1)
 
     # unknown hatch, drawn at a finer raster than the grid so the stripes are
     # thin lines rather than blocky steps. The MASK is still the grid's.
