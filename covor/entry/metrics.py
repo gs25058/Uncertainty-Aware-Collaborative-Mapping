@@ -135,3 +135,48 @@ def row_text(rec):
                rec["n_true_passable"], rec["n_gt_passable"],
                rec["n_pred_passable"], rec["reachable_iou"],
                rec["n_pred_unknown"], rec["n_gt_unknown"]))
+
+
+# ---------------------------------------------------------------------------
+# route metrics (DESIGN §6, last two rows)
+# ---------------------------------------------------------------------------
+def score_route(rec, gt, band, cfg):
+    """Safety and efficiency of one planned route against the GT entry map.
+
+    route_validity  fraction of the route's cells that the GT also calls
+                    passable. DESIGN §6 words it as "every cell GT passable", so
+                    the pass/fail form is kept too -- but the fraction is what
+                    says how badly a failing route fails.
+    length_ratio    the route's length over the GT's shortest route to the same
+                    goal. Computed with pure distance on the GT side (no
+                    clearance weighting): the denominator should be the best a
+                    perfect map could do, not the best it would CHOOSE to do.
+                    NaN when the GT cannot reach that goal at all, which is a
+                    different statement from a bad ratio.
+    """
+    from .route import geodesic
+    if not rec.get("reachable"):
+        return dict(route_validity=float("nan"), route_all_valid=False,
+                    route_length_ratio=float("nan"), n_route_cells=0,
+                    n_route_cells_not_gt_passable=0, gt_can_reach_goal=False)
+    cells = np.asarray(rec["cells"])
+    G = np.asarray(gt["%s_passable" % band], bool)
+    ok = G[cells[:, 0], cells[:, 1]]
+    start = tuple(int(v) for v in np.asarray(gt["entry_ij"]))
+    goal = tuple(int(v) for v in rec["goal_ij"])
+    d = geodesic(G, start)
+    gt_len = float(d[goal]) * cfg.res
+    return dict(
+        route_validity=_f(ok.sum(), len(ok)),
+        route_all_valid=bool(ok.all()),
+        n_route_cells=int(len(ok)),
+        n_route_cells_not_gt_passable=int((~ok).sum()),
+        gt_can_reach_goal=bool(np.isfinite(d[goal])),
+        gt_shortest_m=gt_len if np.isfinite(d[goal]) else float("nan"),
+        route_length_ratio=(rec["length_m"] / gt_len
+                            if np.isfinite(d[goal]) and gt_len > 0
+                            else float("nan")),
+        route_min_width_m=rec["min_width_m"],
+        route_length_m=rec["length_m"],
+        route_n_unknown_adjacent=rec["n_unknown_adjacent"],
+    )

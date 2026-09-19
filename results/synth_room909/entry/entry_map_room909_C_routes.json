@@ -1,0 +1,168 @@
+{
+  "w": 0.7,
+  "k_sigma": 0.0,
+  "lambda_route": 0.5,
+  "unknown_penalty_steps": 1.0,
+  "routes": {
+    "C  -  3 drones, inter-agent UWB/walk": {
+      "entry_ij": [
+        22,
+        65
+      ],
+      "routes": [
+        {
+          "n_cells": 85,
+          "length_m": 9.021320343559642,
+          "min_clearance_m": 0.3499999940395355,
+          "min_width_m": 0.699999988079071,
+          "min_width_at": [
+            -3.45,
+            2.45
+          ],
+          "median_width_m": 1.5492422580718994,
+          "n_unknown_adjacent": 0,
+          "unknown_adjacent_runs": [],
+          "start_xy": [
+            -3.45,
+            2.45
+          ],
+          "goal_xy": [
+            4.95,
+            0.9500000000000001
+          ],
+          "goal_ij": [
+            106,
+            50
+          ],
+          "reachable": true,
+          "route_validity": 0.7411764705882353,
+          "route_all_valid": false,
+          "n_route_cells": 85,
+          "n_route_cells_not_gt_passable": 22,
+          "gt_can_reach_goal": false,
+          "gt_shortest_m": NaN,
+          "route_length_ratio": NaN,
+          "route_min_width_m": 0.699999988079071,
+          "route_length_m": 9.021320343559642,
+          "route_n_unknown_adjacent": 0
+        },
+        {
+          "n_cells": 51,
+          "length_m": 5.579898987322332,
+          "min_clearance_m": 0.3499999940395355,
+          "min_width_m": 0.699999988079071,
+          "min_width_at": [
+            -3.45,
+            2.45
+          ],
+          "median_width_m": 1.5492422580718994,
+          "n_unknown_adjacent": 0,
+          "unknown_adjacent_runs": [],
+          "start_xy": [
+            -3.45,
+            2.45
+          ],
+          "goal_xy": [
+            1.55,
+            1.05
+          ],
+          "goal_ij": [
+            72,
+            51
+          ],
+          "reachable": true,
+          "route_validity": 0.6078431372549019,
+          "route_all_valid": false,
+          "n_route_cells": 51,
+          "n_route_cells_not_gt_passable": 20,
+          "gt_can_reach_goal": true,
+          "gt_shortest_m": 3.5556349186104046,
+          "route_length_ratio": 1.5693115618020312,
+          "route_min_width_m": 0.699999988079071,
+          "route_length_m": 5.579898987322332,
+          "route_n_unknown_adjacent": 0
+        }
+      ]
+    },
+    "C  -  3 drones, inter-agent UWB/crawl": {
+      "entry_ij": [
+        22,
+        65
+      ],
+      "routes": [
+        {
+          "n_cells": 85,
+          "length_m": 9.021320343559642,
+          "min_clearance_m": 0.3499999940395355,
+          "min_width_m": 0.699999988079071,
+          "min_width_at": [
+            -3.45,
+            2.45
+          ],
+          "median_width_m": 1.7439088821411133,
+          "n_unknown_adjacent": 0,
+          "unknown_adjacent_runs": [],
+          "start_xy": [
+            -3.45,
+            2.45
+          ],
+          "goal_xy": [
+            4.95,
+            0.9500000000000001
+          ],
+          "goal_ij": [
+            106,
+            50
+          ],
+          "reachable": true,
+          "route_validity": 0.7647058823529411,
+          "route_all_valid": false,
+          "n_route_cells": 85,
+          "n_route_cells_not_gt_passable": 20,
+          "gt_can_reach_goal": false,
+          "gt_shortest_m": NaN,
+          "route_length_ratio": NaN,
+          "route_min_width_m": 0.699999988079071,
+          "route_length_m": 9.021320343559642,
+          "route_n_unknown_adjacent": 0
+        },
+        {
+          "n_cells": 51,
+          "length_m": 5.579898987322332,
+          "min_clearance_m": 0.3499999940395355,
+          "min_width_m": 0.699999988079071,
+          "min_width_at": [
+            -3.45,
+            2.45
+          ],
+          "median_width_m": 1.78679621219635,
+          "n_unknown_adjacent": 0,
+          "unknown_adjacent_runs": [],
+          "start_xy": [
+            -3.45,
+            2.45
+          ],
+          "goal_xy": [
+            1.55,
+            1.05
+          ],
+          "goal_ij": [
+            72,
+            51
+          ],
+          "reachable": true,
+          "route_validity": 0.6470588235294118,
+          "route_all_valid": false,
+          "n_route_cells": 51,
+          "n_route_cells_not_gt_passable": 18,
+          "gt_can_reach_goal": true,
+          "gt_shortest_m": 3.5556349186104046,
+          "route_length_ratio": 1.5693115618020312,
+          "route_min_width_m": 0.699999988079071,
+          "route_length_m": 5.579898987322332,
+          "route_n_unknown_adjacent": 0
+        }
+      ]
+    }
+  }
+}

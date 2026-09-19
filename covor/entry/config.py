@@ -107,8 +107,16 @@ class EntryCfg:
                                  # attachment, so the fewest blobs count as
                                  # floating.
 
-    # --- routing (DESIGN §2-4), used in Part 4 -----------------------------
-    lambda_route: float = 0.5
+    # --- routing (DESIGN §2-4) ---------------------------------------------
+    lambda_route: float = 0.5    # cost multiplier 1 + lambda/clearance
+    unknown_penalty_steps: float = 1.0
+                                 # a step whose cell touches unknown costs one
+                                 # extra step-length. DESIGN §2-4 names the
+                                 # penalty but not its size; one step length is
+                                 # the scale-free choice -- "walking beside
+                                 # unseen space counts double" -- and it cannot
+                                 # forbid a route, only make the map prefer an
+                                 # alternative that exists.
 
     # --- render / reporting -------------------------------------------------
     n_min_obs: int = 3           # columns observed by fewer frames than this are

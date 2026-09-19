@@ -31,6 +31,33 @@ from covor.entry.config import (EntryCfg, UNKNOWN, FREE, OCCUPIED,
 BANDS = ("walk", "crawl")
 
 
+def select_floor(lab3d, peaks, cfg):
+    """The lowest occupied peak THAT HAS FREE SPACE ABOVE IT.
+
+    The peak itself is the design's rule (§3-6). This adds the one structural
+    condition that tells a floor from a ceiling without a tuned constant: a floor
+    has walkable volume over it and a ceiling has nothing. It exists because the
+    ceiling once WAS selected, silently, and the map came back empty rather than
+    wrong-looking (see clean3d.floor_ceiling_rows).
+
+    Raises rather than guessing when no peak qualifies -- a grid with no free
+    space above any horizontal surface is not something to publish a floor plan
+    of.
+    """
+    nz = np.asarray(lab3d).shape[2]
+    tried = []
+    for p in peaks:
+        lo, hi = PJ.rows_for_band(int(p), cfg.H_walk, cfg, nz)
+        n_free = int((np.asarray(lab3d)[:, :, lo:hi] == FREE).sum())
+        tried.append((int(p), n_free))
+        if n_free > 0:
+            return int(p)
+    raise ValueError(
+        "no occupied peak has free space in the walk band above it "
+        "(row, free voxels above): %s -- this grid has no floor to stand on"
+        % tried)
+
+
 def merged_class(bands, wc):
     """The DESIGN §1 label set, from the two bands' grades.
 
@@ -60,7 +87,9 @@ def build_entry_grid(lab3d, cfg, sigma_xy=None, n_obs=None, entry_xy=None,
     """
     ijk_min = np.asarray(ijk_min, np.int64)
     lab3d, info = clean3d.clean(np.asarray(lab3d, np.uint8), cfg)
-    bands, rows = PJ.project(lab3d, info["floor_row"], cfg)
+    floor_row = select_floor(lab3d, info["floor"]["peaks"], cfg)
+    info["floor_row"] = floor_row
+    bands, rows = PJ.project(lab3d, floor_row, cfg)
 
     clear, wc, r, passable = {}, {}, {}, {}
     for b in BANDS:

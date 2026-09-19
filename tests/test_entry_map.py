@@ -383,6 +383,54 @@ def test_default_entry_ignores_isolated_passable_islands():
         % (int(R.sum()), int(P[12:40, 4:28].sum())))
 
 
+def test_floor_is_not_the_ceiling_even_when_the_ceiling_is_the_bigger_peak():
+    """The failure that produced an empty map without raising anything.
+
+    A scanned ceiling is a bigger, cleaner slab than a scanned floor -- on
+    room909 it is 5344 occupied cells against 1370. A height threshold on the
+    peak therefore sits exactly where it can drop the floor and keep the
+    ceiling, which is what happened: the A-condition map's floor peak held 1210
+    cells against a 0.25*max threshold of 1360, the walk band was placed above
+    the roof, and every metric came back zero.
+
+    Here the ceiling is deliberately four times the floor.
+    """
+    from build_entry_map import select_floor
+    nx, ny, nz = 44, 36, 28
+    lab = np.zeros((nx, ny, nz), np.uint8)
+    lab[8:30, 6:24, 2] = OCCUPIED                  # a modest floor patch
+    lab[:, :, 24] = OCCUPIED                       # a ceiling slab over everything
+    lab[8:30, 6:24, 3:24] = FREE                   # the room between them, clear
+                                                   # through the whole walk band
+    h = (lab == OCCUPIED).sum(axis=(0, 1))
+    assert h[24] > 3 * h[2], "fixture must make the ceiling the taller peak"
+    floor_row, ceil_row, info = clean3d.floor_ceiling_rows(lab)
+    assert floor_row == 2, "lowest peak is the floor, got row %d" % floor_row
+    assert ceil_row == 24
+    cfg = EntryCfg(close_iter=0)
+    assert select_floor(lab, info["peaks"], cfg) == 2
+    g, gi = build_entry_grid(lab, cfg, k_sigma=0.0)
+    assert gi["floor_row"] == 2
+    assert int((g["walk_label"] == FREE).sum()) > 0, (
+        "the walk band above the chosen floor must contain free space")
+
+
+def test_select_floor_raises_when_no_peak_has_space_above_it():
+    """A solid slab with nothing over it is not a floor, and saying so beats
+    returning a map of zero passable cells."""
+    from build_entry_map import select_floor
+    lab = np.zeros((20, 20, 24), np.uint8)
+    lab[:, :, 22] = OCCUPIED                       # only a roof, no room
+    cfg = EntryCfg(close_iter=0)
+    _, _, info = clean3d.floor_ceiling_rows(lab)
+    try:
+        select_floor(lab, info["peaks"], cfg)
+    except ValueError as e:
+        assert "no floor to stand on" in str(e), str(e)
+    else:
+        raise AssertionError("a roof-only grid was accepted as having a floor")
+
+
 if __name__ == "__main__":
     fs = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for f in fs:

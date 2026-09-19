@@ -49,33 +49,43 @@ def occupied_z_histogram(lab):
     return (np.asarray(lab) == OCCUPIED).sum(axis=(0, 1))
 
 
-def floor_ceiling_rows(lab, min_share=0.25):
+def floor_ceiling_rows(lab):
     """(floor_row, ceiling_row, info) as ARRAY indices into lab's z axis.
 
     DESIGN §3-6: the floor is the lowest peak of the occupied z histogram. It has
-    to be a peak and not simply the lowest occupied row -- a scan carries stray
+    to be a PEAK and not simply the lowest occupied row -- a scan carries stray
     geometry below the floor plane (room909 has 93-893 cells in the four rows
-    under it), and an argmin-style rule would sit on that instead.
+    under it) and an argmin-style rule would sit on that. A strict local maximum
+    is enough to exclude those: below the floor the histogram climbs
+    monotonically into it.
 
-    A peak is a local maximum holding at least ``min_share`` of the largest row.
-    The ceiling is the highest such peak. ``info["n_peaks"]`` is reported because
-    two floor peaks mean two storeys, which DESIGN §3-6 sends round §2 once per
-    storey -- that is not implemented, so it must at least be visible.
+    NO HEIGHT THRESHOLD. An earlier version also required a peak to hold 25 % of
+    the tallest row, to reject noise. On room909 that constant landed on top of
+    the floor peak itself: the C map's floor row held 1370 cells against a
+    threshold of 1336 and passed by 34, the A map's held 1210 against 1360 and
+    FAILED -- so the only surviving peak was the ceiling, the ceiling became the
+    floor, the walk band was placed above the roof, and the map came out with
+    zero passable cells. It raised nothing; it just answered wrongly. A constant
+    that decides between "floor" and "ceiling" by 150 cells is not measuring
+    anything, so it is gone.
+
+    ``peaks`` is returned in full because the lowest peak is a candidate, not a
+    verdict: build_entry_map validates it against the band above it and moves up
+    the list if that band holds no free space. ``n_peaks`` also says whether
+    there are several storeys, which DESIGN §3-6 sends round §2 once per storey
+    -- not implemented, so it must at least be visible.
     """
     h = occupied_z_histogram(lab).astype(np.int64)
     if h.max() == 0:
         raise ValueError("no occupied cells: cannot estimate a floor")
-    thr = min_share * h.max()
     peaks = [k for k in range(len(h))
-             if h[k] >= thr
+             if h[k] > 0
              and h[k] >= (h[k - 1] if k > 0 else -1)
              and h[k] > (h[k + 1] if k + 1 < len(h) else -1)]
     if not peaks:
-        raise ValueError("occupied z histogram has no peak above %.2f of its max"
-                         % min_share)
+        raise ValueError("the occupied z histogram has no local maximum")
     info = dict(n_peaks=len(peaks), peaks=[int(p) for p in peaks],
-                peak_counts=[int(h[p]) for p in peaks],
-                hist=h.tolist())
+                peak_counts=[int(h[p]) for p in peaks], hist=h.tolist())
     return int(peaks[0]), int(peaks[-1]), info
 
 
