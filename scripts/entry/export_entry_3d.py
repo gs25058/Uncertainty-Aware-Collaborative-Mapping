@@ -180,10 +180,16 @@ def main():
     ap.add_argument("--w", type=float, default=0.70)
     args = ap.parse_args()
 
-    cfg = EntryCfg(w=args.w)
     zg = np.load(args.gt, allow_pickle=False)
     lab_gt, ijk = zg["labels"], zg["ijk_min"]
     res = float(np.asarray(zg["res"]).ravel()[0])
+    # res comes from the DATA. EntryCfg's default is 0.10, and a 0.05 m grid read
+    # with it puts the walk band at 0.05-0.95 m instead of 0.10-1.90 m without
+    # raising anything -- the same trap the 2D drivers had.
+    cfg = EntryCfg(res=res, w=args.w)
+    if max(lab_gt.shape) >= 256:
+        raise SystemExit("grid %s does not fit the uint8 voxel planes; the "
+                         "payload format needs widening first" % (lab_gt.shape,))
     roi = roi_from_gt(lab_gt, ijk, res)
 
     gt_v, gt_grid = variant(
@@ -202,7 +208,10 @@ def main():
         blurb = parts[3] if len(parts) > 3 else ""
         lab, ijk_m, res_m, sig, nobs, meta = load_map(path)
         if not np.array_equal(np.asarray(ijk_m), np.asarray(ijk)) or res_m != res:
-            raise SystemExit("%s is on a different grid than the GT" % path)
+            raise SystemExit(
+                "%s is on a %.3f m grid and the GT is %.3f m -- "
+                "PREREG_RESOLUTION.md forbids scoring across resolutions"
+                % (path, res_m, res))
         try:
             v, _ = variant(key, label, blurb, lab, ijk_m, res_m, sig, nobs, meta,
                            cfg, args.band, gt_grid, roi, entry_xy=door)

@@ -15,6 +15,8 @@ entry_grid.npz cell by cell.
 Run: python tests/test_entry_3d.py   (or: pytest tests/test_entry_3d.py)
 """
 import base64
+import glob
+import json
 import os
 import re
 import sys
@@ -105,6 +107,52 @@ def test_painted_classes_agree_with_the_grid_cell_by_cell():
     # every reachable cell must be drawn as walkable: the offer cannot shrink
     # between the grid and the picture
     assert (plan[R] == EX.WALKABLE).all(), "a reachable cell was painted as something else"
+
+
+def test_every_baked_viewer_is_loadable_at_its_own_resolution():
+    """Validate the files that actually ship, not just a freshly built payload.
+
+    The contract test above builds its payload from the 0.10 m GT, so it never
+    exercises a 0.05 m grid -- where the voxel index planes are 222 wide against
+    a 255 ceiling, which is the number that would wrap silently and scatter the
+    voxels if the grid ever grew. This walks the baked HTML instead.
+    """
+    files = sorted(glob.glob(os.path.join(ROOT, "web", "entry_map_3d_room909*.html")))
+    if not files or not os.path.exists(TPL):
+        return print("SKIP: no baked viewer to check")
+    body = open(TPL, encoding="utf-8").read()
+    body = body[body.index("const DATA ="):]
+    need = sorted(set(re.findall(r"\bv\.([a-z_0-9]+)", body)))
+    for f in files:
+        h = open(f, encoding="utf-8").read()
+        m = re.search(r"const DATA = (\{.*?\});\n", h, re.S)
+        assert m, "%s has no baked DATA -- the placeholder was never filled" % f
+        data = json.loads(m.group(1))
+        g = data["grid"]
+        assert data["variants"], "%s carries no variants" % f
+        for v in data["variants"]:
+            for k in need:
+                assert k in v, "%s / %s is missing v.%s" % (f, v["key"], k)
+            for axis, n in zip("ijk", (g["nx"], g["ny"], g["nz"])):
+                idx = np.frombuffer(base64.b64decode(v["vox"][axis]), np.uint8)
+                assert len(idx) == v["n_occ"], (
+                    "%s / %s: vox.%s has %d entries for %d occupied cells"
+                    % (f, v["key"], axis, len(idx), v["n_occ"]))
+                assert n < 256, (
+                    "%s: the grid is %d cells on %s and the payload stores one "
+                    "byte per index" % (f, n, axis))
+                if len(idx):
+                    assert int(idx.max()) < n, (
+                        "%s / %s: vox.%s reaches %d on a %d-cell axis -- the "
+                        "uint8 plane wrapped" % (f, v["key"], axis, idx.max(), n))
+            plan = np.frombuffer(base64.b64decode(v["plan"]), np.uint8)
+            assert len(plan) == g["nx"] * g["ny"], (
+                "%s / %s: plan is %d bytes for a %dx%d grid"
+                % (f, v["key"], len(plan), g["nx"], g["ny"]))
+            seen = set(np.unique(plan).tolist())
+            assert seen <= {0, 1, 2, 4, 5, 6, 7}, (
+                "%s / %s paints classes %s; 3 is the unused drone class"
+                % (f, v["key"], sorted(seen)))
 
 
 if __name__ == "__main__":
