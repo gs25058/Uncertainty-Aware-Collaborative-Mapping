@@ -48,6 +48,9 @@ def main():
     ap.add_argument("--k-sigma", type=float, default=0.0)
     ap.add_argument("--bands", default=",".join(BANDS))
     ap.add_argument("--title", default="")
+    ap.add_argument("--entry", default=None, help="x,y in metres, snapped to the "
+                    "nearest passable cell on each map (--entry-snap)")
+    ap.add_argument("--entry-snap", type=float, default=1.5)
     ap.add_argument("--sigma-panel", action="store_true",
                     help="add a row showing the measured sigma_xy field. It "
                          "enters no decision at k_sigma = 0 and the panel says so.")
@@ -66,8 +69,11 @@ def main():
     for spec in args.map:
         path, _, lb = spec.partition(":")
         lab, ijk, res_m, sig, nobs, meta = load(path)
+        nominal = (tuple(float(v) for v in args.entry.split(",")) if args.entry else None)
         g, info = build_entry_grid(lab, cfg, sigma_xy=sig, n_obs=nobs,
-                                   ijk_min=ijk, k_sigma=args.k_sigma)
+                                   ijk_min=ijk, k_sigma=args.k_sigma,
+                                   entry_xy=nominal,
+                                   entry_snap_m=args.entry_snap if nominal else None)
         maps.append(dict(label=lb or os.path.basename(path), grid=g, info=info,
                          meta=meta, path=path))
 
@@ -78,8 +84,10 @@ def main():
             ap.error("the GT grid is %.3f m and the maps are %.3f m -- "
                      "PREREG_RESOLUTION.md forbids scoring across resolutions"
                      % (float(np.asarray(zg["res"]).ravel()[0]), cfg.res))
+        nominal = (tuple(float(v) for v in args.entry.split(",")) if args.entry else None)
         gt_grid, _ = build_entry_grid(zg["labels"], cfg, ijk_min=zg["ijk_min"],
-                                      k_sigma=0.0)
+                                      k_sigma=0.0, entry_xy=nominal,
+                                      entry_snap_m=args.entry_snap if nominal else None)
 
     routes_all = {}
     # One map -> lay the bands out side by side; a single column two panels tall

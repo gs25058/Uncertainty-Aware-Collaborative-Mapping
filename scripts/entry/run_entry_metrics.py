@@ -62,7 +62,15 @@ def main():
     ap.add_argument("--w", default="0.5,0.7,0.9")
     ap.add_argument("--k-sigma", type=float, default=0.0)
     ap.add_argument("--out", default=None)
+    ap.add_argument("--entry", default=None,
+                    help="x,y in metres: ONE nominal door for GT and map alike, "
+                         "each snapped to its own nearest passable cell. Without "
+                         "it the GT's default door is used, which on a scene "
+                         "whose long axis is y lands wherever smallest-x happens "
+                         "to be -- see RESULTS_sgbm.md §2.2.")
+    ap.add_argument("--entry-snap", type=float, default=1.5)
     args = ap.parse_args()
+    nominal = (tuple(float(v) for v in args.entry.split(",")) if args.entry else None)
 
     zg = np.load(args.gt, allow_pickle=False)
     lab_gt, ijk_gt = zg["labels"], zg["ijk_min"]
@@ -88,13 +96,18 @@ def main():
                              "resolutions" % (path, res_p, res_gt))
         for w in ws:
             cfg = EntryCfg(res=res_gt, w=w)
-            g_gt, i_gt = build_entry_grid(lab_gt, cfg, ijk_min=ijk_gt, k_sigma=0.0)
-            door = tuple(float(v) for v in g_gt["entry_xy"])
+            g_gt, i_gt = build_entry_grid(lab_gt, cfg, ijk_min=ijk_gt, k_sigma=0.0,
+                                          entry_xy=nominal,
+                                          entry_snap_m=args.entry_snap if nominal else None)
+            door = nominal if nominal else tuple(float(v) for v in g_gt["entry_xy"])
+            snap = args.entry_snap if nominal else None
             try:
                 g_p, i_p = build_entry_grid(lab_p, cfg, sigma_xy=sig, n_obs=nobs,
                                             entry_xy=door, ijk_min=ijk_p,
-                                            k_sigma=args.k_sigma)
-                entry_from, entry_note = "gt_door", ""
+                                            k_sigma=args.k_sigma, entry_snap_m=snap)
+                entry_from, entry_note = ("shared_door" if nominal else "gt_door"), (
+                    "snapped gt %.2f m, map %.2f m" % (i_gt["entry_snapped_m"],
+                                                        i_p["entry_snapped_m"]))
             except ValueError as e:
                 g_p, i_p = build_entry_grid(lab_p, cfg, sigma_xy=sig, n_obs=nobs,
                                             ijk_min=ijk_p, k_sigma=args.k_sigma)
@@ -124,9 +137,13 @@ def main():
                 print("    " + EM.row_text(rec))
         # the confusion matrix is per map at the design's own w
         cfg = EntryCfg(res=res_gt, w=0.70)
-        g_gt, _ = build_entry_grid(lab_gt, cfg, ijk_min=ijk_gt, k_sigma=0.0)
+        g_gt, _ = build_entry_grid(lab_gt, cfg, ijk_min=ijk_gt, k_sigma=0.0,
+                                   entry_xy=nominal,
+                                   entry_snap_m=args.entry_snap if nominal else None)
         g_p, _ = build_entry_grid(lab_p, cfg, sigma_xy=sig, n_obs=nobs,
-                                  ijk_min=ijk_p, k_sigma=args.k_sigma)
+                                  ijk_min=ijk_p, k_sigma=args.k_sigma,
+                                  entry_xy=nominal,
+                                  entry_snap_m=args.entry_snap if nominal else None)
         rec = EM.score(g_p, g_gt, "walk")
         print("    width grade confusion, walk band, w=0.70, GT-free cells only "
               "(agreement %.4f):" % rec["grade_agreement_on_gt_free"])

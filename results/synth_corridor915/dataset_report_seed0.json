@@ -2,23 +2,23 @@
   "robots": {
     "ifo001": {
       "clearance_min_m": 0.36055512754639896,
-      "duration_s": 90.0,
-      "flown_len_m": 31.554142155413487,
+      "duration_s": 120.0,
+      "flown_len_m": 42.08410160218781,
       "n_clearance_violation": 0,
-      "n_samples": 1801,
+      "n_samples": 2401,
       "route_len_m": 40.35221317958609,
       "vio": {
-        "raw_vio_ate_max": 0.19580880315956595,
-        "raw_vio_ate_rmse": 0.10900585029480071,
-        "rel_rot_rms": 0.012314172804666113,
+        "raw_vio_ate_max": 0.23262662756538618,
+        "raw_vio_ate_rmse": 0.12287459329613543,
+        "rel_rot_rms": 0.011943723628452549,
         "rel_rot_target": 0.0124,
-        "rel_trans_rms": 0.0041981360096870115,
+        "rel_trans_rms": 0.004103390324065115,
         "rel_trans_target": 0.0041,
-        "sigma_delta": 0.008526700179486747,
-        "sigma_yaw_walk": 0.00027768018363489785,
-        "tilt_rms_rad": 0.012684495057023404,
-        "yaw_drift_deg_per_min": 0.8394830332275737,
-        "yaw_err_final_deg": 1.8719925440599878
+        "sigma_delta": 0.008523052229385033,
+        "sigma_yaw_walk": 0.00032063745754046605,
+        "tilt_rms_rad": 0.012154116139643066,
+        "yaw_drift_deg_per_min": 1.034620362286016,
+        "yaw_err_final_deg": 2.0369646682296585
       },
       "z_range": [
         1.02,
@@ -27,23 +27,23 @@
     },
     "ifo002": {
       "clearance_min_m": 0.36055512754639896,
-      "duration_s": 90.0,
-      "flown_len_m": 31.534996827023555,
+      "duration_s": 120.0,
+      "flown_len_m": 42.037301808671614,
       "n_clearance_violation": 0,
-      "n_samples": 1801,
+      "n_samples": 2401,
       "route_len_m": 42.58549280702619,
       "vio": {
-        "raw_vio_ate_max": 0.2406196788351403,
-        "raw_vio_ate_rmse": 0.08862982754354173,
-        "rel_rot_rms": 0.012119543568466314,
+        "raw_vio_ate_max": 0.20319818870419007,
+        "raw_vio_ate_rmse": 0.10437643036382908,
+        "rel_rot_rms": 0.012365012269231672,
         "rel_rot_target": 0.0124,
-        "rel_trans_rms": 0.004014046484104487,
+        "rel_trans_rms": 0.004070054022381334,
         "rel_trans_target": 0.0041,
-        "sigma_delta": 0.008529639548603765,
-        "sigma_yaw_walk": 0.00046280030605816305,
-        "tilt_rms_rad": 0.011983285403038215,
-        "yaw_drift_deg_per_min": -3.5711891359455232,
-        "yaw_err_final_deg": -5.381856608811619
+        "sigma_delta": 0.008519520216646575,
+        "sigma_yaw_walk": 0.0005343957625674433,
+        "tilt_rms_rad": 0.012451669930978185,
+        "yaw_drift_deg_per_min": -3.2165926587972398,
+        "yaw_err_final_deg": -5.513455427287482
       },
       "z_range": [
         1.1700000064750182,
@@ -52,23 +52,23 @@
     },
     "ifo003": {
       "clearance_min_m": 0.36055512754639896,
-      "duration_s": 90.0,
-      "flown_len_m": 31.51812852816109,
+      "duration_s": 120.0,
+      "flown_len_m": 42.01625777974395,
       "n_clearance_violation": 0,
-      "n_samples": 1801,
+      "n_samples": 2401,
       "route_len_m": 39.553625726811674,
       "vio": {
-        "raw_vio_ate_max": 0.14316844338270274,
-        "raw_vio_ate_rmse": 0.0735012203960943,
-        "rel_rot_rms": 0.012244177708860502,
+        "raw_vio_ate_max": 0.16160863128057842,
+        "raw_vio_ate_rmse": 0.07331551188851691,
+        "rel_rot_rms": 0.012191734571999934,
         "rel_rot_target": 0.0124,
-        "rel_trans_rms": 0.004125094614530223,
+        "rel_trans_rms": 0.004140498772277493,
         "rel_trans_target": 0.0041,
-        "sigma_delta": 0.008521419196432156,
-        "sigma_yaw_walk": 0.000740480489693061,
-        "tilt_rms_rad": 0.01210060999374845,
-        "yaw_drift_deg_per_min": 1.399345878198343,
-        "yaw_err_final_deg": 2.2646163283785508
+        "sigma_delta": 0.008512343862868366,
+        "sigma_yaw_walk": 0.0008550332201079093,
+        "tilt_rms_rad": 0.012250170362245388,
+        "yaw_drift_deg_per_min": 1.1636862250598754,
+        "yaw_err_final_deg": 1.93705102907602
       },
       "z_range": [
         1.320000025900072,
@@ -79,14 +79,14 @@
   "seed": 0,
   "seq": "synth_corridor915_0",
   "uwb": {
-    "n_rows_unique": 1500,
+    "n_rows_unique": 2016,
     "nlos": false,
     "per_robot_rows": {
-      "ifo001": 1000,
-      "ifo002": 1000,
-      "ifo003": 1000
+      "ifo001": 1344,
+      "ifo002": 1344,
+      "ifo003": 1344
     },
-    "residual_mean": 0.004043657367621772,
-    "residual_rms": 0.049868894886298684
+    "residual_mean": 0.004134596706726412,
+    "residual_rms": 0.05016165176371987
   }
 }

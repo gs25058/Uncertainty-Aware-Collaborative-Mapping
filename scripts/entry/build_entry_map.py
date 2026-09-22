@@ -122,8 +122,28 @@ def merged_class(bands, wc):
     return out
 
 
+def snap_entry(passable, ij, radius_cells):
+    """Nearest passable cell to ``ij`` within ``radius_cells``, or None.
+
+    DESIGN §8 makes the entry point user-specified. A door is a location a
+    person names to within a metre, not a cell index; and the cell under that
+    location may be the door FRAME, a step, or the erosion band along the wall
+    -- free but narrower than w/2. Snapping to the nearest passable cell is what
+    "enter here" means on a grid. The radius bounds how far the map may move
+    the door, and the move is reported, so a snap of 1.4 m is visible.
+    """
+    P = np.asarray(passable, bool)
+    if not P.any():
+        return None
+    idx = np.argwhere(P)
+    d = np.hypot(idx[:, 0] - ij[0], idx[:, 1] - ij[1])
+    k = int(np.argmin(d))
+    return (tuple(int(v) for v in idx[k]), float(d[k])) if d[k] <= radius_cells else None
+
+
 def build_entry_grid(lab3d, cfg, sigma_xy=None, n_obs=None, entry_xy=None,
-                     ijk_min=(0, 0, 0), k_sigma=None, floor_row=None):
+                     ijk_min=(0, 0, 0), k_sigma=None, floor_row=None,
+                     entry_snap_m=None):
     """3D labels -> the full entry grid, as a dict of arrays + info.
 
     sigma_xy   (nx, ny) per-column sigma_xy in metres, or None for the k = 0 case.
@@ -159,8 +179,19 @@ def build_entry_grid(lab3d, cfg, sigma_xy=None, n_obs=None, entry_xy=None,
     # enter through an opening the walk map cannot use, and the two reachability
     # figures would no longer be comparable.
     xy = entry_xy if entry_xy is not None else cfg.entry_xy
+    info["entry_snapped_m"] = 0.0
     if xy is not None:
         entry_ij = RE.world_to_cell(xy, ijk_min, cfg.res)
+        P = passable["walk"]
+        inb = 0 <= entry_ij[0] < P.shape[0] and 0 <= entry_ij[1] < P.shape[1]
+        if entry_snap_m and not (inb and P[entry_ij]):
+            hit = snap_entry(P, entry_ij, entry_snap_m / cfg.res)
+            if hit is None:
+                raise ValueError("entry point %s has no passable cell within %.2f m"
+                                 % (tuple(xy), entry_snap_m))
+            entry_ij, dcells = hit
+            info["entry_snapped_m"] = float(dcells * cfg.res)
+            info["entry_nominal_xy"] = [float(v) for v in xy[:2]]
     else:
         entry_ij = RE.default_entry(passable["walk"])
     reach_m = {b: RE.reachable(passable[b], entry_ij, bands[b]) for b in BANDS}
@@ -249,6 +280,9 @@ def main():
                     help="0 until PREREG_entry_sigma.md is registered and approved")
     ap.add_argument("--cube-min-voxels", type=int, default=None)
     ap.add_argument("--entry", default=None, help="x,y in metres")
+    ap.add_argument("--entry-snap", type=float, default=None,
+                    help="snap --entry to the nearest passable cell within this "
+                         "many metres (see snap_entry)")
     args = ap.parse_args()
     if bool(args.gt) == bool(args.map):
         ap.error("give exactly one of --gt / --map")
@@ -271,7 +305,7 @@ def main():
 
     g, info = build_entry_grid(lab, cfg, sigma_xy=sigma, n_obs=n_obs,
                                entry_xy=xy, ijk_min=ijk_min,
-                               k_sigma=args.k_sigma)
+                               k_sigma=args.k_sigma, entry_snap_m=args.entry_snap)
     os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
     np.savez_compressed(args.out, cfg=json.dumps(cfg.__dict__),
                         info=json.dumps(info), **g)
