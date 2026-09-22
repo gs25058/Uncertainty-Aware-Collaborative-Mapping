@@ -50,6 +50,10 @@ class SynthCfg:
     tilt_amp_deg: float = 1.5
     tilt_period_s: float = 7.0
     row_step: float = 0.9        # m; lawnmower row spacing
+    zone_axis: str = "x"         # axis the footprint is split into per-robot
+                                 # zones along. "x" is the original (room909)
+                                 # behaviour; "y" for a corridor whose long axis
+                                 # is y -- see trajectory.zone_split.
 
     # --- front-end (VIO) error process -------------------------------------
     # See covor.synth.vio for the derivation. sigma_odo_* are appendix B values

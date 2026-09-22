@@ -111,6 +111,15 @@ def main():
     ap.add_argument("--encl-thresh", type=float, default=0.90,
                     help="enclosure fraction above which a cell counts as room interior")
     ap.add_argument("--encl-rays", type=int, default=128)
+    ap.add_argument("--seed-xyz", type=float, nargs=3, default=(0.0, 0.0, 1.2),
+                    metavar=("X", "Y", "Z"),
+                    help="world point the interior flood fill starts from. The "
+                         "default is room909's; it lies OUTSIDE the 2026-09-15 "
+                         "corridor scan (measured enclosure 0.375 against the "
+                         "0.90 threshold), so that scene needs e.g. -2.05 0 1.2. "
+                         "build_gt_grid already refuses a seed in an occupied "
+                         "cell, but a seed in UNSCANNED space is not occupied -- "
+                         "it just yields a component that is not the room.")
     ap.add_argument("--close-iter", type=int, default=2,
                     help="binary closing radius (voxels) applied to the enclosure mask")
     args = ap.parse_args()
@@ -144,7 +153,7 @@ def main():
 
     # Seed the interior fill at the room centroid, at 1.2 m -- inside the
     # flight band (1.0-1.5 m) the trajectories will use.
-    seed = np.array([0.0, 0.0, 1.2])
+    seed = np.array(args.seed_xyz, float)
     scene = MG.raycasting_scene(mw)
     t0 = time.time()
     lab, ijk_min, ginfo, encl = MG.build_gt_grid(

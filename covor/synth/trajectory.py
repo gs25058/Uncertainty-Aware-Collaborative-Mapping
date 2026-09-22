@@ -40,8 +40,20 @@ def flyable(lab, ijk_min, res, clearance, z_lo, z_hi):
     return m, zc
 
 
-def zone_split(mask2d, n):
-    """Split a 2-D flyable footprint into ``n`` equal-cell zones along x."""
+def zone_split(mask2d, n, axis="x"):
+    """Split a 2-D flyable footprint into ``n`` equal-cell zones along ``axis``.
+
+    axis="x" is the original behaviour and is bit-identical to it. axis="y" is
+    for a scene whose long axis is y: the 2026-09-15 corridor is 2 m wide in x
+    and 41 m long in y, and splitting it along x hands every drone a 0.7 m lane
+    over the SAME 20 m of corridor -- three drones, one third of the building
+    observed, the rest unknown by construction (measured: all three GT tracks
+    ran y in [-20, 0], the north 18 m and the side room never flown).
+    """
+    if axis == "y":
+        return [z.T for z in zone_split(mask2d.T, n, "x")]
+    if axis != "x":
+        raise ValueError("zone_split axis must be 'x' or 'y', got %r" % (axis,))
     ii = np.nonzero(mask2d.any(1))[0]
     cnt = mask2d.sum(1)[ii]
     edges = np.searchsorted(np.cumsum(cnt), np.linspace(0, cnt.sum(), n + 1)[1:-1])
@@ -218,7 +230,7 @@ def plan_all(lab, ijk_min, res, cfg):
     cc, _ = ndimage.label(foot)
     if cc.max():
         foot = cc == (1 + np.argmax(np.bincount(cc.ravel())[1:]))
-    zones = zone_split(foot, len(cfg.heights))
+    zones = zone_split(foot, len(cfg.heights), getattr(cfg, "zone_axis", "x"))
 
     out = {}
     for k, (rob, h) in enumerate(zip(ROBOTS, cfg.heights)):

@@ -55,10 +55,15 @@ def main():
     ap.add_argument("--nlos", action="store_true",
                     help="add a positive bias to ranges the mesh blocks")
     ap.add_argument("--duration", type=float, default=90.0)
+    ap.add_argument("--zone-axis", default="x", choices=["x", "y"],
+                    help="axis to split the flyable footprint into per-robot "
+                         "zones along (SynthCfg.zone_axis). 'x' is room909's; "
+                         "the 2026-09-15 corridor needs 'y'.")
     args = ap.parse_args()
 
     cfg = SynthCfg(name=args.name, seq="synth_%s_0" % args.name, seed=args.seed,
-                   uwb_nlos=args.nlos, duration_s=args.duration)
+                   uwb_nlos=args.nlos, duration_s=args.duration,
+                   zone_axis=args.zone_axis)
     print("=== Part B: synthetic observations | %s | seed %d ===" % (cfg.seq, cfg.seed))
     rep, gt = DS.build(cfg)
     u = rep["uwb"]

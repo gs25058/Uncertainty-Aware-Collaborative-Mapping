@@ -187,3 +187,38 @@ if __name__ == "__main__":
         f()
         print("ok  ", f.__name__)
     print("%d passed" % len(fs))
+
+
+# ---------------------------------------------------------------------------
+# 4. zone_split axis option must not move a single cell of the original split
+# ---------------------------------------------------------------------------
+def _zone_split_reference(mask2d, n):
+    """The function as it was before ``axis`` existed, verbatim."""
+    ii = np.nonzero(mask2d.any(1))[0]
+    cnt = mask2d.sum(1)[ii]
+    edges = np.searchsorted(np.cumsum(cnt), np.linspace(0, cnt.sum(), n + 1)[1:-1])
+    bnds = [0] + [int(ii[min(e, len(ii) - 1)]) for e in edges] + [mask2d.shape[0]]
+    out = []
+    for k in range(n):
+        z = np.zeros_like(mask2d)
+        z[bnds[k]:bnds[k + 1]] = mask2d[bnds[k]:bnds[k + 1]]
+        out.append(z)
+    return out
+
+
+def test_zone_split_default_axis_is_bit_identical_and_y_is_its_transpose():
+    from covor.synth.trajectory import zone_split
+    rng = np.random.default_rng(3)
+    for trial in range(20):
+        h, w = rng.integers(5, 60, size=2)
+        m = rng.random((h, w)) < rng.uniform(0.2, 0.9)
+        m[rng.integers(0, h)] = False               # a hole row, to exercise ii
+        for n in (2, 3, 4):
+            want = _zone_split_reference(m, n)
+            got = zone_split(m, n)                  # default axis
+            assert all(np.array_equal(a, b) for a, b in zip(got, want)), (
+                "trial %d n=%d: default axis moved a cell" % (trial, n))
+            gy = zone_split(m, n, "y")
+            wy = [z.T for z in _zone_split_reference(m.T, n)]
+            assert all(np.array_equal(a, b) for a, b in zip(gy, wy))
+            assert np.array_equal(np.sum(gy, 0).astype(bool), m), "y zones must tile the mask"

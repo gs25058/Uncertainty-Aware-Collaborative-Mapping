@@ -12,6 +12,7 @@ would mean a failure there could come from either rule.
 
 Run: python tests/test_entry_map.py   (or: pytest tests/test_entry_map.py)
 """
+import glob
 import os
 import sys
 
@@ -328,6 +329,8 @@ def test_clearance_matches_a_reference_implementation_cell_by_cell():
 # positive ceiling: the map path and the GT path agree cell for cell
 # ---------------------------------------------------------------------------
 GT = os.path.join(ROOT, "results", "synth_room909", "gt_voxel.npz")
+# every scene that has a GT grid gets the adapter gate, not just room909
+GT_ALL = sorted(glob.glob(os.path.join(ROOT, "results", "synth_*", "gt_voxel.npz")))
 
 
 def test_gt_ceiling_map_adapter_matches_direct_labels():
@@ -342,22 +345,25 @@ def test_gt_ceiling_map_adapter_matches_direct_labels():
     So this is a narrow check, and saying so is the point: it does NOT bound the
     discretisation or coverage error between a map and the truth.
     """
-    if not os.path.exists(GT):
-        print("SKIP: %s not built" % GT)
+    if not GT_ALL:
+        print("SKIP: no results/synth_*/gt_voxel.npz built")
         return
-    z = np.load(GT, allow_pickle=False)
-    lab, ijk = z["labels"], z["ijk_min"]
-    cfg = EntryCfg()
-    direct, _ = build_entry_grid(lab, cfg, ijk_min=ijk, k_sigma=0.0)
-    via = clean3d.labels_from_masks(lab == OCCUPIED, lab == FREE)
-    through, _ = build_entry_grid(via, cfg, ijk_min=ijk, k_sigma=0.0)
-    for k in sorted(direct):
-        a, b = np.asarray(direct[k]), np.asarray(through[k])
-        if a.dtype.kind == "f":
-            d = np.abs(a - b).max() if a.size else 0.0
-            assert d == 0.0, "%s differs by %.3e" % (k, d)
-        else:
-            assert (a == b).all(), "%s differs in %d cells" % (k, int((a != b).sum()))
+    for gt_path in GT_ALL:
+        z = np.load(gt_path, allow_pickle=False)
+        lab, ijk = z["labels"], z["ijk_min"]
+        cfg = EntryCfg(res=float(np.asarray(z["res"]).ravel()[0]))
+        direct, _ = build_entry_grid(lab, cfg, ijk_min=ijk, k_sigma=0.0)
+        via = clean3d.labels_from_masks(lab == OCCUPIED, lab == FREE)
+        through, _ = build_entry_grid(via, cfg, ijk_min=ijk, k_sigma=0.0)
+        for k in sorted(direct):
+            a, b = np.asarray(direct[k]), np.asarray(through[k])
+            if a.dtype.kind == "f":
+                d = np.abs(a - b).max() if a.size else 0.0
+                assert d == 0.0, "%s: %s differs by %.3e" % (gt_path, k, d)
+            else:
+                assert (a == b).all(), "%s: %s differs in %d cells" % (
+                    gt_path, k, int((a != b).sum()))
+        print("      adapter gate ok: %s" % os.path.relpath(gt_path, ROOT))
 
 
 def test_default_entry_ignores_isolated_passable_islands():
