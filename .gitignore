@@ -4,6 +4,13 @@ vscode_cli.tar.gz
 *.tar.gz
 # scanned-space source meshes (64 MB unpacked); the derived GT lives in results/
 *.zip
+# ...and the unpacked scans (obj + 4096^2 texture atlases). Ignore the CONTENTS,
+# not the directory: a parent dir cannot be un-ignored per-file (same idiom as
+# "reference files/*" above), and meshes/PROVENANCE.json has to stay tracked so
+# the provenance survives even though the bytes do not.
+meshes/*
+!meshes/PROVENANCE.json
+*.obj
 
 # ---- compiled driver binary (keep the .cc source) ----
 orbslam_driver/mono_miluv
@@ -66,6 +73,8 @@ id_ed25519
 
 # ---- regenerated viewer payloads (1+ MB of base64 voxels each; rebuild with
 #      scripts/export_occupancy_web.py --in-tag <tag>; the template IS tracked) ----
+web/scan_3d_*.html
+web/scan_3d_*.config.json
 web/occupancy_viewer.html
 web/occupancy_viewer_anchorfree.html
 web/occupancy_viewer_raw.html

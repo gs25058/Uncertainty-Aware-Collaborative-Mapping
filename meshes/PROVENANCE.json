@@ -1,0 +1,184 @@
+{
+  "written": "2026-09-22",
+  "note": "Raw scan assets. meshes/ is gitignored (obj + 4096^2 atlases); this file is tracked so the provenance survives even though the bytes do not. meshes/archives/ holds the delivered zips verbatim; the per-date dirs are their unpacked contents.",
+  "scans": [
+    {
+      "dir": "meshes/2026-09-09",
+      "obj": "2026. 9. 9.obj",
+      "mtl": "2026._9._9.mtl",
+      "scan_date": "2026-09-09",
+      "used_by": "room909 — every result in RESULTS_entry.md and RESULTS_synth.md",
+      "obj_md5": "a5d9714857017dc33e757c7ae372b020",
+      "obj_bytes": 55965122,
+      "n_vertices": 300357,
+      "n_faces": 503070,
+      "surface_area_m2": 288.2,
+      "texels_M": 73.1,
+      "mm_per_texel": 1.99,
+      "materials": [
+        {
+          "material": "Material_1",
+          "faces": 91954,
+          "area_m2": 57.67,
+          "atlas": "4096x4096",
+          "mode": "RGB"
+        },
+        {
+          "material": "Material_2",
+          "faces": 93807,
+          "area_m2": 55.04,
+          "atlas": "4096x4096",
+          "mode": "RGB"
+        },
+        {
+          "material": "Material_3",
+          "faces": 101255,
+          "area_m2": 63.13,
+          "atlas": "4096x4096",
+          "mode": "RGB"
+        },
+        {
+          "material": "Material_4",
+          "faces": 134908,
+          "area_m2": 77.73,
+          "atlas": "4096x4096",
+          "mode": "RGB"
+        },
+        {
+          "material": "Material_5",
+          "faces": 81146,
+          "area_m2": 34.62,
+          "atlas": "4096x1472",
+          "mode": "RGB"
+        }
+      ],
+      "link_check": {
+        "mtllib_in_obj": [
+          "2026._9._9.mtl"
+        ],
+        "newmtl_in_mtl": [
+          "Material_1",
+          "Material_2",
+          "Material_3",
+          "Material_4",
+          "Material_5"
+        ],
+        "usemtl_in_obj": [
+          "Material_1",
+          "Material_2",
+          "Material_3",
+          "Material_4",
+          "Material_5"
+        ],
+        "usemtl_matches_newmtl": true,
+        "map_Kd_count": 5,
+        "map_Kd_missing": [],
+        "ok": true
+      }
+    },
+    {
+      "dir": "meshes/2026-09-15",
+      "obj": "2026. 9. 15.obj",
+      "mtl": "2026._9._15.mtl",
+      "scan_date": "2026-09-15",
+      "used_by": "corridor — no results yet",
+      "obj_md5": "5078e62eb8c96f3a9a77c2d18e90d82b",
+      "obj_bytes": 13021083,
+      "n_vertices": 76004,
+      "n_faces": 121997,
+      "surface_area_m2": 707.6,
+      "texels_M": 99.2,
+      "mm_per_texel": 2.67,
+      "materials": [
+        {
+          "material": "Material_1",
+          "faces": 15724,
+          "area_m2": 90.18,
+          "atlas": "4096x4096",
+          "mode": "RGB"
+        },
+        {
+          "material": "Material_2",
+          "faces": 14084,
+          "area_m2": 80.75,
+          "atlas": "4096x4096",
+          "mode": "RGB"
+        },
+        {
+          "material": "Material_3",
+          "faces": 15271,
+          "area_m2": 99.04,
+          "atlas": "4096x4096",
+          "mode": "RGB"
+        },
+        {
+          "material": "Material_4",
+          "faces": 15028,
+          "area_m2": 103.07,
+          "atlas": "4096x4096",
+          "mode": "RGB"
+        },
+        {
+          "material": "Material_5",
+          "faces": 23137,
+          "area_m2": 141.18,
+          "atlas": "4096x4096",
+          "mode": "RGB"
+        },
+        {
+          "material": "Material_6",
+          "faces": 38753,
+          "area_m2": 193.4,
+          "atlas": "4096x3744",
+          "mode": "RGB"
+        }
+      ],
+      "link_check": {
+        "mtllib_in_obj": [
+          "2026._9._15.mtl"
+        ],
+        "newmtl_in_mtl": [
+          "Material_1",
+          "Material_2",
+          "Material_3",
+          "Material_4",
+          "Material_5",
+          "Material_6"
+        ],
+        "usemtl_in_obj": [
+          "Material_1",
+          "Material_2",
+          "Material_3",
+          "Material_4",
+          "Material_5",
+          "Material_6"
+        ],
+        "usemtl_matches_newmtl": true,
+        "map_Kd_count": 6,
+        "map_Kd_missing": [],
+        "ok": true
+      }
+    }
+  ],
+  "archives": [
+    {
+      "file": "meshes/archives/2026. 9. 15.obj",
+      "bytes": 13021083,
+      "md5": "5078e62eb8c96f3a9a77c2d18e90d82b"
+    },
+    {
+      "file": "meshes/archives/2026. 9. 15.zip",
+      "bytes": 13912970,
+      "md5": "8801d5ff43602e3e303cace62cde0e50"
+    },
+    {
+      "file": "meshes/archives/2026. 9. 9.zip",
+      "bytes": 21683499,
+      "md5": "39853a2cf28af3f9a7f504ad2da784c2"
+    }
+  ],
+  "known_issues": [
+    "results/synth_room909*/mesh_config.json still records the 9.9 obj at a session scratchpad path. That file is byte-identical to meshes/2026-09-09/ (md5 a5d9714857017dc33e757c7ae372b020), so the mesh is no longer at risk, but the recorded path is left untouched: those results are frozen and must not be edited.",
+    "meshes/archives/2026. 9. 15.obj is a byte-identical duplicate of meshes/2026-09-15/2026. 9. 15.obj (it was loose in the repo root). Kept rather than deleted; safe to remove once confirmed."
+  ]
+}
