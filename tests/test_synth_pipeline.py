@@ -181,14 +181,6 @@ def test_noise_free_control_recovers_the_box_walls():
         "inverted" % (air.getValue(), max(vals)))
 
 
-if __name__ == "__main__":
-    fs = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
-    for f in fs:
-        f()
-        print("ok  ", f.__name__)
-    print("%d passed" % len(fs))
-
-
 # ---------------------------------------------------------------------------
 # 4. zone_split axis option must not move a single cell of the original split
 # ---------------------------------------------------------------------------
@@ -222,3 +214,11 @@ def test_zone_split_default_axis_is_bit_identical_and_y_is_its_transpose():
             wy = [z.T for z in _zone_split_reference(m.T, n)]
             assert all(np.array_equal(a, b) for a, b in zip(gy, wy))
             assert np.array_equal(np.sum(gy, 0).astype(bool), m), "y zones must tile the mask"
+
+
+if __name__ == "__main__":
+    fs = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
+    for f in fs:
+        f()
+        print("ok  ", f.__name__)
+    print("%d passed" % len(fs))
