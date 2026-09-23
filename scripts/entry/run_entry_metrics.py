@@ -140,10 +140,16 @@ def main():
         g_gt, _ = build_entry_grid(lab_gt, cfg, ijk_min=ijk_gt, k_sigma=0.0,
                                    entry_xy=nominal,
                                    entry_snap_m=args.entry_snap if nominal else None)
-        g_p, _ = build_entry_grid(lab_p, cfg, sigma_xy=sig, n_obs=nobs,
-                                  ijk_min=ijk_p, k_sigma=args.k_sigma,
-                                  entry_xy=nominal,
-                                  entry_snap_m=args.entry_snap if nominal else None)
+        try:
+            g_p, _ = build_entry_grid(lab_p, cfg, sigma_xy=sig, n_obs=nobs,
+                                      ijk_min=ijk_p, k_sigma=args.k_sigma,
+                                      entry_xy=nominal,
+                                      entry_snap_m=args.entry_snap if nominal else None)
+        except ValueError:
+            # the same fallback the rows above take; grades do not depend on
+            # the door, only reachability does
+            g_p, _ = build_entry_grid(lab_p, cfg, sigma_xy=sig, n_obs=nobs,
+                                      ijk_min=ijk_p, k_sigma=args.k_sigma)
         rec = EM.score(g_p, g_gt, "walk")
         print("    width grade confusion, walk band, w=0.70, GT-free cells only "
               "(agreement %.4f):" % rec["grade_agreement_on_gt_free"])

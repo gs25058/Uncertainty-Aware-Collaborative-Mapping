@@ -22,6 +22,12 @@ Corrupting both is a no-op: rendering and integrating from the same pose is
 self-consistent by construction (gate.py's header records that a 120 deg error
 left precision at 1.000). "jitter<sigma>" is defined here (per-frame independent
 displacement, PREREG_entry_control.md); every other kind is gate.py's own.
+
+DEPTH MODE (PREREG_sgbm_depth.md). --mode sgbm renders a textured stereo pair
+through the unmodified DepthRenderer.depth_sgbm, from the multi-geometry scene
+in textured_scene.py. --depth-cache reads the frames render_depth_cache.py
+rendered instead (a timeout split only); every cached pose must equal this
+run's fused pose bit for bit, or the run stops. The ideal path is unchanged.
 """
 import argparse
 import json
@@ -34,6 +40,7 @@ import numpy as np
 
 sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam")
 sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam/scripts/synth")
+sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam/scripts/entry")
 from covor.entry import clean3d, sigma_map as SM
 from covor.occupancy import OccCfg, OccupancyBuilder
 from covor.synth import dataset as DS, mapping as MP, mesh_gt as MG, metrics as ME
@@ -75,8 +82,28 @@ def corrupt_poses(poses, how, gt, seed=0):
     return out
 
 
+class CachedFrames:
+    """Frames from render_depth_cache.py, keyed like DepthRenderer.frame."""
+
+    def __init__(self, path):
+        z = np.load(path)
+        self.idx = {int(i): k for k, i in enumerate(z["idx"])}
+        self.T, self.offs, self.P, self.sZ = z["T"], z["offs"], z["P"], z["sZ"]
+
+    def frame(self, i, T_wc):
+        k = self.idx[i]
+        if not np.array_equal(self.T[k], T_wc):
+            raise RuntimeError("cached pose of frame %d differs from this run's "
+                               "fused pose: the cache is stale" % i)
+        a, b = self.offs[k], self.offs[k + 1]
+        if a == b:
+            return None, None
+        return self.P[a:b], self.sZ[a:b]
+
+
 def build_and_record(cfg, scene, cams, poses, occ_cfg, stride, mode="ideal",
-                     teammate_pos=None, render_T=None):
+                     teammate_pos=None, render_T=None, textures=None,
+                     cached=None):
     """One pass over the frames: build the map AND record per-column evidence.
 
     The integrate_frame call, the teammate masking and the frame stride are
@@ -89,11 +116,16 @@ def build_and_record(cfg, scene, cams, poses, occ_cfg, stride, mode="ideal",
     stats = dict(frames={}, points=0)
     for rob in cams:
         P = poses[rob]
-        rend = DepthRenderer(scene, rob)
+        rend = DepthRenderer(scene, rob, textures=textures)
         RT = (render_T or {}).get(rob)
+        C = (cached or {}).get(rob)
         n = 0
         for i in range(0, len(P["t"]), stride):
-            Pc, sZ = rend.frame(RT[i] if RT is not None else P["T"][i], mode=mode)
+            if C is not None:
+                Pc, sZ = C.frame(i, RT[i] if RT is not None else P["T"][i])
+            else:
+                Pc, sZ = rend.frame(RT[i] if RT is not None else P["T"][i],
+                                    mode=mode)
             if Pc is None:
                 continue
             mates = (MP._mates_at(teammate_pos, rob, P["t"][i])
@@ -131,14 +163,30 @@ def main():
                          "forbids comparing absolute metrics ACROSS resolutions, "
                          "so a 0.05 dump is for figures and for differences "
                          "measured inside 0.05.")
+    ap.add_argument("--mode", default="ideal", choices=("ideal", "sgbm"),
+                    help="depth source (PREREG_sgbm_depth.md)")
+    ap.add_argument("--depth-cache", action="store_true",
+                    help="sgbm only: read render_depth_cache.py's frames")
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
+    if args.depth_cache and args.mode != "sgbm":
+        ap.error("--depth-cache is for --mode sgbm")
 
     cfg = SynthCfg(name=args.name, seq="synth_%s_0" % args.name, seed=args.seed)
     DS.install_paths(cfg)
     lab_gt, ijk_min, res, _, _ = MG.load_gt(args.gt or cfg.gt_voxel())
     gt = DS.load_gt_traj(cfg)
-    scene = MG.raycasting_scene(DS.world_mesh(cfg))
+    textures = cached = None
+    if args.mode == "sgbm" and args.depth_cache:
+        from render_depth_cache import cache_path
+        scene = None
+        cached = {r: CachedFrames(cache_path(cfg, args.cond, r, args.stride))
+                  for r in COVERAGE[args.coverage]}
+    elif args.mode == "sgbm":
+        from textured_scene import textured_scene
+        scene, textures = textured_scene(cfg.mesh_config())
+    else:
+        scene = MG.raycasting_scene(DS.world_mesh(cfg))
 
     t0 = time.time()
     poses, gstats = fuse(cfg.seq, CONDITIONS[args.cond])
@@ -165,7 +213,8 @@ def main():
     occ_cfg = OccCfg(resolution=res, **ARMS[args.arm])
     t1 = time.time()
     b, ev, st = build_and_record(cfg, scene, COVERAGE[args.coverage], poses, occ_cfg,
-                                 args.stride, teammate_pos=mates, render_T=render_T)
+                                 args.stride, mode=args.mode, teammate_pos=mates,
+                                 render_T=render_T, textures=textures, cached=cached)
     print("map: %s frames, %d points, %.0fs" % (st["frames"], st["points"],
                                                 time.time() - t1))
 
@@ -173,6 +222,8 @@ def main():
     lab = clean3d.labels_from_masks(M_occ, M_free)
     n_obs, sigma_xy = ev.dense(lab.shape[:2], ijk_min)
     tag = args.corrupt if args.corrupt != "none" else "clean"
+    if args.mode != "ideal":
+        tag += "_" + args.mode
     out = args.out or os.path.join(
         cfg.outdir(), "entry", "map3d_%s_%s_%s_%s_s%d%s.npz"
         % (args.cond, args.coverage, args.arm, tag, args.stride,
@@ -185,6 +236,7 @@ def main():
         meta=json.dumps(dict(
             cond=args.cond, coverage=args.coverage, arm=args.arm,
             stride=args.stride, corrupt=args.corrupt, seed=args.seed,
+            mode=args.mode, depth_cache=bool(args.depth_cache),
             res=res, occ_cfg={k: v for k, v in ARMS[args.arm].items()},
             n_inter_range=int(gstats["n_inter_range"]), ate=ates,
             sqrt_tr_sigma_median=float(np.median(trs)),
