@@ -6,6 +6,9 @@
      equal pixel for pixel, and each geometry id must index its own texture.
   2. dump_fused_map.CachedFrames: a cache rendered from other poses must be
      refused, never integrated.
+  3. PREREG_sgbm_rescue.md filters: treatment A drops exactly the flagged
+     points, treatment B exactly the points above the sigma cap, and neither
+     does anything when off.
 
 Needs the corridor915 mesh and dataset; skips cleanly without them.
 Run: python tests/test_entry_sgbm.py   (or: pytest tests/test_entry_sgbm.py)
@@ -104,6 +107,27 @@ def test_cached_frames_refuse_a_stale_pose():
             pass
         else:
             raise AssertionError("a stale cached pose was accepted")
+
+
+def test_rescue_filters_drop_exactly_what_they_name():
+    from dump_fused_map import CachedFrames, filter_points
+    P = np.arange(15, dtype=float).reshape(5, 3)
+    sZ = np.array([0.1, 0.5, 0.35, 0.36, 0.0])
+    miss = np.array([False, True, False, True, False])
+    with tempfile.TemporaryDirectory() as d:
+        p = os.path.join(d, "c.npz")
+        np.savez(p, idx=np.array([0, 4]), T=np.stack([np.eye(4)] * 2),
+                 offs=np.array([0, 5, 5]), P=P, sZ=sZ, miss=miss)
+        Pa, sa = CachedFrames(p).frame(0, np.eye(4))
+        assert np.array_equal(Pa, P) and np.array_equal(sa, sZ)     # A off
+        Pa, sa = CachedFrames(p, drop_mesh_miss=True).frame(0, np.eye(4))
+        assert np.array_equal(Pa, P[~miss]) and np.array_equal(sa, sZ[~miss])
+    Pb, sb = filter_points(P, sZ, None)
+    assert Pb is P and sb is sZ                                      # B off
+    Pb, sb = filter_points(P, sZ, 0.35)
+    keep = sZ <= 0.35
+    assert np.array_equal(Pb, P[keep]) and np.array_equal(sb, sZ[keep])
+    assert filter_points(P, sZ, -1.0) == (None, None)                # nothing left
 
 
 if __name__ == "__main__":

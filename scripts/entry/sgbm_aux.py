@@ -16,6 +16,12 @@
      from the comparison; it is not a deployable map (a map has no GT floor)
      and it is not the pre-registered comparison.
 
+  7. PREREG_sgbm_rescue.md auxiliaries: every arm of the rescue gets 1, 4, 5
+     and 6, and the primary arm (sgbm + A + B) gets the cube_min_voxels sweep
+     {1, 3, 10, 30} on its own floor -- reported, never judged.
+  8. Distance from each occupied-on-GT-free voxel to the nearest GT-occupied
+     voxel: floating debris, or walls grown thicker?
+
 Everything is read from files the verdict run wrote; nothing is re-rendered.
 """
 import json
@@ -36,12 +42,16 @@ from flatten_floor import shift_columns
 SEQ = "/src/gs25058/cr_RNE/covor_slam/results/synth_corridor915"
 D = SEQ + "/entry"
 MAP = D + "/map3d_C_3drone_ii_all_cams_depth_only_%s_s4%s.npz"
-ARMS = (("ideal", "clean"), ("sgbm", "clean_sgbm"))
+ARMS = (("ideal", "clean"), ("sgbm", "clean_sgbm"),
+        ("sgbm_A", "clean_sgbm_A"), ("sgbm_B", "clean_sgbm_B035"),
+        ("sgbm_AB", "clean_sgbm_A_B035"), ("ideal_B", "clean_B035"))
+PRIMARY = "sgbm_AB"
+CUBES = (1, 3, 10, 30)
 DOOR, SNAP = (-2.35, -19.55), 1.5
 
 
-def grid(lab, ijk, sig=None, nobs=None):
-    cfg = EntryCfg(res=0.10, w=0.70)
+def grid(lab, ijk, sig=None, nobs=None, cube=1):
+    cfg = EntryCfg(res=0.10, w=0.70, cube_min_voxels=cube)
     try:
         g, _ = build_entry_grid(lab, cfg, sigma_xy=sig, n_obs=nobs, ijk_min=ijk,
                                 k_sigma=0.0, entry_xy=DOOR, entry_snap_m=SNAP)
@@ -83,7 +93,7 @@ def main():
     for ya in range(-20, 20, 4):
         j = slice(max(int(round(ya / res)) - y0, 0), int(round((ya + 4) / res)) - y0)
         row = {}
-        for k in ("gt", "ideal", "sgbm"):
+        for k in ["gt"] + [a for a, _ in ARMS]:
             c = np.where(G[k]["walk_label"] == FREE, G[k]["walk_clearance"], 0.0)[:, j]
             row[k] = round(float(c.max()), 2) if c.size else 0.0
         out["clearance"]["%d..%d" % (ya, ya + 4)] = row
@@ -92,7 +102,7 @@ def main():
     print("4. GT-passable walk cells not passable on the map, by map band label")
     gp = ggt["walk_passable"]
     out["miss"] = {}
-    for arm in ("ideal", "sgbm"):
+    for arm, _ in ARMS:
         g = G[arm]
         miss = gp & ~g["walk_passable"]
         L = g["walk_label"][miss]
@@ -108,23 +118,42 @@ def main():
                              zip(*np.unique(d[obsd], return_counts=True))})
         print("   %-5s %s" % (arm, out["miss"][arm]))
 
-    print("5. sgbm occupied voxels on GT-free cells, by height above the GT floor")
-    z = np.load(MAP % ("clean_sgbm", ""))
-    fp = z["M_occ"] & (lab == MG.FREE)
-    I, J, K = np.nonzero(fp)
-    # floor_row_map rows are in the GT grid's own row index (same origin)
-    h = (K - floor["gt"][I, J]) * res
+    print("5. occupied voxels on GT-free cells, by height above the GT floor")
+    out["floaters"] = {}
     edges = [-1, 0.1, 0.5, 1.0, 1.9, 9]
-    hc = np.histogram(h, edges)[0]
-    out["floaters"] = dict(total=int(fp.sum()),
-                           by_height={"%.1f..%.1f" % (a, b): int(c) for a, b, c in
-                                      zip(edges[:-1], edges[1:], hc)},
-                           by_slab={})
-    for ya in range(-20, 20, 8):
-        jj = (J >= int(round(ya / res)) - int(ijk[1])) & \
-             (J < int(round((ya + 8) / res)) - int(ijk[1]))
-        out["floaters"]["by_slab"]["%d..%d" % (ya, ya + 8)] = int(jj.sum())
-    print("   %s" % out["floaters"])
+    for arm, tag in ARMS:
+        z = np.load(MAP % (tag, ""))
+        fp = z["M_occ"] & (lab == MG.FREE)
+        I, J, K = np.nonzero(fp)
+        # floor_row_map rows are in the GT grid's own row index (same origin)
+        h = (K - floor["gt"][I, J]) * res
+        hc = np.histogram(h, edges)[0]
+        f = dict(total=int(fp.sum()),
+                 by_height={"%.1f..%.1f" % (a, b): int(c) for a, b, c in
+                            zip(edges[:-1], edges[1:], hc)},
+                 by_slab={})
+        for ya in range(-20, 20, 8):
+            jj = (J >= int(round(ya / res)) - int(ijk[1])) & \
+                 (J < int(round((ya + 8) / res)) - int(ijk[1]))
+            f["by_slab"]["%d..%d" % (ya, ya + 8)] = int(jj.sum())
+        out["floaters"][arm] = f
+        print("   %-7s %s" % (arm, f))
+
+    print("8. occupied-on-GT-free voxels: distance to the nearest GT-occupied voxel")
+    from scipy import ndimage
+    dwall = ndimage.distance_transform_edt(lab != MG.OCC) * res
+    out["wall_distance"] = {}
+    for arm, tag in ARMS:
+        z = np.load(MAP % (tag, ""))
+        v = dwall[z["M_occ"] & (lab == MG.FREE)]
+        if not len(v):
+            continue
+        out["wall_distance"][arm] = dict(
+            n=int(len(v)), le_1vox=float((v <= res + 1e-6).mean()),
+            le_2vox=float((v <= 2 * res + 1e-6).mean()),
+            le_3vox=float((v <= 3 * res + 1e-6).mean()),
+            gt_0p5m=float((v > 0.5).mean()), median=float(np.median(v)))
+        print("   %-7s %s" % (arm, out["wall_distance"][arm]))
 
     print("6. DIAGNOSTIC: maps flattened with the GT floor shift (not the verdict)")
     gshift = np.load(SEQ + "/gt_voxel_flat.npz")["flatten_shift"]
@@ -139,6 +168,20 @@ def main():
                                       "false_passable_rate", "n_false_passable",
                                       "n_pred_passable", "n_pred_unknown")}
         print("   %-5s %s" % (arm, out["gt_floor_diag"][arm]))
+
+    print("7. cube_min_voxels sweep on the primary arm (own floor; reported, not judged)")
+    out["cube_sweep"] = {}
+    lp, ij, sig, nobs, _, _ = load_map(MAP % (dict(ARMS)[PRIMARY], "_flat"))
+    for c in CUBES:
+        g = grid(lp, ij, sig, nobs, cube=c)
+        r = EM.score(g, ggt, "walk")
+        out["cube_sweep"][c] = {k: (float(r[k]) if isinstance(r[k], (float, np.floating))
+                                    else int(r[k])) for k in
+                                ("passable_recall", "n_true_passable",
+                                 "false_passable_rate", "n_false_passable",
+                                 "n_false_passable_on_gt_occupied",
+                                 "n_pred_passable", "n_pred_unknown")}
+        print("   cube %2d %s" % (c, out["cube_sweep"][c]))
 
     print("3. unknown difference figure")
     import matplotlib

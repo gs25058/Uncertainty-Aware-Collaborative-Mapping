@@ -20,6 +20,9 @@ render pose == integration pose, as in covor.synth.mapping.build_map):
      histogram, so the pooled median over the full run is exact to 1 mm.
      Also the signed sum, valid-pixel counts, and how many of the pixels SGBM
      loses lie in the left num_disp-column search margin.
+  4. Per cached point, ``miss``: the left camera's ray through that pixel hits
+     no mesh at all (a scan hole). PREREG_sgbm_rescue.md treatment A drops
+     these; the backprojected points themselves are unchanged.
 """
 import argparse
 import json
@@ -70,7 +73,7 @@ def main():
 
     nb = int(HIST_MAX / HIST_BIN)
     hist = np.zeros(nb, np.int64)
-    idx, Ts, pts, szs, offs = [], [], [], [], [0]
+    idx, Ts, pts, szs, misses, offs = [], [], [], [], [], [0]
     rec = dict(bitdiff_px=0, bitdiff_frames=0, n_both=0, sum_signed=0.0,
                n_valid_ideal=0, n_valid_sgbm=0, n_lost=0, n_lost_margin=0,
                n_frames=0, n_none=0, n_px=0)
@@ -103,6 +106,9 @@ def main():
             rec["n_none"] += 1
         else:
             Pc, sZ = r_multi.sd.backproject(Zs, sZs, vs, downsample=4)
+            # backproject keeps the [::4, ::4] valid pixels in row-major order
+            miss = ~np.isfinite(r_single._cast(T))[::4, ::4][vs[::4, ::4]]
+            assert len(miss) == len(Pc)
         if not idx:
             Pf, sf = r_multi.frame(T, mode="sgbm")
             assert (Pf is None and Pc is None) or (
@@ -113,6 +119,7 @@ def main():
         if Pc is not None:
             pts.append(Pc.astype(np.float64))
             szs.append(sZ.astype(np.float64))
+            misses.append(miss)
             offs.append(offs[-1] + len(Pc))
         else:
             offs.append(offs[-1])
@@ -124,6 +131,7 @@ def main():
     np.savez(out, idx=np.array(idx), T=np.array(Ts), offs=np.array(offs),
              P=np.concatenate(pts) if pts else np.zeros((0, 3)),
              sZ=np.concatenate(szs) if szs else np.zeros(0),
+             miss=np.concatenate(misses) if misses else np.zeros(0, bool),
              hist=hist, hist_bin=np.array([HIST_BIN]), margin=np.array([margin]),
              rec=json.dumps(rec))
     c = np.cumsum(hist)

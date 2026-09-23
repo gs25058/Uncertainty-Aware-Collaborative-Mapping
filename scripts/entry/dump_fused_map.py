@@ -28,6 +28,11 @@ through the unmodified DepthRenderer.depth_sgbm, from the multi-geometry scene
 in textured_scene.py. --depth-cache reads the frames render_depth_cache.py
 rendered instead (a timeout split only); every cached pose must equal this
 run's fused pose bit for bit, or the run stops. The ideal path is unchanged.
+
+POINT FILTERS (PREREG_sgbm_rescue.md), both off by default:
+  --drop-mesh-miss   treatment A: drop cached points whose ray hits no mesh
+                     (a scan hole). Needs --depth-cache.
+  --max-sigma-z S    treatment B: drop points with sigma_Z > S (any mode).
 """
 import argparse
 import json
@@ -85,10 +90,16 @@ def corrupt_poses(poses, how, gt, seed=0):
 class CachedFrames:
     """Frames from render_depth_cache.py, keyed like DepthRenderer.frame."""
 
-    def __init__(self, path):
+    def __init__(self, path, drop_mesh_miss=False):
         z = np.load(path)
         self.idx = {int(i): k for k, i in enumerate(z["idx"])}
         self.T, self.offs, self.P, self.sZ = z["T"], z["offs"], z["P"], z["sZ"]
+        self.keep = None
+        if drop_mesh_miss:
+            if "miss" not in z.files:
+                raise RuntimeError("%s has no per-point miss flag; re-render it"
+                                   % path)
+            self.keep = ~z["miss"]
 
     def frame(self, i, T_wc):
         k = self.idx[i]
@@ -98,12 +109,29 @@ class CachedFrames:
         a, b = self.offs[k], self.offs[k + 1]
         if a == b:
             return None, None
-        return self.P[a:b], self.sZ[a:b]
+        if self.keep is None:
+            return self.P[a:b], self.sZ[a:b]
+        m = self.keep[a:b]
+        if not m.any():
+            return None, None
+        return self.P[a:b][m], self.sZ[a:b][m]
+
+
+def filter_points(Pc, sZ, max_sigma_z=None):
+    """Treatment B: drop points whose depth sigma exceeds ``max_sigma_z``.
+    Only a frame left with NO points is dropped: a filter must remove points,
+    not add a second frame-level threshold of its own."""
+    if Pc is None or max_sigma_z is None:
+        return Pc, sZ
+    m = sZ <= max_sigma_z
+    if not m.any():
+        return None, None
+    return Pc[m], sZ[m]
 
 
 def build_and_record(cfg, scene, cams, poses, occ_cfg, stride, mode="ideal",
                      teammate_pos=None, render_T=None, textures=None,
-                     cached=None):
+                     cached=None, max_sigma_z=None):
     """One pass over the frames: build the map AND record per-column evidence.
 
     The integrate_frame call, the teammate masking and the frame stride are
@@ -126,6 +154,7 @@ def build_and_record(cfg, scene, cams, poses, occ_cfg, stride, mode="ideal",
             else:
                 Pc, sZ = rend.frame(RT[i] if RT is not None else P["T"][i],
                                     mode=mode)
+            Pc, sZ = filter_points(Pc, sZ, max_sigma_z)
             if Pc is None:
                 continue
             mates = (MP._mates_at(teammate_pos, rob, P["t"][i])
@@ -167,8 +196,14 @@ def main():
                     help="depth source (PREREG_sgbm_depth.md)")
     ap.add_argument("--depth-cache", action="store_true",
                     help="sgbm only: read render_depth_cache.py's frames")
+    ap.add_argument("--drop-mesh-miss", action="store_true",
+                    help="PREREG_sgbm_rescue.md treatment A (needs --depth-cache)")
+    ap.add_argument("--max-sigma-z", type=float, default=None,
+                    help="PREREG_sgbm_rescue.md treatment B: drop sigma_Z > this")
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
+    if args.drop_mesh_miss and not args.depth_cache:
+        ap.error("--drop-mesh-miss needs --depth-cache")
     if args.depth_cache and args.mode != "sgbm":
         ap.error("--depth-cache is for --mode sgbm")
 
@@ -180,7 +215,8 @@ def main():
     if args.mode == "sgbm" and args.depth_cache:
         from render_depth_cache import cache_path
         scene = None
-        cached = {r: CachedFrames(cache_path(cfg, args.cond, r, args.stride))
+        cached = {r: CachedFrames(cache_path(cfg, args.cond, r, args.stride),
+                                  drop_mesh_miss=args.drop_mesh_miss)
                   for r in COVERAGE[args.coverage]}
     elif args.mode == "sgbm":
         from textured_scene import textured_scene
@@ -214,7 +250,8 @@ def main():
     t1 = time.time()
     b, ev, st = build_and_record(cfg, scene, COVERAGE[args.coverage], poses, occ_cfg,
                                  args.stride, mode=args.mode, teammate_pos=mates,
-                                 render_T=render_T, textures=textures, cached=cached)
+                                 render_T=render_T, textures=textures, cached=cached,
+                                 max_sigma_z=args.max_sigma_z)
     print("map: %s frames, %d points, %.0fs" % (st["frames"], st["points"],
                                                 time.time() - t1))
 
@@ -224,6 +261,10 @@ def main():
     tag = args.corrupt if args.corrupt != "none" else "clean"
     if args.mode != "ideal":
         tag += "_" + args.mode
+    if args.drop_mesh_miss:
+        tag += "_A"
+    if args.max_sigma_z is not None:
+        tag += "_B%03d" % round(args.max_sigma_z * 100)
     out = args.out or os.path.join(
         cfg.outdir(), "entry", "map3d_%s_%s_%s_%s_s%d%s.npz"
         % (args.cond, args.coverage, args.arm, tag, args.stride,
@@ -237,6 +278,7 @@ def main():
             cond=args.cond, coverage=args.coverage, arm=args.arm,
             stride=args.stride, corrupt=args.corrupt, seed=args.seed,
             mode=args.mode, depth_cache=bool(args.depth_cache),
+            drop_mesh_miss=bool(args.drop_mesh_miss), max_sigma_z=args.max_sigma_z,
             res=res, occ_cfg={k: v for k, v in ARMS[args.arm].items()},
             n_inter_range=int(gstats["n_inter_range"]), ate=ates,
             sqrt_tr_sigma_median=float(np.median(trs)),
