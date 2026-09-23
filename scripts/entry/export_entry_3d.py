@@ -203,6 +203,9 @@ def main():
     ap.add_argument("--template", default="web/entry_map_3d.template.html")
     ap.add_argument("--band", default="walk")
     ap.add_argument("--w", type=float, default=0.70)
+    ap.add_argument("--meta", default=None,
+                    help="JSON file with the page's title / intro (HTML) / seq "
+                         "line. Without it the template's own header stays")
     ap.add_argument("--entry", default=None,
                     help="x,y in metres: a shared door for GT and maps (DESIGN "
                          "§8). Default: the GT's own entry rule")
@@ -268,6 +271,13 @@ def main():
         cfg=dict(body_lo=cfg.z_min, body_hi=cfg.H_walk, w=cfg.w,
                  k_sigma=0.0, res=cfg.res, clear_walk=cfg.clear_walk,
                  clear_narrow=cfg.clear_narrow))
+
+    if args.meta:
+        meta = json.load(open(args.meta, encoding="utf-8"))
+        unknown = set(meta) - {"title", "intro", "seq"}
+        if unknown:
+            raise SystemExit("--meta has unknown keys %s" % sorted(unknown))
+        data["meta"] = meta
 
     tpl = open(args.template, encoding="utf-8").read()
     if "/*__DATA__*/null" not in tpl:

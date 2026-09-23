@@ -243,7 +243,7 @@
   <aside class="rail">
     <header class="masthead">
       <h1>구조대원 진입 지도</h1>
-      <p>드론이 만든 3D 점유지도에서, 장비를 착용한 소방관이 실제로 통과할 수 있는
+      <p id="intro">드론이 만든 3D 점유지도에서, 장비를 착용한 소방관이 실제로 통과할 수 있는
         바닥만 남긴 것. 진입점은 드론이 이륙한 자리다 — 그물망 비행장에는 출입문이 없고,
         "드론이 투입된 곳으로 들어간다"가 이 시퀀스의 정직한 해석이다.
         빨강이 <b>정말 못 가는 곳</b>이다 — 자유공간인데 어떤 자세로도 몸이 들어가지
@@ -252,7 +252,7 @@
         놓았는가</b>, <b>통행 가능한 바닥이 몇 조각으로 끊겨 있는가</b>, 그리고
         <b>제시하는 바닥 중 얼마가 아예 건물 밖인가</b> — 광선이 그물을 통과해
         방 바깥에도 자유공간을 파 놓았다.</p>
-      <div class="seq">MILUV · default_3_random_0 · ifo001–003 · 10 cm voxel</div>
+      <div class="seq" id="seq">MILUV · default_3_random_0 · ifo001–003 · 10 cm voxel</div>
     </header>
 
     <div class="group">
@@ -343,6 +343,14 @@ function unvox(s, bits) {
   const dv = new DataView(b.buffer), out = new Uint16Array(b.length >> 1);
   for (let i = 0; i < out.length; i++) out[i] = dv.getUint16(2 * i, true);
   return out;
+}
+
+/* the scene description travels with the data; a viewer baked without it keeps
+   the header it was written with */
+if (DATA.meta) {
+  if (DATA.meta.title) document.title = DATA.meta.title;
+  if (DATA.meta.intro) document.getElementById("intro").innerHTML = DATA.meta.intro;
+  if (DATA.meta.seq) document.getElementById("seq").textContent = DATA.meta.seq;
 }
 
 const G = DATA.grid;

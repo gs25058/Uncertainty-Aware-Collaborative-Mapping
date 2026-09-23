@@ -57,7 +57,8 @@ def test_template_contract_is_satisfied_by_the_payload():
             "the stats panel would throw in the browser" % name)
     data_keys = set(re.findall(r"\bDATA\.([a-z_0-9]+)", body))
     for k in sorted(data_keys):
-        assert k in ("variants", "cfg", "grid", "roi", "z_scale", "entry_xy"), (
+        assert k in ("variants", "cfg", "grid", "roi", "z_scale", "entry_xy",
+                     "meta"), (
             "template reads DATA.%s, which the exporter does not emit" % k)
     for k in sorted(set(re.findall(r"DATA\.cfg\.([a-z_0-9]+)", body))):
         assert k in ("body_lo", "body_hi", "w", "k_sigma", "res", "clear_walk",
