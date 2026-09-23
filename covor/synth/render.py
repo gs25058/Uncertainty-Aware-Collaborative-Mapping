@@ -15,6 +15,16 @@ Both reuse ``StereoDepth`` for the intrinsics, the rectification and the
 back-projection: nothing about the camera model is re-implemented here, so the
 synthetic and the real path cannot drift apart. The renderer only supplies Z.
 
+ALREADY RECTIFIED (fixed 2026-09-23, RESULTS_sgbm.md §12). The stereo pair is
+rendered in the rectified frame, so it must go to the matcher AS IS. Until this
+fix depth_sgbm called StereoDepth.depth, which remaps its input as if it were a
+RAW camera image -- a second rectification with different warps on the left
+(R1, K_l, D_l) and the right (R2, K_r, D_r). The views ended up 0.2-0.5 px
+apart horizontally (ifo001 also 0.8 px vertically), which biased every depth
+toward or away from the camera. ``_depth_rectified`` is StereoDepth.depth minus
+the remap; tests/test_entry_sgbm.py pins it to StereoDepth.depth with the remap
+replaced by the identity.
+
 FRAME. Rays are built in the RECTIFIED left frame (the frame ``StereoDepth``
 returns depth in) and rotated to world by R_wc @ R1^T, because
 ``StereoDepth.backproject`` maps rectified points back to the raw infra1 frame
@@ -94,7 +104,7 @@ class DepthRenderer:
 
     def depth_sgbm(self, T_wc):
         il, ir = self.images(T_wc)
-        return self.sd.depth(il, ir)
+        return _depth_rectified(self.sd, il, ir)
 
     # -- the adapter the occupancy stage consumes -------------------------
     def frame(self, T_wc, mode="ideal", downsample=4):
@@ -110,6 +120,20 @@ class DepthRenderer:
         if valid.sum() < 100:
             return None, None
         return self.sd.backproject(Z, sZ, valid, downsample=downsample)
+
+
+def _depth_rectified(sd, img_l, img_r):
+    """StereoDepth.depth for a pair that is ALREADY rectified: the same matcher,
+    the same Z = fB/d, the same validity window and sigma_Z, and no remap."""
+    cc = sd.cfg
+    disp = sd.sgbm.compute(img_l, img_r).astype(np.float32) / 16.0   # SGBM Q4.4
+    fB = sd.fx * sd.calib.baseline
+    with np.errstate(divide="ignore", invalid="ignore"):
+        Z = fB / disp
+    valid = (disp > 0) & np.isfinite(Z) & (Z >= cc.z_min) & (Z <= cc.z_max)
+    Z = np.where(valid, Z, np.nan).astype(np.float32)
+    sigma_Z = (Z ** 2 / fB * cc.disp_sigma_px).astype(np.float32)
+    return Z, sigma_Z, valid
 
 
 # ---------------------------------------------------------------------------

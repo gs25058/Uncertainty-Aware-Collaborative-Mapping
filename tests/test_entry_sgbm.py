@@ -6,7 +6,11 @@
      equal pixel for pixel, and each geometry id must index its own texture.
   2. dump_fused_map.CachedFrames: a cache rendered from other poses must be
      refused, never integrated.
-  3. PREREG_sgbm_rescue.md filters: treatment A drops exactly the flagged
+  3. render._depth_rectified is StereoDepth.depth without the remap (the
+     double-rectification fix, RESULTS_sgbm.md §12): equal to StereoDepth.depth
+     with rectify_pair replaced by the identity, and different from the old
+     re-rectifying path.
+  4. PREREG_sgbm_rescue.md filters: treatment A drops exactly the flagged
      points, treatment B exactly the points above the sigma cap, and neither
      does anything when off.
 
@@ -107,6 +111,32 @@ def test_cached_frames_refuse_a_stale_pose():
             pass
         else:
             raise AssertionError("a stale cached pose was accepted")
+
+
+def test_sgbm_depth_skips_the_second_rectification():
+    if not _have():
+        print("skip: corridor915 mesh not present")
+        return
+    from textured_scene import textured_scene
+    from covor.synth.render import _depth_rectified
+    multi, tex = textured_scene(CFG.mesh_config())
+    for r, T in _poses()[::3]:
+        R = DepthRenderer(multi, r, textures=tex)
+        il, ir = R.images(T)
+        Z, sZ, v = R.depth_sgbm(T)
+        a = _depth_rectified(R.sd, il, ir)
+        assert all(np.array_equal(x, y, equal_nan=True) for x, y in zip((Z, sZ, v), a))
+        orig = R.sd.rectify_pair
+        R.sd.rectify_pair = lambda l, rr: (l, rr)       # identity remap
+        try:
+            ref = R.sd.depth(il, ir)
+        finally:
+            R.sd.rectify_pair = orig
+        for x, y in zip((Z, sZ, v), ref):
+            assert np.array_equal(x, y, equal_nan=True), "differs from StereoDepth.depth"
+        old = R.sd.depth(il, ir)                          # the re-rectifying path
+        assert not np.array_equal(Z, old[0], equal_nan=True), (
+            "the fix changed nothing -- is the pair being re-rectified again?")
 
 
 def test_rescue_filters_drop_exactly_what_they_name():
