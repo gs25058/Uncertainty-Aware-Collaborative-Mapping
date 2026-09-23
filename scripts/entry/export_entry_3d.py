@@ -17,6 +17,12 @@ export_3d.py). The scene is theirs; the payload and the statistics are this
 pipeline's, because this map has a real voxel ground truth and uacm's arena
 metrics do not apply to it.
 
+INDEX PLANES. Occupied voxels travel as three planes of grid indices. A grid
+under 256 cells on every axis uses one byte per index (every room909 viewer);
+a longer grid -- the 2026-09-15 corridor is 422 cells in y -- uses two, stored
+little-endian, and says so in ``vox.bits``. A viewer without ``vox.bits`` is
+8-bit, so every file baked before the widening still reads correctly.
+
 NOTHING HERE DECIDES ANYTHING. Every class it paints comes out of
 covor/entry/'s grid. The viewer is a drawing of entry_grid.npz, exactly as
 render.py is.
@@ -44,6 +50,22 @@ UNSEEN, WALL, TOO_TIGHT, DRONE_ONLY, SQUEEZE, STRANDED, REACH, WALKABLE = range(
 
 def b64(a):
     return base64.b64encode(np.ascontiguousarray(a).tobytes()).decode("ascii")
+
+
+def index_bits(shape):
+    """8 if every axis fits a byte, else 16; a grid past 65535 cells is refused
+    rather than wrapped."""
+    n = max(shape)
+    if n < 256:
+        return 8
+    if n < 65536:
+        return 16
+    raise SystemExit("grid %s is too large for 16-bit voxel planes" % (shape,))
+
+
+def index_planes(ii, jj, kk, bits):
+    dt = np.dtype(np.uint8) if bits == 8 else np.dtype("<u2")
+    return dict(i=b64(ii.astype(dt)), j=b64(jj.astype(dt)), k=b64(kk.astype(dt)))
 
 
 def load_map(path):
@@ -94,9 +116,10 @@ def plan_image(g, cfg, band):
 
 
 def variant(key, label, blurb, lab3d, ijk, res, sigma, nobs, meta, cfg, band,
-            gt_grid, roi, entry_xy=None):
+            gt_grid, roi, entry_xy=None, entry_snap_m=None):
     g, info = build_entry_grid(lab3d, cfg, sigma_xy=sigma, n_obs=nobs,
-                               entry_xy=entry_xy, ijk_min=ijk, k_sigma=0.0)
+                               entry_xy=entry_xy, ijk_min=ijk, k_sigma=0.0,
+                               entry_snap_m=entry_snap_m)
     plan, swept = plan_image(g, cfg, band)
     lab = np.asarray(g["%s_label" % band])
     P = np.asarray(g["%s_passable" % band], bool)
@@ -129,6 +152,7 @@ def variant(key, label, blurb, lab3d, ijk, res, sigma, nobs, meta, cfg, band,
     route = [[round(float((i + ijk[0] + 0.5) * res), 3),
               round(float((j + ijk[1] + 0.5) * res), 3)] for i, j in path]
 
+    bits = index_bits(np.asarray(lab3d).shape)
     out = dict(
         key=key, label=label, blurb=blurb, is_reference=(gt_grid is None),
         floor_z=round(float((info["floor_row"] + ijk[2]) * res), 2),
@@ -154,10 +178,11 @@ def variant(key, label, blurb, lab3d, ijk, res, sigma, nobs, meta, cfg, band,
         entry_placed=True,
         entry_xy=[round(float(v), 2) for v in np.asarray(g["entry_xy"])],
         route=route,
-        vox=dict(i=b64(ii.astype(np.uint8)), j=b64(jj.astype(np.uint8)),
-                 k=b64(kk.astype(np.uint8))),
+        vox=index_planes(ii, jj, kk, index_bits(np.asarray(lab3d).shape)),
         plan=b64(plan.T),                          # (ny, nx) for the texture
     )
+    if bits != 8:
+        out["vox"]["bits"] = bits
     if gt_grid is None:
         out.update(iou_cspace=None, iou_workspace=None, recall=None)
     else:
@@ -178,7 +203,15 @@ def main():
     ap.add_argument("--template", default="web/entry_map_3d.template.html")
     ap.add_argument("--band", default="walk")
     ap.add_argument("--w", type=float, default=0.70)
+    ap.add_argument("--entry", default=None,
+                    help="x,y in metres: a shared door for GT and maps (DESIGN "
+                         "§8). Default: the GT's own entry rule")
+    ap.add_argument("--entry-snap", type=float, default=None,
+                    help="snap the door to the nearest passable cell within this "
+                         "radius [m], as run_entry_metrics.py does")
     args = ap.parse_args()
+    nominal = (tuple(float(v) for v in args.entry.split(","))
+               if args.entry else None)
 
     zg = np.load(args.gt, allow_pickle=False)
     lab_gt, ijk = zg["labels"], zg["ijk_min"]
@@ -187,19 +220,20 @@ def main():
     # with it puts the walk band at 0.05-0.95 m instead of 0.10-1.90 m without
     # raising anything -- the same trap the 2D drivers had.
     cfg = EntryCfg(res=res, w=args.w)
-    if max(lab_gt.shape) >= 256:
-        raise SystemExit("grid %s does not fit the uint8 voxel planes; the "
-                         "payload format needs widening first" % (lab_gt.shape,))
+    index_bits(lab_gt.shape)                       # refuses a grid past 16 bits
     roi = roi_from_gt(lab_gt, ijk, res)
 
     gt_v, gt_grid = variant(
         "gt", "GT (mesh voxel)", "메시에서 직접 복셀화한 정답. 지도가 아니라 "
         "기준이다 — 같은 covor/entry 파이프라인을 같은 설정으로 통과시켰고, "
         "다른 조건과의 차이는 입력 3D 격자뿐이다.",
-        lab_gt, ijk, res, None, None, {}, cfg, args.band, None, roi)
+        lab_gt, ijk, res, None, None, {}, cfg, args.band, None, roi,
+        entry_xy=nominal, entry_snap_m=args.entry_snap if nominal else None)
     variants = [gt_v]
-    # the GT's own entry point, so every variant is entered at the same door
-    door = tuple(float(v) for v in gt_grid["entry_xy"])
+    # the GT's entry point (its own rule, or the snapped shared door), so every
+    # variant is entered at the same door
+    door = nominal or tuple(float(v) for v in gt_grid["entry_xy"])
+    snap = args.entry_snap if nominal else None
 
     for spec in args.map:
         parts = spec.split(":")
@@ -214,7 +248,8 @@ def main():
                 % (path, res_m, res))
         try:
             v, _ = variant(key, label, blurb, lab, ijk_m, res_m, sig, nobs, meta,
-                           cfg, args.band, gt_grid, roi, entry_xy=door)
+                           cfg, args.band, gt_grid, roi, entry_xy=door,
+                           entry_snap_m=snap)
         except ValueError as e:
             print("  %-10s the GT door is unusable (%s) -- using its own" % (key, e))
             v, _ = variant(key, label, blurb, lab, ijk_m, res_m, sig, nobs, meta,

@@ -335,6 +335,16 @@ function unb64(s) {
   return out;
 }
 
+/* voxel index planes: 1 byte per index, or 2 (little-endian) when the grid is
+   longer than 255 cells on some axis and vox.bits says 16. No vox.bits = 8. */
+function unvox(s, bits) {
+  const b = unb64(s);
+  if (bits !== 16) return b;
+  const dv = new DataView(b.buffer), out = new Uint16Array(b.length >> 1);
+  for (let i = 0; i < out.length; i++) out[i] = dv.getUint16(2 * i, true);
+  return out;
+}
+
 const G = DATA.grid;
 const RES = G.res;
 const OX = G.origin[0], OY = G.origin[1], OZ = G.origin[2];
@@ -488,7 +498,8 @@ function init() {
 }
 
 function buildVariant(v) {
-  const gi = unb64(v.vox.i), gj = unb64(v.vox.j), gk = unb64(v.vox.k);
+  const gi = unvox(v.vox.i, v.vox.bits), gj = unvox(v.vox.j, v.vox.bits),
+        gk = unvox(v.vox.k, v.vox.bits);
   const n = gi.length;
   const kLo = Math.floor((v.floor_z + DATA.cfg.body_lo - OZ) / RES + 1e-9);
   const kHi = Math.floor((v.floor_z + DATA.cfg.body_hi - OZ) / RES + 1e-9);
@@ -678,7 +689,8 @@ document.getElementById("zclip").addEventListener("input", (e) => {
 /* ------------------------------------------------------------------ *
  * camera: spherical orbit with z as up
  * ------------------------------------------------------------------ */
-const cam = { r: 26, theta: -1.05, phi: 1.02,
+/* 26 m frames a ~10 m room; a longer building backs off with its long side */
+const cam = { r: Math.max(26, 1.15 * RES * Math.max(G.nx, G.ny)), theta: -1.05, phi: 1.02,
               target: new THREE.Vector3(CX, CY, 0.2) };
 
 function placeCamera() {
