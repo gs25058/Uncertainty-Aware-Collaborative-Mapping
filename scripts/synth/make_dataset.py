@@ -55,6 +55,10 @@ def main():
     ap.add_argument("--nlos", action="store_true",
                     help="add a positive bias to ranges the mesh blocks")
     ap.add_argument("--duration", type=float, default=90.0)
+    ap.add_argument("--heights", default=None,
+                    help="cruise height per robot, m, comma-separated (SynthCfg."
+                         "heights). PREREG_corridor_altitude.md permutes the "
+                         "default (1.10,1.25,1.40) to decouple altitude from zone.")
     ap.add_argument("--zone-axis", default="x", choices=["x", "y"],
                     help="axis to split the flyable footprint into per-robot "
                          "zones along (SynthCfg.zone_axis). 'x' is room909's; "
@@ -63,7 +67,9 @@ def main():
 
     cfg = SynthCfg(name=args.name, seq="synth_%s_0" % args.name, seed=args.seed,
                    uwb_nlos=args.nlos, duration_s=args.duration,
-                   zone_axis=args.zone_axis)
+                   zone_axis=args.zone_axis,
+                   **({"heights": tuple(float(v) for v in args.heights.split(","))}
+                      if args.heights else {}))
     print("=== Part B: synthetic observations | %s | seed %d ===" % (cfg.seq, cfg.seed))
     rep, gt = DS.build(cfg)
     u = rep["uwb"]
