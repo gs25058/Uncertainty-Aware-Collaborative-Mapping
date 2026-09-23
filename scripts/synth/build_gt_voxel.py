@@ -120,6 +120,12 @@ def main():
                          "build_gt_grid already refuses a seed in an occupied "
                          "cell, but a seed in UNSCANNED space is not occupied -- "
                          "it just yields a component that is not the room.")
+    ap.add_argument("--floor-z", type=float, default=0.0,
+                    help="world z of the floor plane. mesh_to_world puts it at 0, "
+                         "which is a voxel boundary: a floor that wanders by "
+                         "+-1 cm then flips between two voxel rows. res/2 puts "
+                         "it mid-voxel (RESULTS_sgbm.md §14). Default 0 = the "
+                         "frozen convention every existing scene was built with.")
     ap.add_argument("--close-iter", type=int, default=2,
                     help="binary closing radius (voxels) applied to the enclosure mask")
     args = ap.parse_args()
@@ -140,9 +146,10 @@ def main():
         print("    %s: %s" % (a, ["%.2f m / %.1f m2" % (c, v) for c, v in pl[:3]]))
 
     T = MG.mesh_to_world(info, args.up_axis, args.up_sign)
+    T[2, 3] += args.floor_z
     mw = MG.apply_transform(mesh, T)
     b = mw.bounds
-    print("=== world frame (z up, floor z=0, footprint centred) ===")
+    print("=== world frame (z up, floor z=%.3f, footprint centred) ===" % args.floor_z)
     print("  T_mesh_world =\n", np.array2string(T, precision=4))
     print("  world bounds: x[%.2f,%.2f] y[%.2f,%.2f] z[%.2f,%.2f]"
           % (b[0, 0], b[1, 0], b[0, 1], b[1, 1], b[0, 2], b[1, 2]))
@@ -172,6 +179,7 @@ def main():
           % (ginfo["n_free"] * vox, ginfo["n_occ"] * vox))
 
     cfg = dict(obj=os.path.abspath(args.obj), name=args.name, res=args.res,
+               floor_z=args.floor_z,
                T_mesh_world=T.tolist(), seed=seed.tolist(),
                world_bounds=b.tolist(), inspect=info, grid=ginfo)
     MG.write_config(os.path.join(outdir, "mesh_config.json"), cfg)

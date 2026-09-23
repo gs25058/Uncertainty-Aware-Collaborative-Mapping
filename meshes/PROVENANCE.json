@@ -180,5 +180,25 @@
   "known_issues": [
     "results/synth_room909*/mesh_config.json still records the 9.9 obj at a session scratchpad path. That file is byte-identical to meshes/2026-09-09/ (md5 a5d9714857017dc33e757c7ae372b020), so the mesh is no longer at risk, but the recorded path is left untouched: those results are frozen and must not be edited.",
     "meshes/archives/2026. 9. 15.obj is a byte-identical duplicate of meshes/2026-09-15/2026. 9. 15.obj (it was loose in the repo root). Kept rather than deleted; safe to remove once confirmed."
+  ],
+  "derived": [
+    {
+      "dir": "meshes/2026-09-15",
+      "obj": "2026. 9. 15.floorfix.obj",
+      "mtl": "2026._9._15.mtl (shared with the source)",
+      "derived_from": "2026. 9. 15.obj",
+      "written": "2026-09-23",
+      "how": "python scripts/scan/repair_floor.py --obj \"meshes/2026-09-15/2026. 9. 15.obj\" --mesh-config results/synth_corridor915/mesh_config.json --out \"meshes/2026-09-15/2026. 9. 15.floorfix.obj\"",
+      "what": "floor de-drift + doubled floor sheets snapped onto one plane; only the up-coordinate of v lines changes (RESULTS_sgbm.md §14)",
+      "used_by": "corridor915f (results/synth_corridor915f), built with build_gt_voxel.py --floor-z 0.05",
+      "obj_md5": "10cfdbef4bd65e9b1027a4c5119df40b",
+      "obj_bytes": 13020269,
+      "n_floor_vertices_snapped": 15216,
+      "n_snapped_from_below_2cm": 2810,
+      "floor_field_range_m": [
+        -0.155,
+        0.027
+      ]
+    }
   ]
 }
