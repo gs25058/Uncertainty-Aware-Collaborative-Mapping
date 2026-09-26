@@ -1,0 +1,3 @@
+reach_recall,n_reach_true,n_gt_reach,n_map_reach,reach_iou,false_reach_rate,n_false_reach,stand_agreement,n_map_stoop,n_map_crawl,n_map_sideways,tag,map,entry_snapped_m,gt_reach
+0.0648850217526414,522,8045,530,0.0648205637650565,0.00020211207114344905,8,0.9693486590038314,15,31,181,SGBM_rt,map3d_C_3drone_ii_all_cams_depth_only_clean_sgbm_rt_s4.npz,0.0,8045
+0.08875077688004972,714,8045,767,0.08816991849839466,0.0013389924713253498,53,0.9677871148459384,17,36,248,ideal_rt,map3d_C_3drone_ii_all_cams_depth_only_clean_rt_s4.npz,0.0,8045

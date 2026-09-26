@@ -46,9 +46,10 @@ HIST_BIN = 0.001      # m
 HIST_MAX = 10.0       # m; z_max is 5, so |dZ| < 5 always
 
 
-def cache_path(cfg, cond, robot, stride):
+def cache_path(cfg, cond, robot, stride, truth=False):
     return os.path.join(cfg.outdir(), "entry", "sgbm_cache",
-                        "depth_%s_%s_s%d.npz" % (cond, robot, stride))
+                        "depth_%s_%s_s%d%s.npz" % (cond, robot, stride,
+                                                    "_rt" if truth else ""))
 
 
 def main():
@@ -58,6 +59,8 @@ def main():
     ap.add_argument("--cond", default="C_3drone", choices=list(CONDITIONS))
     ap.add_argument("--robot", required=True)
     ap.add_argument("--stride", type=int, default=4)
+    ap.add_argument("--render-truth", action="store_true",
+                    help="render at the TRUE camera pose (dump_fused_map --render-truth)")
     args = ap.parse_args()
 
     cfg = SynthCfg(name=args.name, seq="synth_%s_0" % args.name, seed=args.seed)
@@ -66,6 +69,9 @@ def main():
     multi, tex = textured_scene(cfg.mesh_config())
     poses, _ = fuse(cfg.seq, CONDITIONS[args.cond])
     P = poses[args.robot]
+    TR = None
+    if args.render_truth:
+        TR = DS.gt_camera_poses(args.robot, P["t"], DS.load_gt_traj(cfg))[0]
 
     r_single = DepthRenderer(single, args.robot)
     r_multi = DepthRenderer(multi, args.robot, textures=tex)
@@ -79,7 +85,7 @@ def main():
                n_frames=0, n_none=0, n_px=0)
     t0 = time.time()
     for i in range(0, len(P["t"]), args.stride):
-        T = P["T"][i]
+        T = P["T"][i] if TR is None else TR[i]
         Zi, _, vi = r_single.depth_ideal(T)
         Zm, _, vm = r_multi.depth_ideal(T)
         d = int((~((vi == vm) & ((Zi == Zm) | (np.isnan(Zi) & np.isnan(Zm))))).sum())
@@ -126,7 +132,7 @@ def main():
         rec["n_frames"] += 1
     rec["seconds"] = round(time.time() - t0, 1)
 
-    out = cache_path(cfg, args.cond, args.robot, args.stride)
+    out = cache_path(cfg, args.cond, args.robot, args.stride, truth=args.render_truth)
     os.makedirs(os.path.dirname(out), exist_ok=True)
     np.savez(out, idx=np.array(idx), T=np.array(Ts), offs=np.array(offs),
              P=np.concatenate(pts) if pts else np.zeros((0, 3)),

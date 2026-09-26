@@ -196,6 +196,10 @@ def main():
                     help="depth source (PREREG_sgbm_depth.md)")
     ap.add_argument("--depth-cache", action="store_true",
                     help="sgbm only: read render_depth_cache.py's frames")
+    ap.add_argument("--render-truth", action="store_true",
+                    help="render each frame at the TRUE camera pose and integrate it at "
+                         "the fused pose -- what a real camera does (RESULTS_"
+                         "traversability.md §7). Default: render at the fused pose.")
     ap.add_argument("--drop-mesh-miss", action="store_true",
                     help="PREREG_sgbm_rescue.md treatment A (needs --depth-cache)")
     ap.add_argument("--max-sigma-z", type=float, default=None,
@@ -215,7 +219,8 @@ def main():
     if args.mode == "sgbm" and args.depth_cache:
         from render_depth_cache import cache_path
         scene = None
-        cached = {r: CachedFrames(cache_path(cfg, args.cond, r, args.stride),
+        cached = {r: CachedFrames(cache_path(cfg, args.cond, r, args.stride,
+                                             truth=args.render_truth),
                                   drop_mesh_miss=args.drop_mesh_miss)
                   for r in COVERAGE[args.coverage]}
     elif args.mode == "sgbm":
@@ -240,6 +245,11 @@ def main():
              np.median(sxy), np.percentile(sxy, 90)))
 
     render_T = None
+    if args.render_truth:
+        if args.corrupt != "none":
+            ap.error("--render-truth and --corrupt both set the render pose")
+        render_T = {r: DS.gt_camera_poses(r, poses[r]["t"], gt)[0] for r in ROBOTS}
+        print("RENDER AT TRUE POSE, integrate at fused pose")
     if args.corrupt != "none":
         render_T = {r: v["T"] for r, v in
                     corrupt_poses(poses, args.corrupt, gt, args.seed).items()}
@@ -261,6 +271,8 @@ def main():
     tag = args.corrupt if args.corrupt != "none" else "clean"
     if args.mode != "ideal":
         tag += "_" + args.mode
+    if args.render_truth:
+        tag += "_rt"
     if args.drop_mesh_miss:
         tag += "_A"
     if args.max_sigma_z is not None:
@@ -278,6 +290,7 @@ def main():
             cond=args.cond, coverage=args.coverage, arm=args.arm,
             stride=args.stride, corrupt=args.corrupt, seed=args.seed,
             mode=args.mode, depth_cache=bool(args.depth_cache),
+            render_truth=bool(args.render_truth),
             drop_mesh_miss=bool(args.drop_mesh_miss), max_sigma_z=args.max_sigma_z,
             res=res, occ_cfg={k: v for k, v in ARMS[args.arm].items()},
             n_inter_range=int(gstats["n_inter_range"]), ate=ates,
