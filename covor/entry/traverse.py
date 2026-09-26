@@ -21,7 +21,15 @@ by cell:
      posture/width that fits.
   4. STEPS. A move to an 8-neighbour support k' is allowed when |k' - k| <= S.
      Stairs are a chain of such moves; a 0.3 m ledge is not.
-  5. ROUTE. Dijkstra from the entry node. Cost = step length x posture/width
+  5. GAPS (amendment, DESIGN_traversability.md §7). A map rarely observes
+     every floor voxel: rays graze the floor and carve it free, or never reach
+     it. A walker does not stop at an unseen patch of floor; they step across
+     it. A column whose body space is free at the current support level but
+     which has no observed support there is a GAP cell; a run of at most
+     `gap` metres (0.5 m, a cautious step) of gap cells may be crossed at the
+     level of the last support. A wider unseen region -- a stair void -- still
+     blocks.
+  6. ROUTE. Dijkstra from the entry node. Cost = step length x posture/width
      factor + a per-row charge for every change of support height.
 
 Everything is a function of the 3D label grid and TravCfg; nothing is tuned
@@ -51,6 +59,7 @@ class TravCfg:
     h_stoop: float = 1.40        # bent-forward walking height
     h_crawl: float = 0.90        # = H_crawl
     step: float = 0.18           # building-code maximum stair riser
+    gap: float = 0.50            # unseen floor crossed in one cautious step (§7)
     # route costs (only shape WHICH route is chosen, never whether one exists)
     f_stoop: float = 1.5
     f_crawl: float = 3.0
@@ -63,6 +72,10 @@ class TravCfg:
 
     def rows(self, h):
         return int(round(h / self.res))
+
+    @property
+    def gap_cells(self):
+        return int(round(self.gap / self.res))
 
 
 def supports(lab):
@@ -79,11 +92,13 @@ def _clear2d(blocked, res):
     return np.maximum(d - 0.5, 0.0) * res
 
 
-def node_modes(lab, cfg):
+def node_modes(lab, cfg, air=False):
     """For every support voxel, the cheapest (posture, width) that fits.
 
     Returns (S (nx,ny,nz) bool supports, posture (nx,ny,nz) int8 with -1 = no
-    fit, width (nx,ny,nz) int8).
+    fit, width (nx,ny,nz) int8). With air=True the posture/width are computed
+    for EVERY column at every support level, support or not -- "would a body
+    standing at level k here fit" -- which is what a gap cell needs.
     """
     lab = np.asarray(lab)
     nx, ny, nz = lab.shape
@@ -96,7 +111,7 @@ def node_modes(lab, cfg):
                (CRAWL, cfg.rows(cfg.h_crawl)))
     ks = np.unique(np.nonzero(S)[2])
     for k in ks:
-        col = S[:, :, k]
+        col = np.ones((nx, ny), bool) if air else S[:, :, k]
         for p, nh in heights:
             top = k + 1 + nh
             if top > nz:
@@ -148,6 +163,13 @@ def traverse(lab, cfg, entry_xy, ijk_min, snap_m=1.5):
     plus the entry node and the snap distance.
     """
     S, P, W = node_modes(lab, cfg)
+    _, PA, WA = node_modes(lab, cfg, air=True)
+    lab = np.asarray(lab)
+    # a gap cell at level k: body fits at level k, no observed support there,
+    # and the voxel itself is not solid (an occupied voxel with unknown above is
+    # not a floor we have seen, but it is not a gap in the floor either)
+    gap3 = (PA >= 0) & ~S & (lab != OCCUPIED)
+    G = cfg.gap_cells
     nx, ny, nz = S.shape
     feas3 = P >= 0
     out = dict(feasible=feas3.any(axis=2),
@@ -164,40 +186,57 @@ def traverse(lab, cfg, entry_xy, ijk_min, snap_m=1.5):
         return out
     start, snapped = e
     st = cfg.step_rows
-    dist = {start: 0.0}
-    pq = [(0.0, start)]
+    dist = {start + (0,): 0.0}
+    pq = [(0.0, start + (0,))]
+    gapreach = np.zeros((nx, ny), bool)
     steps = [(-1, 0, 1.0), (1, 0, 1.0), (0, -1, 1.0), (0, 1, 1.0),
              (-1, -1, 2 ** .5), (-1, 1, 2 ** .5), (1, -1, 2 ** .5), (1, 1, 2 ** .5)]
     while pq:
-        d0, (i, j, k) = heapq.heappop(pq)
-        if d0 > dist.get((i, j, k), np.inf):
+        d0, (i, j, k, g) = heapq.heappop(pq)
+        if d0 > dist.get((i, j, k, g), np.inf):
             continue
+        if g == 0:
+            pu, wu = P[i, j, k], W[i, j, k]
+        else:
+            pu, wu = PA[i, j, k], WA[i, j, k]
+            gapreach[i, j] = True
         if d0 < cost[i, j]:
             cost[i, j] = d0
-            post[i, j] = P[i, j, k]
-            wid[i, j] = W[i, j, k]
-            sup[i, j] = k
-        fu = _factor(P[i, j, k], W[i, j, k], cfg)
+            post[i, j] = pu
+            wid[i, j] = wu
+            sup[i, j] = k if g == 0 else -1
+        fu = _factor(pu, wu, cfg)
         for di, dj, ln in steps:
             a, b = i + di, j + dj
             if not (0 <= a < nx and 0 <= b < ny):
                 continue
+            # step across unseen floor at the current level
+            if g < G and gap3[a, b, k] and not (di and dj and not (
+                    (feas3[i, b, k] or gap3[i, b, k]) and (feas3[a, j, k] or gap3[a, j, k]))):
+                fv = _factor(PA[a, b, k], WA[a, b, k], cfg)
+                nd = d0 + cfg.res * ln * max(fu, fv)
+                if nd < dist.get((a, b, k, g + 1), np.inf):
+                    dist[(a, b, k, g + 1)] = nd
+                    heapq.heappush(pq, (nd, (a, b, k, g + 1)))
             for kk in range(max(k - st, 0), min(k + st, nz - 1) + 1):
                 if P[a, b, kk] < 0:
                     continue
                 if di and dj:
                     # no corner cutting through a cell with no node at this level
-                    if not (feas3[i, b, max(kk - st, 0):kk + st + 1].any()
-                            and feas3[a, j, max(kk - st, 0):kk + st + 1].any()):
+                    lo_, hi_ = max(kk - st, 0), kk + st + 1
+                    if not ((feas3[i, b, lo_:hi_] | gap3[i, b, lo_:hi_]).any()
+                            and (feas3[a, j, lo_:hi_] | gap3[a, j, lo_:hi_]).any()):
                         continue
                 fv = _factor(P[a, b, kk], W[a, b, kk], cfg)
                 nd = (d0 + cfg.res * ln * max(fu, fv)
                       + cfg.c_rise * abs(kk - k) * cfg.res)
-                if nd < dist.get((a, b, kk), np.inf):
-                    dist[(a, b, kk)] = nd
-                    heapq.heappush(pq, (nd, (a, b, kk)))
-    out.update(reach=np.isfinite(cost), cost=cost, posture=post, width=wid,
-               support_row=sup, entry=start, entry_snapped_m=snapped)
+                if nd < dist.get((a, b, kk, 0), np.inf):
+                    dist[(a, b, kk, 0)] = nd
+                    heapq.heappush(pq, (nd, (a, b, kk, 0)))
+    reach = np.isfinite(cost)
+    out.update(reach=reach, cost=cost, posture=post, width=wid,
+               support_row=sup, entry=start, entry_snapped_m=snapped,
+               gap_only=reach & (sup < 0))
     return out
 
 

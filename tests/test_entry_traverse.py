@@ -133,6 +133,22 @@ def test_unknown_in_the_body_blocks():
     assert not mid(t, 35)[0]
 
 
+def test_unseen_floor_is_stepped_across_but_a_void_is_not():
+    """DESIGN §7 amendment: <= 0.5 m of floor with no observed support is
+    crossed at the last support's level; a 1.0 m void blocks."""
+    for width, expect in ((4, True), (10, False)):
+        lab = corridor()
+        lab[20:20 + width, 1:-1, FLOOR] = UNKNOWN       # floor never observed
+        lab[20:20 + width, 1:-1, :FLOOR] = UNKNOWN
+        t = run(lab)
+        assert mid(t, 35)[0] == expect, (width, expect)
+        if expect:
+            assert t["gap_only"][21, 5]
+    lab = corridor()
+    lab[20:24, 1:-1, FLOOR] = FREE                      # grazing rays carved it free
+    assert mid(run(lab), 35)[0]
+
+
 def test_score_counts_by_value():
     t = run(corridor())
     s = TV.score(t, t)
