@@ -179,10 +179,12 @@ def traverse(lab, cfg, entry_xy, ijk_min, snap_m=1.5):
     post = np.full((nx, ny), -1, np.int8)
     wid = np.full((nx, ny), -1, np.int8)
     sup = np.full((nx, ny), -1, np.int16)
+    lvl = np.full((nx, ny), -1, np.int16)       # support row, or the row a gap is crossed at
     out.update(entry=None, entry_snapped_m=None)
     if e is None:
         out.update(reach=np.zeros((nx, ny), bool), cost=cost, posture=post,
-                   width=wid, support_row=sup)
+                   width=wid, support_row=sup, level_row=sup.copy(),
+                   gap_only=np.zeros((nx, ny), bool))
         return out
     start, snapped = e
     st = cfg.step_rows
@@ -205,6 +207,7 @@ def traverse(lab, cfg, entry_xy, ijk_min, snap_m=1.5):
             post[i, j] = pu
             wid[i, j] = wu
             sup[i, j] = k if g == 0 else -1
+            lvl[i, j] = k
         fu = _factor(pu, wu, cfg)
         for di, dj, ln in steps:
             a, b = i + di, j + dj
@@ -235,7 +238,7 @@ def traverse(lab, cfg, entry_xy, ijk_min, snap_m=1.5):
                     heapq.heappush(pq, (nd, (a, b, kk, 0)))
     reach = np.isfinite(cost)
     out.update(reach=reach, cost=cost, posture=post, width=wid,
-               support_row=sup, entry=start, entry_snapped_m=snapped,
+               support_row=sup, level_row=lvl, entry=start, entry_snapped_m=snapped,
                gap_only=reach & (sup < 0))
     return out
 
