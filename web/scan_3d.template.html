@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polycam 스캔 3D — __NAME__</title>
+<!-- The scanned space itself, drawn the way Polycam draws it, in THIS project's
+     world frame (floor z = 0, footprint centred on x = y = 0) so it can be put
+     next to web/entry_map_3d_*.html without any registration step.
+
+     Baked by scripts/scan/export_scan_3d.py. The geometry is the scan's own --
+     no decimation, no hole filling, no floater removal -- because this is the
+     mesh the GT voxels are cut from, so what is shown has to be what the GT
+     sees. Only the atlases are downscaled, and that is measured to be far above
+     the geometry's own resolution (see the rail). -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+  :root {
+    --bg: #0d1114; --panel: #141a1e; --panel-2: #1a2227;
+    --line: #253137; --line-soft: #1b242a;
+    --text: #dde5e8; --dim: #8ba0a9; --dimmer: #61747d;
+    --accent: #4cc9e6; --warn: #f2a25c;
+    --sans: "IBM Plex Sans", ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); }
+
+  #app { display: grid; grid-template-columns: 320px minmax(0, 1fr); height: 100vh; min-height: 620px; }
+
+  .rail {
+    background: var(--panel); border-right: 1px solid var(--line);
+    display: flex; flex-direction: column; gap: 20px;
+    padding: 20px 18px 22px; overflow-y: auto;
+  }
+  .masthead h1 { margin: 0; font-size: 19px; font-weight: 600; letter-spacing: -0.01em; }
+  .masthead p { margin: 7px 0 0; font-size: 12.5px; line-height: 1.55; color: var(--dim); }
+
+  .group > h2 {
+    margin: 0 0 9px; font-size: 10.5px; font-weight: 600; letter-spacing: 0.09em;
+    text-transform: uppercase; color: var(--dimmer);
+  }
+  .seg { display: flex; flex-direction: column; gap: 5px; }
+  .seg button {
+    appearance: none; text-align: left; cursor: pointer;
+    background: var(--panel-2); color: var(--text);
+    border: 1px solid var(--line); border-radius: 7px;
+    padding: 8px 10px; font-family: var(--sans); font-size: 12.5px; line-height: 1.35;
+  }
+  .seg button small { display: block; color: var(--dimmer); font-size: 11px; margin-top: 2px; }
+  .seg button:hover { border-color: #33454e; }
+  .seg button[aria-pressed="true"] { border-color: var(--accent); background: #16262c; }
+  .seg button[aria-pressed="true"] small { color: var(--dim); }
+
+  .row { display: flex; gap: 6px; }
+  .row button { flex: 1; text-align: center; }
+
+  .slider { margin-top: 10px; }
+  .slider label {
+    display: flex; justify-content: space-between; font-size: 11.5px; color: var(--dim);
+    margin-bottom: 5px;
+  }
+  .slider label b { font-family: var(--mono); font-weight: 500; color: var(--text); }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+
+  table.stats { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+  table.stats th, table.stats td { padding: 4px 0; text-align: left; vertical-align: top; }
+  table.stats th { font-weight: 400; color: var(--dim); }
+  table.stats td { font-family: var(--mono); text-align: right; color: var(--text); }
+  table.stats tr + tr th, table.stats tr + tr td { border-top: 1px solid var(--line-soft); }
+
+  .note {
+    font-size: 11.5px; line-height: 1.6; color: var(--dim);
+    border-left: 2px solid var(--warn); padding: 2px 0 2px 10px;
+  }
+  .note b { color: var(--text); font-weight: 500; }
+
+  #stage { position: relative; min-width: 0; }
+  #stage canvas { display: block; width: 100%; height: 100%; }
+  .hud {
+    position: absolute; left: 16px; bottom: 14px; pointer-events: none;
+    font-family: var(--mono); font-size: 11px; color: var(--dimmer);
+    background: rgba(13,17,20,.72); border: 1px solid var(--line-soft);
+    border-radius: 6px; padding: 6px 9px; line-height: 1.5;
+    white-space: pre-line;
+  }
+  .fail {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 8px; text-align: center;
+    color: var(--dim); font-size: 13px; padding: 24px;
+  }
+</style>
+
+<div id="app">
+  <aside class="rail">
+    <div class="masthead">
+      <h1>Polycam 스캔 — __NAME__</h1>
+      <p>__BLURB__</p>
+    </div>
+
+    <div class="group">
+      <h2>셰이딩</h2>
+      <div class="seg" id="shade"></div>
+    </div>
+
+    <div class="group">
+      <h2>높이 자르기</h2>
+      <div class="slider">
+        <label><span>위 (천장 제거)</span><b id="hiVal">—</b></label>
+        <input type="range" id="hi" min="0" max="1000" value="1000">
+      </div>
+      <div class="slider">
+        <label><span>아래 (바닥 밑 제거)</span><b id="loVal">—</b></label>
+        <input type="range" id="lo" min="0" max="1000" value="0">
+      </div>
+    </div>
+
+    <div class="group">
+      <h2>시점</h2>
+      <div class="seg row">
+        <button data-view="iso">비스듬히</button>
+        <button data-view="top">평면도</button>
+        <button data-view="side">측면</button>
+      </div>
+    </div>
+
+    <div class="group">
+      <h2>스캔 수치</h2>
+      <table class="stats" id="stats"></table>
+    </div>
+
+    <div class="group">
+      <h2>읽을 때 주의</h2>
+      <div class="note" id="caveats"></div>
+    </div>
+  </aside>
+
+  <div id="stage"><div class="hud" id="hud"></div></div>
+</div>
+
+<script>
+const DATA = /*__DATA__*/null;
+
+const SHADES = [
+  { key: "polycam", label: "Polycam (unlit)",
+    note: "앱 화면과 같은 방식. 텍스처를 그대로 칠하고 음영을 얹지 않는다." },
+  { key: "lit", label: "조명 보정 (metalness 0)",
+    note: "같은 텍스처를 PBR로, 단 금속도를 0으로 고쳐서. 입체감은 생기고 색은 어두워진다." },
+  { key: "asis", label: "내보낸 그대로 (Pm 1.00)",
+    note: "MTL에 적힌 금속도 1.0을 그대로 쓴 결과. 거의 검게 나오는 것이 정상이다." },
+];
+
+let renderer, scene, camera, meshes = [], clipHi, clipLo, shade = "polycam";
+// THREE is not defined until boot() has loaded it, so nothing at this level may
+// construct a THREE object -- doing so throws at parse time and takes the whole
+// script down, including boot()'s own CDN fallback.
+const cam = { theta: -Math.PI / 2 - 0.55, phi: 0.72, r: 36, target: null };
+const lights = [];
+
+function decode(b64, Ctor) {
+  const bin = atob(b64), n = bin.length, u8 = new Uint8Array(n);
+  for (let i = 0; i < n; i++) u8[i] = bin.charCodeAt(i);
+  return new Ctor(u8.buffer);
+}
+
+function makeMaterial(tex) {
+  const side = THREE.DoubleSide;
+  if (shade === "polycam") return new THREE.MeshBasicMaterial({ map: tex, side: side });
+  if (shade === "asis")
+    return new THREE.MeshStandardMaterial({ map: tex, metalness: 1.0, roughness: 1.0, side: side });
+  return new THREE.MeshStandardMaterial({ map: tex, metalness: 0.0, roughness: 0.9, side: side });
+}
+
+function buildMesh() {
+  const M = DATA.mesh, lo = M.lo, span = M.span;
+  const texCache = {};
+  M.chunks.forEach((c, ci) => {
+    const q = decode(c.pos, Uint16Array), qu = decode(c.uv, Uint16Array);
+    const n = c.n_vert;
+    const pos = new Float32Array(n * 3), uv = new Float32Array(n * 2);
+    for (let i = 0; i < n; i++) {
+      pos[i * 3]     = lo[0] + (q[i * 3]     / 65535) * span[0];
+      pos[i * 3 + 1] = lo[1] + (q[i * 3 + 1] / 65535) * span[1];
+      pos[i * 3 + 2] = lo[2] + (q[i * 3 + 2] / 65535) * span[2];
+      uv[i * 2]      = c.uv_lo[0] + (qu[i * 2]     / 65535) * c.uv_span[0];
+      uv[i * 2 + 1]  = c.uv_lo[1] + (qu[i * 2 + 1] / 65535) * c.uv_span[1];
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+    g.setAttribute("uv", new THREE.BufferAttribute(uv, 2));
+    g.setIndex(new THREE.BufferAttribute(decode(c.idx, Uint16Array), 1));
+    g.computeVertexNormals();   // the OBJ carries none; only the lit modes use them
+
+    const src = c.tex === null ? c.tex_ref : ci;
+    if (!texCache[src]) {
+      const img = new Image();
+      const t = new THREE.Texture(img);
+      // v is NOT flipped in the payload (OBJ's origin is bottom-left), which is
+      // exactly what three.js assumes with the default flipY = true.
+      t.encoding = THREE.sRGBEncoding;
+      t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      t.minFilter = THREE.LinearMipmapLinearFilter;
+      img.onload = () => { t.needsUpdate = true; render(); };  // no animation loop: atlases arrive late
+      img.src = (c.tex === null ? M.chunks[c.tex_ref].tex : c.tex);
+      texCache[src] = t;
+    }
+    const mesh = new THREE.Mesh(g, makeMaterial(texCache[src]));
+    mesh.material.clippingPlanes = [clipHi, clipLo];
+    mesh.frustumCulled = false;
+    meshes.push(mesh);
+    scene.add(mesh);
+  });
+}
+
+function applyShade(key) {
+  shade = key;
+  meshes.forEach((m) => {
+    const tex = m.material.map;
+    m.material.dispose();
+    m.material = makeMaterial(tex);
+    m.material.clippingPlanes = [clipHi, clipLo];
+  });
+  lights.forEach((l) => { l.visible = (key !== "polycam"); });
+  document.querySelectorAll("#shade button").forEach((b) => {
+    b.setAttribute("aria-pressed", String(b.dataset.shade === key));
+  });
+  render();
+}
+
+function zOf(slider) {
+  const z = DATA.meta.z_range;
+  return z[0] + (Number(slider.value) / 1000) * (z[1] - z[0]);
+}
+
+function applyClip() {
+  const hi = zOf(document.getElementById("hi")), lo = zOf(document.getElementById("lo"));
+  clipHi.constant = hi;          // normal (0,0,-1): clips z > hi
+  clipLo.constant = -lo;         // normal (0,0, 1): clips z < lo
+  document.getElementById("hiVal").textContent = hi.toFixed(2) + " m";
+  document.getElementById("loVal").textContent = lo.toFixed(2) + " m";
+  render();
+}
+
+function placeCamera() {
+  const sp = Math.sin(cam.phi), cp = Math.cos(cam.phi);
+  camera.position.set(cam.target.x + cam.r * sp * Math.cos(cam.theta),
+                      cam.target.y + cam.r * sp * Math.sin(cam.theta),
+                      cam.target.z + cam.r * cp);
+  camera.lookAt(cam.target);
+  render();
+}
+
+function setView(v) {
+  if (v === "top")       { cam.phi = 0.10; cam.theta = -Math.PI / 2; cam.r = DATA.meta.fit_top; }
+  else if (v === "side") { cam.phi = 1.50; cam.theta = -Math.PI / 2 - 0.02; cam.r = DATA.meta.fit_top; }
+  else                   { cam.phi = 0.72; cam.theta = -Math.PI / 2 - 0.55; cam.r = DATA.meta.fit_iso; }
+  placeCamera();
+}
+
+function render() {
+  if (!renderer) return;
+  renderer.render(scene, camera);
+  document.getElementById("hud").textContent =
+    "거리 " + cam.r.toFixed(1) + " m · 중심 (" + cam.target.x.toFixed(1) + ", "
+    + cam.target.y.toFixed(1) + ", " + cam.target.z.toFixed(1) + ") m"
+    + "\n드래그 회전 · Shift+드래그 이동 · 휠 확대";
+}
+
+function fillRail() {
+  const shadeBox = document.getElementById("shade");
+  SHADES.forEach((s) => {
+    const b = document.createElement("button");
+    b.dataset.shade = s.key;
+    b.innerHTML = s.label + "<small>" + s.note + "</small>";
+    b.onclick = () => applyShade(s.key);
+    shadeBox.appendChild(b);
+  });
+  const t = document.getElementById("stats");
+  DATA.meta.stats.forEach((r) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = "<th>" + r[0] + "</th><td>" + r[1] + "</td>";
+    t.appendChild(tr);
+  });
+  document.getElementById("caveats").innerHTML = DATA.meta.caveats.join("<br><br>");
+  document.querySelectorAll("[data-view]").forEach((b) => {
+    b.onclick = () => setView(b.dataset.view);
+  });
+}
+
+function init() {
+  const stage = document.getElementById("stage");
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x0b0f12, 1);
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.localClippingEnabled = true;
+  stage.appendChild(renderer.domElement);
+
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(42, 1, 0.05, 600);
+  camera.up.set(0, 0, 1);
+  cam.target = new THREE.Vector3(0, 0, 1.1);
+
+  const hemi = new THREE.HemisphereLight(0xbcd6e2, 0x0a0f12, 0.9);
+  const key = new THREE.DirectionalLight(0xffffff, 0.8);
+  key.position.set(9, -12, 16);
+  const rim = new THREE.DirectionalLight(0x6fb6cc, 0.35);
+  rim.position.set(-11, 8, 4);
+  [hemi, key, rim].forEach((l) => { lights.push(l); scene.add(l); });
+
+  const z = DATA.meta.z_range;
+  clipHi = new THREE.Plane(new THREE.Vector3(0, 0, -1), z[1]);
+  clipLo = new THREE.Plane(new THREE.Vector3(0, 0, 1), -z[0]);
+
+  const span = DATA.meta.grid_span;
+  const grid = new THREE.GridHelper(span, Math.round(span), 0x2b3a42, 0x1a252b);
+  grid.rotation.x = Math.PI / 2;
+  scene.add(grid);
+
+  buildMesh();
+  fillRail();
+  applyShade("polycam");
+  document.getElementById("hi").oninput = applyClip;
+  document.getElementById("lo").oninput = applyClip;
+  applyClip();
+  installControls();
+  setView("iso");
+  window.addEventListener("resize", resize);
+  resize();
+}
+
+function installControls() {
+  let drag = null;
+  const el = renderer.domElement;
+  el.style.touchAction = "none";
+  el.addEventListener("pointerdown", (e) => {
+    drag = { x: e.clientX, y: e.clientY, pan: e.shiftKey || e.button === 2 };
+    el.setPointerCapture(e.pointerId);
+  });
+  el.addEventListener("pointermove", (e) => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    drag.x = e.clientX; drag.y = e.clientY;
+    if (drag.pan) {
+      const dir = new THREE.Vector3().subVectors(camera.position, cam.target).normalize();
+      const right = new THREE.Vector3().crossVectors(dir, camera.up).normalize();
+      const up = new THREE.Vector3().crossVectors(right, dir).normalize();
+      const k = cam.r * 0.0016;
+      cam.target.addScaledVector(right, -dx * k).addScaledVector(up, dy * k);
+    } else {
+      cam.theta -= dx * 0.006;
+      cam.phi = Math.min(1.78, Math.max(0.09, cam.phi - dy * 0.006));
+    }
+    placeCamera();
+  });
+  const stop = (e) => { drag = null; try { el.releasePointerCapture(e.pointerId); } catch (_) {} };
+  el.addEventListener("pointerup", stop);
+  el.addEventListener("pointercancel", stop);
+  el.addEventListener("contextmenu", (e) => e.preventDefault());
+  el.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    cam.r = Math.min(200, Math.max(1.5, cam.r * Math.exp(e.deltaY * 0.0011)));
+    placeCamera();
+  }, { passive: false });
+}
+
+function resize() {
+  const stage = document.getElementById("stage");
+  const w = stage.clientWidth, h = stage.clientHeight;
+  if (!w || !h) return;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  render();
+}
+
+function boot() {
+  const s = document.createElement("script");
+  s.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";
+  s.onload = init;
+  s.onerror = () => {
+    const alt = document.createElement("script");
+    alt.src = "https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js";
+    alt.onload = init;
+    alt.onerror = () => {
+      document.getElementById("stage").insertAdjacentHTML("beforeend",
+        '<div class="fail"><b>3D 라이브러리를 불러오지 못했습니다.</b>' +
+        '<span>네트워크가 없는 환경입니다. 왼쪽 수치는 그대로 읽을 수 있습니다.</span></div>');
+    };
+    document.head.appendChild(alt);
+  };
+  document.head.appendChild(s);
+}
+
+boot();
+</script>
+</html>
