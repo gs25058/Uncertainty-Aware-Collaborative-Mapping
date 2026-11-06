@@ -1,0 +1,91 @@
+{
+  "path": [
+    {
+      "xyz": [
+        -2.35,
+        -19.55,
+        0.05506477000000031
+      ],
+      "posture": 1,
+      "width": 1,
+      "observed_support": true
+    },
+    {
+      "xyz": [
+        -2.35,
+        -19.45,
+        0.05506477000000031
+      ],
+      "posture": 1,
+      "width": 1,
+      "observed_support": true
+    },
+    {
+      "xyz": [
+        -2.35,
+        -19.35,
+        0.05506477000000031
+      ],
+      "posture": 1,
+      "width": 1,
+      "observed_support": true
+    },
+    {
+      "xyz": [
+        -2.35,
+        -19.25,
+        0.05506477000000031
+      ],
+      "posture": 1,
+      "width": 1,
+      "observed_support": true
+    }
+  ],
+  "mesh_annotations": [
+    {
+      "x": -2.35,
+      "y": -19.55,
+      "mesh_floor_z": 0.050064770000000314,
+      "covering_triangles": 1
+    },
+    {
+      "x": -2.35,
+      "y": -19.45,
+      "mesh_floor_z": 0.050064770000000314,
+      "covering_triangles": 1
+    },
+    {
+      "x": -2.35,
+      "y": -19.35,
+      "mesh_floor_z": 0.050064770000000314,
+      "covering_triangles": 1
+    },
+    {
+      "x": -2.35,
+      "y": -19.25,
+      "mesh_floor_z": 0.050064770000000314,
+      "covering_triangles": 1
+    }
+  ],
+  "independent_torso_envelope": {
+    "low": [
+      -2.575,
+      -19.775000000000002,
+      0.2350647700000003
+    ],
+    "high": [
+      -2.125,
+      -19.025,
+      1.4550647700000001
+    ],
+    "intersecting_triangles": 0
+  },
+  "validation": {
+    "status": "valid",
+    "reason": "mesh_support_and_swept_body_verified",
+    "first_failure": null,
+    "gap_dependency": false
+  },
+  "not_used_by_generator": true,
+  "method": "triangle barycentric support + exact triangle/AABB swept torso certificate"
+}

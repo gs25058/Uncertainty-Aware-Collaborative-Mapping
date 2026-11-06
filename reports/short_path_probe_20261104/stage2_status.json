@@ -1,0 +1,16 @@
+{
+  "executed": true,
+  "n_candidates": 24,
+  "n_eligible": 13,
+  "success_ids": [
+    2,
+    3
+  ],
+  "eligible_success_ids": [
+    2,
+    3
+  ],
+  "selection_unchanged_after_oracle": true,
+  "oracle_not_used_for_selection": true,
+  "scope": "clean ideal depth + true poses; fixed withheld floor strip; reachable goal only"
+}

@@ -1,0 +1,306 @@
+[
+  {
+    "case_id": "corridor915f:south:south_0",
+    "reference_state": "reachable",
+    "reason": "mesh_support_and_swept_body_verified",
+    "graph_verdict": "passable",
+    "mesh_witness": {
+      "status": "valid",
+      "reason": "mesh_support_and_swept_body_verified",
+      "first_failure": null,
+      "gap_dependency": false
+    },
+    "blockage_certificate": null
+  },
+  {
+    "case_id": "corridor915f:south:south_1",
+    "reference_state": "reachable",
+    "reason": "mesh_support_and_swept_body_verified",
+    "graph_verdict": "passable",
+    "mesh_witness": {
+      "status": "valid",
+      "reason": "mesh_support_and_swept_body_verified",
+      "first_failure": null,
+      "gap_dependency": false
+    },
+    "blockage_certificate": null
+  },
+  {
+    "case_id": "corridor915f:south:south_2",
+    "reference_state": "reachable",
+    "reason": "mesh_support_and_swept_body_verified",
+    "graph_verdict": "passable",
+    "mesh_witness": {
+      "status": "valid",
+      "reason": "mesh_support_and_swept_body_verified",
+      "first_failure": null,
+      "gap_dependency": false
+    },
+    "blockage_certificate": null
+  },
+  {
+    "case_id": "corridor915f:south:south_3",
+    "reference_state": "reachable",
+    "reason": "mesh_support_and_swept_body_verified",
+    "graph_verdict": "passable",
+    "mesh_witness": {
+      "status": "valid",
+      "reason": "mesh_support_and_swept_body_verified",
+      "first_failure": null,
+      "gap_dependency": false
+    },
+    "blockage_certificate": null
+  },
+  {
+    "case_id": "corridor915f:south:south_4",
+    "reference_state": "reachable",
+    "reason": "mesh_support_and_swept_body_verified",
+    "graph_verdict": "passable",
+    "mesh_witness": {
+      "status": "valid",
+      "reason": "mesh_support_and_swept_body_verified",
+      "first_failure": null,
+      "gap_dependency": false
+    },
+    "blockage_certificate": null
+  },
+  {
+    "case_id": "corridor915f:south:south_5",
+    "reference_state": "reachable",
+    "reason": "mesh_support_and_swept_body_verified",
+    "graph_verdict": "passable",
+    "mesh_witness": {
+      "status": "valid",
+      "reason": "mesh_support_and_swept_body_verified",
+      "first_failure": null,
+      "gap_dependency": false
+    },
+    "blockage_certificate": null
+  },
+  {
+    "case_id": "corridor915f:south:south_6",
+    "reference_state": "reachable",
+    "reason": "mesh_support_and_swept_body_verified",
+    "graph_verdict": "passable",
+    "mesh_witness": {
+      "status": "valid",
+      "reason": "mesh_support_and_swept_body_verified",
+      "first_failure": null,
+      "gap_dependency": false
+    },
+    "blockage_certificate": null
+  },
+  {
+    "case_id": "corridor915f:south:south_7",
+    "reference_state": "reachable",
+    "reason": "mesh_support_and_swept_body_verified",
+    "graph_verdict": "passable",
+    "mesh_witness": {
+      "status": "valid",
+      "reason": "mesh_support_and_swept_body_verified",
+      "first_failure": null,
+      "gap_dependency": false
+    },
+    "blockage_certificate": null
+  },
+  {
+    "case_id": "corridor915f:south:corridor_0",
+    "reference_state": "reachable",
+    "reason": "mesh_support_and_swept_body_verified",
+    "graph_verdict": "passable",
+    "mesh_witness": {
+      "status": "valid",
+      "reason": "mesh_support_and_swept_body_verified",
+      "first_failure": null,
+      "gap_dependency": false
+    },
+    "blockage_certificate": null
+  },
+  {
+    "case_id": "corridor915f:south:corridor_1",
+    "reference_state": "reachable",
+    "reason": "mesh_support_and_swept_body_verified",
+    "graph_verdict": "passable",
+    "mesh_witness": {
+      "status": "valid",
+      "reason": "mesh_support_and_swept_body_verified",
+      "first_failure": null,
+      "gap_dependency": false
+    },
+    "blockage_certificate": null
+  },
+  {
+    "case_id": "corridor915f:south:corridor_2",
+    "reference_state": "undetermined",
+    "reason": "reference_support_unknown",
+    "graph_verdict": "passable",
+    "mesh_witness": {
+      "status": "unverifiable",
+      "reason": "reference_support_unknown",
+      "first_failure": [
+        -2.35,
+        -8.15,
+        0.1
+      ],
+      "index": 116,
+      "gap_dependency": false
+    },
+    "blockage_certificate": null
+  },
+  {
+    "case_id": "corridor915f:south:corridor_3",
+    "reference_state": "undetermined",
+    "reason": "reference_support_unknown",
+    "graph_verdict": "passable",
+    "mesh_witness": {
+      "status": "unverifiable",
+      "reason": "reference_support_unknown",
+      "first_failure": [
+        -2.35,
+        -8.15,
+        0.1
+      ],
+      "index": 116,
+      "gap_dependency": false
+    },
+    "blockage_certificate": null
+  },
+  {
+    "case_id": "corridor915f:south:corridor_4",
+    "reference_state": "undetermined",
+    "reason": "reference_support_unknown",
+    "graph_verdict": "passable",
+    "mesh_witness": {
+      "status": "unverifiable",
+      "reason": "reference_support_unknown",
+      "first_failure": [
+        -2.35,
+        -8.15,
+        0.1
+      ],
+      "index": 116,
+      "gap_dependency": false
+    },
+    "blockage_certificate": null
+  },
+  {
+    "case_id": "corridor915f:south:corridor_5",
+    "reference_state": "undetermined",
+    "reason": "reference_support_unknown",
+    "graph_verdict": "passable",
+    "mesh_witness": {
+      "status": "unverifiable",
+      "reason": "reference_support_unknown",
+      "first_failure": [
+        -2.35,
+        -8.15,
+        0.1
+      ],
+      "index": 116,
+      "gap_dependency": false
+    },
+    "blockage_certificate": null
+  },
+  {
+    "case_id": "corridor915f:south:corridor_6",
+    "reference_state": "undetermined",
+    "reason": "reference_support_unknown",
+    "graph_verdict": "passable",
+    "mesh_witness": {
+      "status": "unverifiable",
+      "reason": "reference_support_unknown",
+      "first_failure": [
+        -2.35,
+        -8.15,
+        0.1
+      ],
+      "index": 116,
+      "gap_dependency": false
+    },
+    "blockage_certificate": null
+  },
+  {
+    "case_id": "corridor915f:south:corridor_7",
+    "reference_state": "undetermined",
+    "reason": "reference_support_unknown",
+    "graph_verdict": "passable",
+    "mesh_witness": {
+      "status": "unverifiable",
+      "reason": "reference_support_unknown",
+      "first_failure": [
+        -2.25,
+        -7.65,
+        0.1
+      ],
+      "index": 121,
+      "gap_dependency": false
+    },
+    "blockage_certificate": null
+  },
+  {
+    "case_id": "corridor915f:south:lateral_0",
+    "reference_state": "undetermined",
+    "reason": "insufficient_coverage_or_possible_scope_escape",
+    "graph_verdict": "unverified",
+    "mesh_witness": {
+      "status": "not_proposed",
+      "reason": "insufficient_coverage_or_possible_scope_escape"
+    },
+    "blockage_certificate": null
+  },
+  {
+    "case_id": "corridor915f:south:lateral_1",
+    "reference_state": "undetermined",
+    "reason": "insufficient_coverage_or_possible_scope_escape",
+    "graph_verdict": "unverified",
+    "mesh_witness": {
+      "status": "not_proposed",
+      "reason": "insufficient_coverage_or_possible_scope_escape"
+    },
+    "blockage_certificate": null
+  },
+  {
+    "case_id": "corridor915f:south:lateral_2",
+    "reference_state": "undetermined",
+    "reason": "insufficient_coverage_or_possible_scope_escape",
+    "graph_verdict": "unverified",
+    "mesh_witness": {
+      "status": "not_proposed",
+      "reason": "insufficient_coverage_or_possible_scope_escape"
+    },
+    "blockage_certificate": null
+  },
+  {
+    "case_id": "corridor915f:south:lateral_3",
+    "reference_state": "undetermined",
+    "reason": "insufficient_coverage_or_possible_scope_escape",
+    "graph_verdict": "unverified",
+    "mesh_witness": {
+      "status": "not_proposed",
+      "reason": "insufficient_coverage_or_possible_scope_escape"
+    },
+    "blockage_certificate": null
+  },
+  {
+    "case_id": "corridor915f:south:lateral_4",
+    "reference_state": "undetermined",
+    "reason": "insufficient_coverage_or_possible_scope_escape",
+    "graph_verdict": "unverified",
+    "mesh_witness": {
+      "status": "not_proposed",
+      "reason": "insufficient_coverage_or_possible_scope_escape"
+    },
+    "blockage_certificate": null
+  },
+  {
+    "case_id": "corridor915f:south:lateral_5",
+    "reference_state": "undetermined",
+    "reason": "insufficient_coverage_or_possible_scope_escape",
+    "graph_verdict": "unverified",
+    "mesh_witness": {
+      "status": "not_proposed",
+      "reason": "insufficient_coverage_or_possible_scope_escape"
+    },
+    "blockage_certificate": null
+  }
+]

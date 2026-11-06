@@ -1,0 +1,66 @@
+{
+  "complete": true,
+  "positive_control_status": "valid",
+  "stage1": [
+    {
+      "arm": "true",
+      "verdict": "passable",
+      "path_status": "valid",
+      "n_path_points": 6,
+      "entry_confirmed_nodes": 1,
+      "confirmed_reached_nodes": 7504,
+      "first_failure": null
+    },
+    {
+      "arm": "estimated",
+      "verdict": "passable",
+      "path_status": "invalid",
+      "n_path_points": 5,
+      "entry_confirmed_nodes": 1,
+      "confirmed_reached_nodes": 1615,
+      "first_failure": {
+        "arm": "estimated",
+        "index": 0,
+        "xy": [
+          -2.35,
+          -19.55
+        ],
+        "world_ijk": [
+          -24,
+          -196,
+          -1
+        ],
+        "mesh_floor_z": 0.050064770000000314,
+        "support": true,
+        "votes": 3,
+        "evidence": 1.6026912927627563,
+        "surface_height": -0.05498676002025604,
+        "foot_z": -0.049986761063337326,
+        "confirmed_posture": 0,
+        "possible_posture": 0,
+        "failure_stage": "foot_height",
+        "volume_label": 0
+      }
+    }
+  ],
+  "stage2": {
+    "executed": true,
+    "n_candidates": 24,
+    "n_eligible": 13,
+    "success_ids": [
+      2,
+      3
+    ],
+    "eligible_success_ids": [
+      2,
+      3
+    ],
+    "selection_unchanged_after_oracle": true,
+    "oracle_not_used_for_selection": true,
+    "scope": "clean ideal depth + true poses; fixed withheld floor strip; reachable goal only"
+  },
+  "goal": "corridor915f:south:south_0",
+  "one_observation_per_independent_candidate": true,
+  "no_positive_control_path_in_generator": true,
+  "no_evaluator_threshold_change": true
+}

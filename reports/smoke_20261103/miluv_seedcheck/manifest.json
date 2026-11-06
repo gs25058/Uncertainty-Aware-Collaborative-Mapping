@@ -1,0 +1,1504 @@
+{
+  "args": {
+    "out": "results/smoke_20261103/miluv_seedcheck",
+    "frames": 48,
+    "stride": 16,
+    "start_index": 0,
+    "seed": 0,
+    "seeds": "1,2",
+    "drones": "ifo001,ifo002,ifo003",
+    "levels": "heterogeneous_medium",
+    "betas": "0.15,0.4,0.8",
+    "baseline_check": false
+  },
+  "frames": [
+    {
+      "robot": "ifo001",
+      "pose_index": 0,
+      "pose_t": 5.873274087905884,
+      "image_t": 5.873274087905884,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/5.873274087905884.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/5.873274087905884.jpeg",
+      "left_sha256": "0718dfd70567ecd6cb457baf6cc139788951e1f731fc0dae840acbcc8b2285ff",
+      "right_sha256": "156816b438a5e28011fba39da3bc4382f2e50e121374c07f07f1346d4cf4ab8f"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 16,
+      "pose_t": 8.00890040397644,
+      "image_t": 8.00890040397644,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/8.00890040397644.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/8.00890040397644.jpeg",
+      "left_sha256": "7ca4c165daf3a9f176957905553dd33fd43a0e1fec6780d892593b8826a95649",
+      "right_sha256": "580cc51220eb27bc10d38ecb293dbf45f0ca531672b9af14b927cedfb2513eef"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 32,
+      "pose_t": 10.17731261253357,
+      "image_t": 10.17731261253357,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/10.17731261253357.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/10.17731261253357.jpeg",
+      "left_sha256": "86800133ac82f99df17d5fcfe27edcb146cd638d483dbdc05fa65efe233e1ad7",
+      "right_sha256": "4494b21bab5daee3c9329d20cdc3ac06af62b4a145d4c55403fdb31382e4eb7f"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 48,
+      "pose_t": 12.31191635131836,
+      "image_t": 12.31191635131836,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/12.31191635131836.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/12.31191635131836.jpeg",
+      "left_sha256": "bc8904d0f24b823d02754b8697d3d10002965fada904908609913ea8e8ad7eea",
+      "right_sha256": "7a898ca6dcac0aabb5c136eec9a3d925a5c1cc5c0991001aa76951a9b74b965d"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 64,
+      "pose_t": 14.44783616065979,
+      "image_t": 14.44783616065979,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/14.44783616065979.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/14.44783616065979.jpeg",
+      "left_sha256": "76134b1567d26b2f14992d8e137e76f76ac85fbe77fab4a43de4a6ec882965d7",
+      "right_sha256": "d316c428b25dc028d97bb6fcdb0ff9e0b040f7aa047fbc5a85b542458918d82f"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 80,
+      "pose_t": 16.582367658615112,
+      "image_t": 16.582367658615112,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/16.582367658615112.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/16.582367658615112.jpeg",
+      "left_sha256": "a1536b7524fe2e94ad101c25b60a6aa1ca04ab38ce9c99d136f9139bd7b629ae",
+      "right_sha256": "a58072928604a64ed15913deec2d2247ea6bcf8f839f279cabff01bdbddc4c5b"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 96,
+      "pose_t": 18.71707558631897,
+      "image_t": 18.71707558631897,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/18.71707558631897.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/18.71707558631897.jpeg",
+      "left_sha256": "ddf49755b024bd96bc53424080cd478b9fa355a8d4bd8ac780c93be436fbb9ae",
+      "right_sha256": "3efb7e488cd977b5a69c4d1edd080eca9b6f4a99a11b13708d3d33841b1a7d77"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 112,
+      "pose_t": 20.886544227600098,
+      "image_t": 20.886544227600098,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/20.886544227600098.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/20.886544227600098.jpeg",
+      "left_sha256": "0436429ef62d3db13e4bb227c385687dd13c4afc9b7c665bbaa4b6f56c1ec7d7",
+      "right_sha256": "0ac5c22b83863ac573c405435e5c244a8ba0a264faeefc1590ab5b206b4ca2d5"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 128,
+      "pose_t": 23.02127432823181,
+      "image_t": 23.02127432823181,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/23.02127432823181.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/23.02127432823181.jpeg",
+      "left_sha256": "9563419720d2bbcb2d4d7408872dee027dc09fa747f0b6547b5185523b57c38d",
+      "right_sha256": "40c6a22481cee7b677d74158dcc4eb945a003a4e4d40fd4932db97d56f02265d"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 144,
+      "pose_t": 25.155494689941406,
+      "image_t": 25.155494689941406,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/25.155494689941406.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/25.155494689941406.jpeg",
+      "left_sha256": "f41331a47e0c90631cacba602098cdb409fdcbe52406a4a8d121254bee798644",
+      "right_sha256": "735eca21412b56c7d371c27019a98c786add23f3419c3638b4340db47caa16d8"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 160,
+      "pose_t": 27.28971552848816,
+      "image_t": 27.28971552848816,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/27.28971552848816.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/27.28971552848816.jpeg",
+      "left_sha256": "a871245919181b625a2efdc723ce400d7c115737ff4258307088d84bb84d4496",
+      "right_sha256": "2b44adeb7b47f65e7802b52e7858bfc42e529e596404da5db51aed62d8fb06df"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 176,
+      "pose_t": 29.45763349533081,
+      "image_t": 29.45763349533081,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/29.45763349533081.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/29.45763349533081.jpeg",
+      "left_sha256": "93e00a98faeeab333b09bd33eae76bd2edb6a32319a82554db41b9782a2fae2b",
+      "right_sha256": "9723c00faaec905248c960ec38e88d5c11ec00bc00b5488652edc2433c3807da"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 192,
+      "pose_t": 31.59277868270874,
+      "image_t": 31.59277868270874,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/31.59277868270874.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/31.59277868270874.jpeg",
+      "left_sha256": "413a6bad097349de46184423a17555bc8c182ccf6b118bfc59741f2cad119ecf",
+      "right_sha256": "eb61dea5a44b2af2e74817e1f5c50d59a633a40886efe581d9f53999d25511c4"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 208,
+      "pose_t": 33.73493432998657,
+      "image_t": 33.73493432998657,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/33.73493432998657.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/33.73493432998657.jpeg",
+      "left_sha256": "71809665ed78dc96981048117d66c24680ddd5ff206b57bb9a4074d673a0e505",
+      "right_sha256": "08ce439bd203b102aac21cf9883e6652255139dc0337de1c62d1966ba563ad47"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 224,
+      "pose_t": 35.87426567077637,
+      "image_t": 35.87426567077637,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/35.87426567077637.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/35.87426567077637.jpeg",
+      "left_sha256": "c6310fd8a1011bf1fa4ec09580bc1ecfa92f26ed099727996f6ba64db6a0eeb6",
+      "right_sha256": "22d3006eb8344777a5b0a73bde7f1bf828993568e0d9eb83d33ab02fb3b01414"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 240,
+      "pose_t": 38.00696134567261,
+      "image_t": 38.00696134567261,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/38.00696134567261.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/38.00696134567261.jpeg",
+      "left_sha256": "bfa37bf439e0db3323770986e05920bb364f27c625aba8c92ed0fb50f90df036",
+      "right_sha256": "24454f08c5499c5231b36a92a05ecf3e272a062b15cdaf20f12fd538a73f4cf5"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 256,
+      "pose_t": 40.138779401779175,
+      "image_t": 40.138779401779175,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/40.138779401779175.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/40.138779401779175.jpeg",
+      "left_sha256": "a24b4d079ea6c441c5eca20d49d8f7a81fe40967ebbc111692fcf84ec487f0b0",
+      "right_sha256": "9700b3ee12f6366a57b97c9f00bb8b556daff2b36b264dccb24ebe8201132fd2"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 272,
+      "pose_t": 42.27037310600281,
+      "image_t": 42.27037310600281,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/42.27037310600281.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/42.27037310600281.jpeg",
+      "left_sha256": "4f3fe527309e261dc66b3162ccc267194876486cab81a8c4477b801066f329d8",
+      "right_sha256": "085e3ffb1998920061b0138a3f880cb24bb35963cf34cdc8dbdd9fa4ff367f51"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 288,
+      "pose_t": 44.402036905288696,
+      "image_t": 44.402036905288696,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/44.402036905288696.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/44.402036905288696.jpeg",
+      "left_sha256": "8b8020a4ae797c21beaa1bf4c5bb51625153b3ede2f2ac291b9e1aadfb3dc3da",
+      "right_sha256": "941143002b53a703118749c4782219ba1c17fa9b16be63c2e3babb1603f47850"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 304,
+      "pose_t": 46.53456687927246,
+      "image_t": 46.53456687927246,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/46.53456687927246.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/46.53456687927246.jpeg",
+      "left_sha256": "c186d861cd53818745c7a4baff232e2917a673a57c8ebfe74654223c01d1ef6b",
+      "right_sha256": "e92d35f07b767c5b3f7a86b8e5623e9b993a279b87624edf760101e0f3b3fc3d"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 320,
+      "pose_t": 48.667274475097656,
+      "image_t": 48.667274475097656,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/48.667274475097656.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/48.667274475097656.jpeg",
+      "left_sha256": "6e62fd7e8fc39806020a87ffdd7e13bfb4cc400db7f0ac5e68296c351c41d311",
+      "right_sha256": "8f36d5d92bfcd431e554793f83c70820fb761197e0002b94c7997dafed7237a2"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 336,
+      "pose_t": 50.80845546722412,
+      "image_t": 50.80845546722412,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/50.80845546722412.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/50.80845546722412.jpeg",
+      "left_sha256": "e92366e3249c3bb7c79d907b2059a504f50d0f24dccd607eeea53d25ace860f1",
+      "right_sha256": "3e261c30ece7df8bdd9541b1694705bd621959f14d84ea59614387370c34ee34"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 352,
+      "pose_t": 52.94404435157776,
+      "image_t": 52.94404435157776,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/52.94404435157776.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/52.94404435157776.jpeg",
+      "left_sha256": "0d9d3f768a4f2e4973a0ef955e0ce79cd93a0e3e7ebf4000a05b54ff6e2b2239",
+      "right_sha256": "39280519f5b80571d17d423dd8146371765ce43263d85c2b40b4d76834c7bc0e"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 368,
+      "pose_t": 55.07814407348633,
+      "image_t": 55.07814407348633,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/55.07814407348633.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/55.07814407348633.jpeg",
+      "left_sha256": "2ce9ad19124e0bf4daeeb87f9b19d3e35620ac0d4c3b7a3d0f15d05bcd12463a",
+      "right_sha256": "4f25980efc43e0366397b0359977178ef16521388bd964a5215d2e2ea9a848b5"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 384,
+      "pose_t": 57.21218156814575,
+      "image_t": 57.21218156814575,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/57.21218156814575.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/57.21218156814575.jpeg",
+      "left_sha256": "40dfa82a8b049dde2cd29ff81fed3e71c2fb874eed299e1ac90b11586d0e9953",
+      "right_sha256": "9318839b3b4d1218cf03faad30f76fcc03376690782747fa8f6c00a960e25a3d"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 400,
+      "pose_t": 59.34849548339844,
+      "image_t": 59.34849548339844,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/59.34849548339844.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/59.34849548339844.jpeg",
+      "left_sha256": "0af42c0e01a90088b6eaac82aa7a614d68726fec6989f350731276f4a45c5e0d",
+      "right_sha256": "0e6beb4b2459e436f6ecbe37ffb50a5c1b1781fe71486fa41768f0e92874de47"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 416,
+      "pose_t": 61.48478102684021,
+      "image_t": 61.48478102684021,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/61.48478102684021.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/61.48478102684021.jpeg",
+      "left_sha256": "f679890f7c1899d4d4527b8d8b864a26db7058d8cf087816865765149d9c715a",
+      "right_sha256": "f8c648981706e3cef43a906ed03113410d1bd0756f32b78fb011e00970b53aab"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 432,
+      "pose_t": 63.62076807022095,
+      "image_t": 63.62076807022095,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/63.62076807022095.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/63.62076807022095.jpeg",
+      "left_sha256": "737b5584b03a5c148952a3492268397aaece6af3f9345b103880f7f2360b68f2",
+      "right_sha256": "d9b42b92ba415a3839aebee6ea5a2664812b073addc7e65df431cfa5c096f74e"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 448,
+      "pose_t": 65.75389838218689,
+      "image_t": 65.75389838218689,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/65.75389838218689.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/65.75389838218689.jpeg",
+      "left_sha256": "d1877be2c7d26e52c84edd96cf6eb8b40523d79e2a7522067485ad6905cd1546",
+      "right_sha256": "497b8952017c42d83a06cd0f0a7fcfa892d6ded84e1505fe955d5a6a72bcddb4"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 464,
+      "pose_t": 67.88834285736084,
+      "image_t": 67.88834285736084,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/67.88834285736084.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/67.88834285736084.jpeg",
+      "left_sha256": "7c8a063fd740d0c0cd72570a11f6ef472341c1e9a9acfdb325a0c1a3ab5b3b00",
+      "right_sha256": "d09bde13c154eb45f30362affef4b37c5a3ffa98a54322b64748afcdfa9d857d"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 480,
+      "pose_t": 70.02170753479004,
+      "image_t": 70.02170753479004,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/70.02170753479004.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/70.02170753479004.jpeg",
+      "left_sha256": "33217710ca7dc25794aeb1512ab0830a1e947e5e5aff7acfa5bbdf5323d83cb6",
+      "right_sha256": "3813a9bc85c5886c50330c66ac6f1edc775002b8a32944bf9c1b28ec0b906937"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 496,
+      "pose_t": 72.1549973487854,
+      "image_t": 72.1549973487854,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/72.1549973487854.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/72.1549973487854.jpeg",
+      "left_sha256": "4a0fe658b9ebd680a118a619aff126f8bfe55ab337f2654b3832239cb5a40fe6",
+      "right_sha256": "47e0a7e2a9e3e40c4079caff55e1e27e6c45ea3022f76b39631f75806bea5a76"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 512,
+      "pose_t": 74.28934097290039,
+      "image_t": 74.28934097290039,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/74.28934097290039.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/74.28934097290039.jpeg",
+      "left_sha256": "52d6bc4eb5ce05fe992db0fd625e0676f0b296925103010fff0b3d246ab874ad",
+      "right_sha256": "80ac154c1743b5dbe541f77daeeef85a97de97f34eba22b8b3073abfb9379258"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 528,
+      "pose_t": 76.42541074752808,
+      "image_t": 76.42541074752808,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/76.42541074752808.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/76.42541074752808.jpeg",
+      "left_sha256": "fe02cdb6b7bfa2ca2f7891712961dcbaa819c8b0c73f36fe13fded527cdbcac2",
+      "right_sha256": "a07eec8d5b1d752eb23eb518279090e8db6322ec63c6b5b4c016c0dca593a392"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 544,
+      "pose_t": 78.56129455566406,
+      "image_t": 78.56129455566406,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/78.56129455566406.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/78.56129455566406.jpeg",
+      "left_sha256": "e7c3ae79f466c99426f2256114391c6f42ba0d71c5930dbfe1e5096a6ef87a69",
+      "right_sha256": "b622f64d8c77e60387241a023fa3172176f65604772a5535b69b43bb8e19990e"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 560,
+      "pose_t": 80.69650363922119,
+      "image_t": 80.69650363922119,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/80.69650363922119.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/80.69650363922119.jpeg",
+      "left_sha256": "58d01c14822cd2b9d1faff9efc2b3e3d26549959cece22981ff53629c2a70a3f",
+      "right_sha256": "bbb8a2c61f49a2a78164e474179fbeb53f0edf4ec8b35a472db745c16457f756"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 576,
+      "pose_t": 82.83194327354431,
+      "image_t": 82.83194327354431,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/82.83194327354431.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/82.83194327354431.jpeg",
+      "left_sha256": "8584df2b0757c250ddb804546db23a2bc5f06868cd486ed13481afee71c46e40",
+      "right_sha256": "7870e21c20b14f37dc47732a05db84b52bf880386df1f257263b7e0ba199a14b"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 592,
+      "pose_t": 84.96630835533142,
+      "image_t": 84.96630835533142,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/84.96630835533142.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/84.96630835533142.jpeg",
+      "left_sha256": "a65ada00b337f2a63277fb3edddeb0ea2ab921c34f8e812a4abcb91ed3618f90",
+      "right_sha256": "1b0db8166a9828069257638c4b94bcac3072d79d3b67821ef519a72c276857ec"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 608,
+      "pose_t": 87.1004114151001,
+      "image_t": 87.1004114151001,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/87.1004114151001.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/87.1004114151001.jpeg",
+      "left_sha256": "febfcbe91eaf87ee4a999d8041438ff1018b136ffb7caf7e0f06485264137d7b",
+      "right_sha256": "ed97744febfa1a89727961807919b740236ea1ce708774d6d38df39fcd8e78ee"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 624,
+      "pose_t": 89.23456239700317,
+      "image_t": 89.23456239700317,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/89.23456239700317.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/89.23456239700317.jpeg",
+      "left_sha256": "f8a8d642331df17abc04aa14479ead3be47af2f7b92e039d451b9b5ae3783d85",
+      "right_sha256": "9197b767de459cec90ee978faa42fc960206546eb39460a35645e4dbcaa5448e"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 640,
+      "pose_t": 91.36942529678345,
+      "image_t": 91.36942529678345,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/91.36942529678345.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/91.36942529678345.jpeg",
+      "left_sha256": "d2273694c9de547e621e9b47b934204b20974f373c2e082a3afea27c7399a35d",
+      "right_sha256": "cf64f1ed326bdfa900f3aa74a99ad1d1a5b38b49c271842a662863dc24aa8409"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 656,
+      "pose_t": 93.50476169586182,
+      "image_t": 93.50476169586182,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/93.50476169586182.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/93.50476169586182.jpeg",
+      "left_sha256": "c84ce1b00b8588cc3c670e7ef1fbf3151f1966b2d202132ec5aa09efea1ddd93",
+      "right_sha256": "74cbf3a7369e995c56d43bfc95c460b5c6ffd51b372d9914c486011c6b4f158f"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 672,
+      "pose_t": 95.63911533355713,
+      "image_t": 95.63911533355713,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/95.63911533355713.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/95.63911533355713.jpeg",
+      "left_sha256": "8a569403acbda88b4f184d0751ab6c3574327260761c657e6b1afc86af71f8f4",
+      "right_sha256": "5f52362f0c07bd397c20c7ecf591670f5b73fc56fe7b29e929dbe7202b3d72e8"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 688,
+      "pose_t": 97.77468419075012,
+      "image_t": 97.77468419075012,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/97.77468419075012.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/97.77468419075012.jpeg",
+      "left_sha256": "9e38fbdce0c72831f6dc533e0e2a53d4d66484a96a7cd6621cf92db210403ed2",
+      "right_sha256": "e8e20715cd8eb58ec264c3355258aa28fb0c12c49f998dc0de4597aeeac1ead4"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 704,
+      "pose_t": 99.90958380699158,
+      "image_t": 99.90958380699158,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/99.90958380699158.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/99.90958380699158.jpeg",
+      "left_sha256": "14c9f80d5fbc4bc25d260c95c610380ad82668175b26f71777a14ae7bf72c290",
+      "right_sha256": "ebaa9ea769e63aca62b2b01f1a191eb999d13b5b96cef3997ee45a2bf554a2d0"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 720,
+      "pose_t": 102.04438161849976,
+      "image_t": 102.04438161849976,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/102.04438161849976.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/102.04438161849976.jpeg",
+      "left_sha256": "bc0a3dce3a06213fb9c079fde0361c01c9b89bf0471069a62cdd2d3b08fb1106",
+      "right_sha256": "5304de536688f202b1096b8d74dd45f168f48dadb5ca5cd7ea12dd3dca7795e2"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 736,
+      "pose_t": 104.17890858650208,
+      "image_t": 104.17890858650208,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/104.17890858650208.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/104.17890858650208.jpeg",
+      "left_sha256": "404748267133093f33feafaaf38ba654ce5adaefd80897497091ef1178283598",
+      "right_sha256": "ae1d76d29bd89d30992befbac79638eb240f47d5291ad6971806f13529573afe"
+    },
+    {
+      "robot": "ifo001",
+      "pose_index": 752,
+      "pose_t": 106.31368136405945,
+      "image_t": 106.31368136405945,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra1/106.31368136405945.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo001/infra2/106.31368136405945.jpeg",
+      "left_sha256": "c0b053dd44a2483161b7cb422122ecf4343e412b4c1f73ac0378dc3522fba199",
+      "right_sha256": "0350af73f7171ab72f0ec3fded34270b31eceacf48d172ae529ab9092b6a25ae"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 0,
+      "pose_t": 6.3925652503967285,
+      "image_t": 6.3925652503967285,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/6.3925652503967285.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/6.3925652503967285.jpeg",
+      "left_sha256": "0e0816a7f16833658d16e3411bad5d7eb9fa81778148c64b8aa957ddec39a0d6",
+      "right_sha256": "39c2a173c3cac529ead9aad14a898657e90f6703d19b7ff5463e9e2dcccef1cd"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 16,
+      "pose_t": 8.526500463485718,
+      "image_t": 8.526500463485718,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/8.526500463485718.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/8.526500463485718.jpeg",
+      "left_sha256": "0eb9457ec7c3e25a34f03a0fd6ac2a1d62d3323a8107a4296a93f5dffa7da995",
+      "right_sha256": "53c2afc8857d6b8540d08ef53061fdbf54e530500a1b529e0c86b75a55b7ce81"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 32,
+      "pose_t": 10.664182424545288,
+      "image_t": 10.664182424545288,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/10.664182424545288.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/10.664182424545288.jpeg",
+      "left_sha256": "9bbf2adcdda1147774044e79bb792c1c0440e35286f85e5da6f8c4d62ee64540",
+      "right_sha256": "ea5b9f3a399282498a68586f0b77f974d1dd5d27eda06eb23382bb5e053b7f10"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 48,
+      "pose_t": 12.798903703689575,
+      "image_t": 12.798903703689575,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/12.798903703689575.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/12.798903703689575.jpeg",
+      "left_sha256": "3c6f0442c0e0a919ee756e7e7f4ee57ae56ce48c778c12f0e57788fbde81c305",
+      "right_sha256": "f1169d9abeffdecdb1a9ab55f0161d2aec5fa108ebded257522c351e36fb4bad"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 64,
+      "pose_t": 14.930828332901001,
+      "image_t": 14.930828332901001,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/14.930828332901001.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/14.930828332901001.jpeg",
+      "left_sha256": "f6bec5b6df59e47b1d776a49f7d1a58c93581252c793d9cd3c12c8e8e279b657",
+      "right_sha256": "184eea7f2d4da9bd10289884810a996e33b0c3102d700cb8a0854b1e9cb83c57"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 80,
+      "pose_t": 17.062864542007446,
+      "image_t": 17.062864542007446,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/17.062864542007446.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/17.062864542007446.jpeg",
+      "left_sha256": "cee81901ba38cc1ab49ddea2dd3ba5c809feaa64eeb8c59e1fc91e3329630b80",
+      "right_sha256": "e3a40c57cad87da7be2d9fd27f54333bf85e8188688c02db118f4b865c118b75"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 96,
+      "pose_t": 19.199026107788086,
+      "image_t": 19.199026107788086,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/19.199026107788086.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/19.199026107788086.jpeg",
+      "left_sha256": "f6d91a1b532b5474e6be96f324ba7d1215ec7e4285477ccea13788f3087484d7",
+      "right_sha256": "2f3d8ddfa44a2954b4e5a9564bf4bce01672cc3daaaeb5b8e90f4d804dd2128d"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 112,
+      "pose_t": 21.332700729370117,
+      "image_t": 21.332700729370117,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/21.332700729370117.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/21.332700729370117.jpeg",
+      "left_sha256": "10f99ff64d2222ea04c2e01fbba10963b667cb63add2a328460542b8a8d736d4",
+      "right_sha256": "d7a1b6f506fe171dfa9941be5dcfa52cf132afa1d73981fcc50916a5351e475d"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 128,
+      "pose_t": 23.475359678268433,
+      "image_t": 23.475359678268433,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/23.475359678268433.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/23.475359678268433.jpeg",
+      "left_sha256": "b5487e6d787dbc15e3ec2a62cc0fa7a9f577d25ee461256207cdf6db48463de7",
+      "right_sha256": "c7299623e130836ad81204dbd18cfc516e224be3aece6350289e003867be1db6"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 144,
+      "pose_t": 25.611940622329712,
+      "image_t": 25.611940622329712,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/25.611940622329712.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/25.611940622329712.jpeg",
+      "left_sha256": "ed52cc533693dae3a07d3ef4de9dd862ab1f24e2e179fc07b37ea6657ab44ecd",
+      "right_sha256": "2228a110e7d87491016857599b044fc143f98dfb19c037ef89a99b9303f91a62"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 160,
+      "pose_t": 27.74908137321472,
+      "image_t": 27.74908137321472,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/27.74908137321472.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/27.74908137321472.jpeg",
+      "left_sha256": "693c86885222b879b86fea7e29428229c5b0bc6ba60387df1dd633c2afad3d71",
+      "right_sha256": "6d9839941c2cf38ed0319f779aa9ad1299ac359b720007708cc619967caf4f38"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 176,
+      "pose_t": 29.880658864974976,
+      "image_t": 29.880658864974976,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/29.880658864974976.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/29.880658864974976.jpeg",
+      "left_sha256": "1cfbf727e8227d77e62982b72f0b5202eb375f76cef619a256f465d2f707a691",
+      "right_sha256": "175c690a23fbe160f266cfa0a1119ac6e395ccdf1f890680fe0d5ca74fc22b22"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 192,
+      "pose_t": 32.01168966293335,
+      "image_t": 32.01168966293335,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/32.01168966293335.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/32.01168966293335.jpeg",
+      "left_sha256": "8bee4ec2ec64a82af6a9247d5dbcf1285b1572a8fd1432e7b16a416b035d8ed4",
+      "right_sha256": "e46a3de9bba67f7d4947bdaf8418034e25ca8a140926230550a13d9402dd4152"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 208,
+      "pose_t": 34.14265704154968,
+      "image_t": 34.14265704154968,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/34.14265704154968.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/34.14265704154968.jpeg",
+      "left_sha256": "bcfeb95bc615ac85c4426fa3d485431256d2ae39d8b3b1b8e31a7a171c9aee9d",
+      "right_sha256": "57315d566bcb1b341cc1157af11c08ff2f80ffd147468abd554bad8e894165e3"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 224,
+      "pose_t": 36.27358865737915,
+      "image_t": 36.27358865737915,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/36.27358865737915.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/36.27358865737915.jpeg",
+      "left_sha256": "1e3436f165d0b8af670e86cd715a6582ef0861d5ef7d1d51ea9b26b6a90adba7",
+      "right_sha256": "86f43b28b7fd80fc25d752f76a296a698e541e4c19bf6eff7ba80b5f1d46bac3"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 240,
+      "pose_t": 38.40587282180786,
+      "image_t": 38.40587282180786,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/38.40587282180786.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/38.40587282180786.jpeg",
+      "left_sha256": "2e29eacd6a75daae315831a2eac6dc83539374af4f2952273fc45c891e099565",
+      "right_sha256": "9a1dac6c9e07cc74965b43c0f9bed13809d0c294b6f0554297a56b4978492659"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 256,
+      "pose_t": 40.545804023742676,
+      "image_t": 40.545804023742676,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/40.545804023742676.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/40.545804023742676.jpeg",
+      "left_sha256": "684e5faf8e9c9fe6795b2fdc34b5fb82596f75867050820e158a50314f4dd6f4",
+      "right_sha256": "4781d1e9dd4b3368b1b56e6bc56b574b55c8591cd9232554ac42c5d4c3ef71f4"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 272,
+      "pose_t": 42.68114399909973,
+      "image_t": 42.68114399909973,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/42.68114399909973.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/42.68114399909973.jpeg",
+      "left_sha256": "9a00af572f9bd66a3e9938858e320245364072d7ed851a2ddc7d214fa1bfc156",
+      "right_sha256": "ade3aeadf63225a6743b4124f20e3f89dac27bad5ffbbef6a29d21b1d01e7cc8"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 288,
+      "pose_t": 44.81659746170044,
+      "image_t": 44.81659746170044,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/44.81659746170044.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/44.81659746170044.jpeg",
+      "left_sha256": "40bb9767c47dbb7124d8702db53a2c94495acb1843bff2410059d6ff98481ce4",
+      "right_sha256": "2db1bb3a3bd948e4b96d72f58dbee1dfc130529cb65eb458886aed68d4c23007"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 304,
+      "pose_t": 46.95168375968933,
+      "image_t": 46.95168375968933,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/46.95168375968933.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/46.95168375968933.jpeg",
+      "left_sha256": "9940a76438432cb17666f40b891f8262f870fcc64a50341a00958efd9f28969f",
+      "right_sha256": "c7cef5b1d585b305e4f23b568c2b7465e46a581cb0c9eb92669873b24f791fcf"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 320,
+      "pose_t": 49.087055921554565,
+      "image_t": 49.087055921554565,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/49.087055921554565.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/49.087055921554565.jpeg",
+      "left_sha256": "c22ec6995c38920d2e04a718f1a8ad3974384f625d18c307fafee4e2219e48cd",
+      "right_sha256": "d6942f43b582b50e473a56c621e2daffab311db3f667e30fb5132c60f8d1c2c6"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 336,
+      "pose_t": 51.22182512283325,
+      "image_t": 51.22182512283325,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/51.22182512283325.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/51.22182512283325.jpeg",
+      "left_sha256": "32e823524c03dbbbb80dfea8004e6189df90bd22e5b235136392101fa419febc",
+      "right_sha256": "e50499f131b7727f1dda52d4befbab594894ca7f119dc1f80ddf9ab618172ee3"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 352,
+      "pose_t": 53.356590270996094,
+      "image_t": 53.356590270996094,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/53.356590270996094.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/53.356590270996094.jpeg",
+      "left_sha256": "881a6adba3b104b767f6f256cfbb72fcc86800332db4ae785b6b62e7880e752a",
+      "right_sha256": "2eaf8fb0f48271137841decb1d0a21f309bcc9c144682f6aad3c26bdb0e886f8"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 368,
+      "pose_t": 55.49142074584961,
+      "image_t": 55.49142074584961,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/55.49142074584961.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/55.49142074584961.jpeg",
+      "left_sha256": "317e01613e897be7b81132000cba2b6c44ee84ef95db8606d19722e63260f17a",
+      "right_sha256": "966c14b8d556e7fd94720d91cbc20b2ed887f77db7918a237ea652401a9e333c"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 384,
+      "pose_t": 57.62617039680481,
+      "image_t": 57.62617039680481,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/57.62617039680481.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/57.62617039680481.jpeg",
+      "left_sha256": "a088bb0f55659da82f09bde8f7c518e22be5d20f6270a7c17582df8797047683",
+      "right_sha256": "6a7b93680015920c7419320d4979c312062b727dac65f57d72b89c620f918a7c"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 400,
+      "pose_t": 59.76378560066223,
+      "image_t": 59.76378560066223,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/59.76378560066223.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/59.76378560066223.jpeg",
+      "left_sha256": "e882f16832dee4424f5fbbf2f7daeb7473bf07ac2a67f2522acd01d02f4ab070",
+      "right_sha256": "bfc2c59e37b66464eac86634b235e2bbbb0a6e06d14b6a201f9c4abd2bde3227"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 416,
+      "pose_t": 61.89992022514343,
+      "image_t": 61.89992022514343,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/61.89992022514343.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/61.89992022514343.jpeg",
+      "left_sha256": "d06aafc71968afdbb3ab0b5a9cd567a5035faee6b123d8611c319072624cab48",
+      "right_sha256": "45c72b9b3595592df6f29ffd9dfccbe035973a51c6adf61c64b587404042477b"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 432,
+      "pose_t": 64.03393268585205,
+      "image_t": 64.03393268585205,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/64.03393268585205.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/64.03393268585205.jpeg",
+      "left_sha256": "230d923823cd3a19a4b50cc6c47add5e543240c37fb7710782efcff8340b19c5",
+      "right_sha256": "ef2d786066a7bd92682dc68210abbf1ac6db26cabad80f8b8ea0cf0f796566b0"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 448,
+      "pose_t": 66.16788101196289,
+      "image_t": 66.16788101196289,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/66.16788101196289.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/66.16788101196289.jpeg",
+      "left_sha256": "50b86a73c50464b7fe1f6c4918e5d59d7f5e234b72d53ccc448d4792ce14d5cf",
+      "right_sha256": "2dfba79027496d781c82ecbba319046f18ba8fe494a8f0209d2a7245ecb40fe6"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 464,
+      "pose_t": 68.30223751068115,
+      "image_t": 68.30223751068115,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/68.30223751068115.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/68.30223751068115.jpeg",
+      "left_sha256": "21828c2366c43835655d2311cc18d2897759a2b27ff5751e850fca11967eb7c6",
+      "right_sha256": "341deed0be24a1f6a3d322c20b17214b931044271b7a9076fa39a42df7b00ed9"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 480,
+      "pose_t": 70.44132828712463,
+      "image_t": 70.44132828712463,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/70.44132828712463.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/70.44132828712463.jpeg",
+      "left_sha256": "c63401ba9f8f7676d9dc888540804e0eaf6c96447b6b98a4986c688f5776e1e1",
+      "right_sha256": "03a0e663c365d7122fea634824a6571edfb3138bfc7d5a24ee21df8666c5811f"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 496,
+      "pose_t": 72.57441711425781,
+      "image_t": 72.57441711425781,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/72.57441711425781.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/72.57441711425781.jpeg",
+      "left_sha256": "4b4b2d5785c6bb223ce988553be874b56bdcecda384a416d6ddffc899603a035",
+      "right_sha256": "d5075d2efdbfa908b9e9f11d69300aa8003c00f1b51bbcb88599f1927e956c63"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 512,
+      "pose_t": 74.70758509635925,
+      "image_t": 74.70758509635925,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/74.70758509635925.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/74.70758509635925.jpeg",
+      "left_sha256": "b6affb4e281816ddec631315605430ba2b0b0b2a630f4f830b8af122cdf9169d",
+      "right_sha256": "f6ac3530ddbde912ef6bac765ec3437ade1358bf9f9e59e597a8012f5bc846ae"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 528,
+      "pose_t": 76.84402465820312,
+      "image_t": 76.84402465820312,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/76.84402465820312.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/76.84402465820312.jpeg",
+      "left_sha256": "62c89df1f1dce4a6df8e4fd06a749486ba16bc5cabc767c3767f4c6fe8e93fcf",
+      "right_sha256": "34986ca681f8690363df741abadacc955cf348c5925a27c9815d82ae90cae26b"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 544,
+      "pose_t": 78.977952003479,
+      "image_t": 78.977952003479,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/78.977952003479.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/78.977952003479.jpeg",
+      "left_sha256": "580e275d94f648214ad6f5922b42748767c5eb63789eaffcbcb96517da24f547",
+      "right_sha256": "aa711d5e1f939006839d01cbddea1801dddbcefab267b847ef52d624d771c0ae"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 560,
+      "pose_t": 81.11586546897888,
+      "image_t": 81.11586546897888,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/81.11586546897888.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/81.11586546897888.jpeg",
+      "left_sha256": "0acbbe5312bb9033b0ecef4abe9fa323f94bb5e8fe4b3db94bd748e35a5b6aed",
+      "right_sha256": "c52b0e5832fcfa9cc3ba8aabd6400ad54812aba5a97f9313111da8d3c9596079"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 576,
+      "pose_t": 83.2490131855011,
+      "image_t": 83.2490131855011,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/83.2490131855011.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/83.2490131855011.jpeg",
+      "left_sha256": "b4b1076828f1abd4e0a3eb931d201f8a39937e7408412e725cd7c667f7a6f2db",
+      "right_sha256": "8e034afc3e2de3b025f4abd53aaee1f9cd88d06b1de0433d09ddbb040596d21e"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 592,
+      "pose_t": 85.38530898094177,
+      "image_t": 85.38530898094177,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/85.38530898094177.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/85.38530898094177.jpeg",
+      "left_sha256": "a7b81735531423cf7e0e14c24f2bd6b5c51326103c981dfe8a7a0a18606c78e2",
+      "right_sha256": "a624d6acbc0a4cdb92092250823d4225c1851d298d4310b2d2ce1c2f5f21c7c0"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 608,
+      "pose_t": 87.51845502853394,
+      "image_t": 87.51845502853394,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/87.51845502853394.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/87.51845502853394.jpeg",
+      "left_sha256": "f6f9a178758441bd50a2ad994934a28bbd27c5455132fdfa7da6f9ea7d9010b0",
+      "right_sha256": "f04952220643bfb0d8b09d2ff3c1bf78aaac84dda45232543b9d6c16d5f16dfb"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 624,
+      "pose_t": 89.65217733383179,
+      "image_t": 89.65217733383179,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/89.65217733383179.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/89.65217733383179.jpeg",
+      "left_sha256": "f8cf08da69e22645a991154d8781f6f17d6b8e68a9e78c260f3307f31b8d97e9",
+      "right_sha256": "2bed27e878287c0b01e6fe8401dd8770e1f3f326cf52d67a0d46adb2981c7da8"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 640,
+      "pose_t": 91.78590035438538,
+      "image_t": 91.78590035438538,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/91.78590035438538.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/91.78590035438538.jpeg",
+      "left_sha256": "6dfaf3269f30249bf258daa1e76634594dc20f4fcb2ba11f538ef8d278410f24",
+      "right_sha256": "8cfa64bd067e10a5b1cf4fa33ed33cfc2d9d5b14178ae733c4ad2f57398f1285"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 656,
+      "pose_t": 93.9198591709137,
+      "image_t": 93.9198591709137,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/93.9198591709137.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/93.9198591709137.jpeg",
+      "left_sha256": "4076aae9684e4b23d35c81b04971799bdad1360debc2e31ba52559ba3083c139",
+      "right_sha256": "68ebcdc0bdec001dde8125ae66572fa9ea07e6def5b4a7dcfc6e9420b412ca3d"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 672,
+      "pose_t": 96.05844044685364,
+      "image_t": 96.05844044685364,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/96.05844044685364.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/96.05844044685364.jpeg",
+      "left_sha256": "0cb7cfe356379d3baf76dca12b0d4f63098aedd36fbdf0d20624de1ac89ed4d4",
+      "right_sha256": "3830a9c1cfb49349c1bba27c12316711499f7735178cc17c6c5a9704a70cf5a1"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 688,
+      "pose_t": 98.1960232257843,
+      "image_t": 98.1960232257843,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/98.1960232257843.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/98.1960232257843.jpeg",
+      "left_sha256": "d0e5b77a24e1ca2dfbfd7e78d1c84224af1c23190cd3765eb4046610f618b1d5",
+      "right_sha256": "b10f169219abb11996db8b065f68384bc57ab7f21727937bc8d6e98458fe8e1f"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 704,
+      "pose_t": 100.3300507068634,
+      "image_t": 100.3300507068634,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/100.3300507068634.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/100.3300507068634.jpeg",
+      "left_sha256": "c8477cc4bf3687656bb7cd158a8f096f4f987e6e5428c2376bde684e6c2ecd8c",
+      "right_sha256": "f78b89fbf7c77907bd4104f98e5d88c51e89d3775fd7c882df52b4e56e6772d7"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 720,
+      "pose_t": 102.46347308158875,
+      "image_t": 102.46347308158875,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/102.46347308158875.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/102.46347308158875.jpeg",
+      "left_sha256": "7f120b98c7c044e16b117bcb81f1f067ba01271811e1ee333fce0a13f67b8070",
+      "right_sha256": "fd0091469a63d329aaa6d92e00b636df2c8130308e0b54204d016ff4f55f642b"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 736,
+      "pose_t": 104.5968189239502,
+      "image_t": 104.5968189239502,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/104.5968189239502.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/104.5968189239502.jpeg",
+      "left_sha256": "fd2e50c840d744fc489e4ed0b25a24dd247ea4c166b88bb7edc09a49e79d87bd",
+      "right_sha256": "26e6001e3a7af5dfab5b3c9ffa482a9911f80a226f64dcf3743e6f7dbde385c3"
+    },
+    {
+      "robot": "ifo002",
+      "pose_index": 752,
+      "pose_t": 106.73037099838257,
+      "image_t": 106.73037099838257,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra1/106.73037099838257.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo002/infra2/106.73037099838257.jpeg",
+      "left_sha256": "ab64833141669d853e833e4aa7e004eaeff512bc4a585658007ac8f56bf213c0",
+      "right_sha256": "7711762705a700ae8648069ebef463df1ba0dbc047721aaf108fe499a7ccc17f"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 0,
+      "pose_t": 6.824337720870972,
+      "image_t": 6.824337720870972,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/6.824337720870972.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/6.824337720870972.jpeg",
+      "left_sha256": "f5e7cbaab18925d87990a9161c59c4c9e8bf3e853341d8ec1d58e7a860b2e168",
+      "right_sha256": "245da61977dbf882bb4a5e6e47704bb8e6e1dfd5ecb2a737a231faab2ea6c6a0"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 16,
+      "pose_t": 8.95839262008667,
+      "image_t": 8.95839262008667,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/8.95839262008667.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/8.95839262008667.jpeg",
+      "left_sha256": "7680cdd5977a202d454ccde53d1f3b77aed02ae04dd5afae26b8c8ac4ea10ccf",
+      "right_sha256": "ae51e810f130f6ab4bad9b1e613139d44cf2b7c48553e4644b6b4d334a604f03"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 32,
+      "pose_t": 11.096242189407349,
+      "image_t": 11.096242189407349,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/11.096242189407349.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/11.096242189407349.jpeg",
+      "left_sha256": "842f8ca3fda41bc671923677aa7655a167a49e13f182d7c3084491b2cbbb3e56",
+      "right_sha256": "42c8dead6d26753f995a7fc2181d545c95e1b563227e0a3058a9ec8fc6b1d976"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 48,
+      "pose_t": 13.231145143508911,
+      "image_t": 13.231145143508911,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/13.231145143508911.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/13.231145143508911.jpeg",
+      "left_sha256": "a4cbc05f3db508caaa652ac551f241a6b8fe62d538a1caae239278ac552db10e",
+      "right_sha256": "03424dc02236948cb703b768b918aa45e3d5afe1d7efc3f3f5aa1368761b58a7"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 64,
+      "pose_t": 15.366017580032349,
+      "image_t": 15.366017580032349,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/15.366017580032349.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/15.366017580032349.jpeg",
+      "left_sha256": "ba99a382704f8242016138bd52f2f80fbbbde71e74bb6f765621098a92282e07",
+      "right_sha256": "41d7665d18863d1813b5e3748c366cdeb5ee461a12c70a892038aa3a53a9aeea"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 80,
+      "pose_t": 17.50103497505188,
+      "image_t": 17.50103497505188,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/17.50103497505188.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/17.50103497505188.jpeg",
+      "left_sha256": "d78ada2d2f5de850515b7e8d288832a6aa2512d0c67a3a2ad47f84da6270d6ba",
+      "right_sha256": "3d87ef90d94e8c35cba4587ca99856449215979454d213584dad9428696e3dcb"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 96,
+      "pose_t": 19.640185117721558,
+      "image_t": 19.640185117721558,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/19.640185117721558.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/19.640185117721558.jpeg",
+      "left_sha256": "120143b85cb76c932f238b1012b7f28c8c5b1ae291310f0a92ac901c11bf76b7",
+      "right_sha256": "b3a95c5debee83ce2989c6e76a29d24373aedf909c34214b856ef1a896e38b4f"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 112,
+      "pose_t": 21.775341272354126,
+      "image_t": 21.775341272354126,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/21.775341272354126.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/21.775341272354126.jpeg",
+      "left_sha256": "60dca3f60164b067440077790bbf75400b204bbbd676d4ce9bde5447628dc966",
+      "right_sha256": "1c73114a85687dbed43e0179e65b47fda6a1825f465faf940a8e1d3bfcf5415f"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 128,
+      "pose_t": 23.90902614593506,
+      "image_t": 23.90902614593506,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/23.90902614593506.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/23.90902614593506.jpeg",
+      "left_sha256": "33cc7d92e5f77566b0f111a7e675e85894cee4b8c8fc15cb518174f1ac56faeb",
+      "right_sha256": "0f9b4eef4ce0c7ef445c41c95730858375f78acf0393dc795c2523749b37c3f6"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 144,
+      "pose_t": 26.04338812828064,
+      "image_t": 26.04338812828064,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/26.04338812828064.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/26.04338812828064.jpeg",
+      "left_sha256": "dc17469063e601458d06b72e413f764ed3cac9eb1d97a72c6915fd5c4d318945",
+      "right_sha256": "f12e78375e01d566f5eb890dcc9b04269d1dd9096b93c543a39571d67c296c3b"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 160,
+      "pose_t": 28.177007913589478,
+      "image_t": 28.177007913589478,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/28.177007913589478.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/28.177007913589478.jpeg",
+      "left_sha256": "c960d7035e7aa330f357997a8ab109cd78d4e14fe27517d46365972bee256ec3",
+      "right_sha256": "e42164fa4352204c99d9969f78d117050af98c1c04cc8a31919fe64132101c76"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 176,
+      "pose_t": 30.31100821495056,
+      "image_t": 30.31100821495056,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/30.31100821495056.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/30.31100821495056.jpeg",
+      "left_sha256": "b7bdc930d8f317a817ab4c1b9b08e347b1f91b9bea3dd0001f609733ab25daf0",
+      "right_sha256": "313b245d9ea0b8882bfeba602008ba6402e80e32354be501ff6ba75e81bc1ea4"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 192,
+      "pose_t": 32.44434356689453,
+      "image_t": 32.44434356689453,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/32.44434356689453.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/32.44434356689453.jpeg",
+      "left_sha256": "453692535ee2db985bb8978b8c70164dc27f32e27838845e788fdcabaa3ce3c9",
+      "right_sha256": "63d908e8291036ab64df13c7a37a1d142ef23cb94a8391b0e76b875a478cee11"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 208,
+      "pose_t": 34.578298807144165,
+      "image_t": 34.578298807144165,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/34.578298807144165.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/34.578298807144165.jpeg",
+      "left_sha256": "79251bc9188b21c32d63d3297324e8c2023c5e5c1f8bdca748f2f8ea7364d057",
+      "right_sha256": "1f89c7d5eb825fde9c15db6d142cb1591d8530506dad280344e4d80bab46c566"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 224,
+      "pose_t": 36.7232084274292,
+      "image_t": 36.7232084274292,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/36.7232084274292.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/36.7232084274292.jpeg",
+      "left_sha256": "f65345578eea9b5c82590402cf19811251530973f2a00414cc6e612fc60dada1",
+      "right_sha256": "90c98aab26bf577dac7884e80d54a2354332b3e47cb9b62f172f3be24dca9493"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 240,
+      "pose_t": 38.85598278045654,
+      "image_t": 38.85598278045654,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/38.85598278045654.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/38.85598278045654.jpeg",
+      "left_sha256": "3829c295d1e1b7a743718a79d7674b9511bcb7cadffe5faa7e92055833ee187c",
+      "right_sha256": "29a406868953eb4f5412f6db11d8a01134d8d82de25da3d78873d876b1ab5cc6"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 256,
+      "pose_t": 40.99523448944092,
+      "image_t": 40.99523448944092,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/40.99523448944092.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/40.99523448944092.jpeg",
+      "left_sha256": "ea9a57e75fdb122d7559c448212b7c5a1000f469eb05ffbe26ec065893ac765c",
+      "right_sha256": "8d72d66fc12499e646426eded68746a757f54cdde390205422ae814db33e8f31"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 272,
+      "pose_t": 43.12662148475647,
+      "image_t": 43.12662148475647,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/43.12662148475647.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/43.12662148475647.jpeg",
+      "left_sha256": "ab7699bead436288336a7a6ff7a3700c1d4fb6fa745ea8b8c1b3196733c323d4",
+      "right_sha256": "c2d4043ae5090e5cd57b36590472dd0bcca3ab59f41d172f483527e3cc8a5c4d"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 288,
+      "pose_t": 45.25826597213745,
+      "image_t": 45.25826597213745,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/45.25826597213745.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/45.25826597213745.jpeg",
+      "left_sha256": "f5723e0f5ffee49c0974affdd03119a8a1fe1d071601a2d824954e35b7cd866e",
+      "right_sha256": "d988008360b06cf6eb444f5fa7d307883483092853453d61a0bd4f982c610274"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 304,
+      "pose_t": 47.390129804611206,
+      "image_t": 47.390129804611206,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/47.390129804611206.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/47.390129804611206.jpeg",
+      "left_sha256": "88d6d6711348b816e16049cf314408a0e9e194f5e2ed45d94c8c49f0e8c7b0b6",
+      "right_sha256": "036620042dd9fc85b67019eebdcdca480b14578082e99c8485d81093434c3087"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 320,
+      "pose_t": 49.52190017700195,
+      "image_t": 49.52190017700195,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/49.52190017700195.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/49.52190017700195.jpeg",
+      "left_sha256": "bce2e5bde67c2b55ac45738c9acd8f1b081588677b1256a44d965626991f4d4a",
+      "right_sha256": "c09f91ad64a948d0b2e35af51069b3d41162db5816a74a31742c5bee316ed5c3"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 336,
+      "pose_t": 51.656739473342896,
+      "image_t": 51.656739473342896,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/51.656739473342896.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/51.656739473342896.jpeg",
+      "left_sha256": "8a669657023dccfb5635dee5ea19d858ca65555998927a08b0396c282837edc2",
+      "right_sha256": "1bc00ce347052f8855907997e68ef11d3355196adcbf59451a33ae8ac662aa58"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 352,
+      "pose_t": 53.79307150840759,
+      "image_t": 53.79307150840759,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/53.79307150840759.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/53.79307150840759.jpeg",
+      "left_sha256": "22bb1048ab04095ad1d0034bd989daaf5129c13c67b885be2f04749a51c866ac",
+      "right_sha256": "6e2175d823685a69ee0fc1b6786b4085c4bc999d231699e47fbdeeb0c2d92757"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 368,
+      "pose_t": 55.92947006225586,
+      "image_t": 55.92947006225586,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/55.92947006225586.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/55.92947006225586.jpeg",
+      "left_sha256": "659586bc457c2843fa7abd9420d32b68a7f29a1d2a0e3135f6ca4dbe996d6ea1",
+      "right_sha256": "da8d3c20c55bd076e7b0e686ef440179d6e42b38e9214a2619b112deb0b8aa3b"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 384,
+      "pose_t": 58.06937623023987,
+      "image_t": 58.06937623023987,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/58.06937623023987.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/58.06937623023987.jpeg",
+      "left_sha256": "151216df5d6f9b2868e38c9e9691f6bc7cd8296a5b1cfe81e920a8691a79079d",
+      "right_sha256": "2a1417b071791432a9a5e09bd25cbe6b76033a2deef64e663a1bbafb2f3a4c21"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 400,
+      "pose_t": 60.20279812812805,
+      "image_t": 60.20279812812805,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/60.20279812812805.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/60.20279812812805.jpeg",
+      "left_sha256": "8aa9a307a2def657d7919f680b11700429d03623dcc53a40e683c2bfc984090b",
+      "right_sha256": "7f3343f67e935d24377f22d53c3d5bff1de850afceb4afd0b6e4854580fd5b4a"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 416,
+      "pose_t": 62.340981245040894,
+      "image_t": 62.340981245040894,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/62.340981245040894.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/62.340981245040894.jpeg",
+      "left_sha256": "e230e81eef775d5773ce486206a25301f04e5881da144798ee385790d23386db",
+      "right_sha256": "978e4378cdfd4c1c832c9beda3dc5f06bf40b4f3f0b111b2cdfbec4c7309c5ef"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 432,
+      "pose_t": 64.47348117828369,
+      "image_t": 64.47348117828369,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/64.47348117828369.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/64.47348117828369.jpeg",
+      "left_sha256": "39c09d14a3bb288ac160743fda475950be5250a5258375d129a54402cf524716",
+      "right_sha256": "282aca38b5dd47b876a56eb04a1217fb07b8e738708ac2d30f09062aa266e2f1"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 448,
+      "pose_t": 66.60597681999207,
+      "image_t": 66.60597681999207,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/66.60597681999207.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/66.60597681999207.jpeg",
+      "left_sha256": "80b9c2146f03274cbaa4d2ef1b3be08abe2fa3a211eded4f3618caf6a491058c",
+      "right_sha256": "33d0de696135ff01a597770738b0f330c3910a1c047e2232b25a7c4e44de35ec"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 464,
+      "pose_t": 68.739013671875,
+      "image_t": 68.739013671875,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/68.739013671875.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/68.739013671875.jpeg",
+      "left_sha256": "57c5512f21e38514ac1b8ff5abd8d2ea69cd2c2f658618716caebad4f7b2f01e",
+      "right_sha256": "0d8d375f02830eb4b6e017ebb5efdee17972c4cab7a1029a237810a170d77654"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 480,
+      "pose_t": 70.87190747261047,
+      "image_t": 70.87190747261047,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/70.87190747261047.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/70.87190747261047.jpeg",
+      "left_sha256": "36f6ca2ddf7e80b8c034c2d275d2ac3502e09224027a157c49c994e07cdd030f",
+      "right_sha256": "7f846d24920c95d68c6e2c0a64cea50df1d8b795674dd468a033ef58f16235aa"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 496,
+      "pose_t": 73.0045702457428,
+      "image_t": 73.0045702457428,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/73.0045702457428.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/73.0045702457428.jpeg",
+      "left_sha256": "a2a619ccaf41f09fce051c2b13105f5b6977ed17f4d2a83b1df9d9a0e988a2aa",
+      "right_sha256": "7aa27f364971d5ee0eb645acad3397f0da5c307b209cdd107243d99313f8c655"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 512,
+      "pose_t": 75.14097142219543,
+      "image_t": 75.14097142219543,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/75.14097142219543.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/75.14097142219543.jpeg",
+      "left_sha256": "b1c5b7b975c1fb03a9ee179350cec48373130a7519be383a1765cef3b6f5d1dd",
+      "right_sha256": "5ed08efafa2c54560f874cbf59ae36af66c9c88e7f5e396a1b9a6683e6e6a670"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 528,
+      "pose_t": 77.28020405769348,
+      "image_t": 77.28020405769348,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/77.28020405769348.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/77.28020405769348.jpeg",
+      "left_sha256": "e7c726c9069705483b5a7be08e775cec831497bd57b8c98dc058cab29c186fe6",
+      "right_sha256": "14b8455deb9b03eba7e4000aa1e125cac269924d8f2a7df3b7a060cd7ec213d5"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 544,
+      "pose_t": 79.41620516777039,
+      "image_t": 79.41620516777039,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/79.41620516777039.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/79.41620516777039.jpeg",
+      "left_sha256": "dde775a229493d32cf9087630a8f4a61fa07105f40825dd847fbd66297156531",
+      "right_sha256": "7cb2dad09b75b44aab9d9a25db3e78f3e9d23a76b37fc1b703e02ecd95f4618a"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 560,
+      "pose_t": 81.55002331733704,
+      "image_t": 81.55002331733704,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/81.55002331733704.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/81.55002331733704.jpeg",
+      "left_sha256": "edf97226116cfca183a55fac879624da2d1ad74d3519e25f74fc8d2b27550673",
+      "right_sha256": "6253e2d99ccd7068905df6877155ac6b20ab64f583c14852fe9fa46c84382971"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 576,
+      "pose_t": 83.68397426605225,
+      "image_t": 83.68397426605225,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/83.68397426605225.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/83.68397426605225.jpeg",
+      "left_sha256": "654d26bee474a4ee296edd2e09198aceac8fc7b5e7cc439594a92d94e590744c",
+      "right_sha256": "00ae77738c8e3bb3d5f5cd5a02fc34b02ec3218425922507572fb1a4c937212b"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 592,
+      "pose_t": 85.8175630569458,
+      "image_t": 85.8175630569458,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/85.8175630569458.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/85.8175630569458.jpeg",
+      "left_sha256": "a628dd2a609fc03931b0ec02375249a7f717b6d2a4a56ab114931786be4b0a18",
+      "right_sha256": "e39ed6c601894477cde607c7e4a3428c2e3cde8b4203b822a5f390898378fc8e"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 608,
+      "pose_t": 87.95101046562195,
+      "image_t": 87.95101046562195,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/87.95101046562195.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/87.95101046562195.jpeg",
+      "left_sha256": "0d0d6852bdb2f491eeefa583c0e85a4f80d4b70ac83455ce9c8e2040f4635a4f",
+      "right_sha256": "18371734363193d47aef554f38038d28268051774a8ff33bdaf609c196cfb484"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 624,
+      "pose_t": 90.084636926651,
+      "image_t": 90.084636926651,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/90.084636926651.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/90.084636926651.jpeg",
+      "left_sha256": "cb79f0655ff35b45b4256c584a27541a8fb1a94a24cba2f146c4c3e08f7004e8",
+      "right_sha256": "406b96160f9249bbea0b26976afb1bef1471c0dcff14fd6039fdd5bd2c901780"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 640,
+      "pose_t": 92.22124600410461,
+      "image_t": 92.22124600410461,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/92.22124600410461.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/92.22124600410461.jpeg",
+      "left_sha256": "46b3b6b65f7f4d6ac613bd28dea6eccb2900105301f604af5441af0a459ffc88",
+      "right_sha256": "616981e0d96dc01bde328797e1dbca046ef63f04ef03a8486400a5265ca22d32"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 656,
+      "pose_t": 94.35629630088806,
+      "image_t": 94.35629630088806,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/94.35629630088806.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/94.35629630088806.jpeg",
+      "left_sha256": "2dca25b86df16bd2be63ee40c625341a59969c791f6dd98be6a89bbeee659faa",
+      "right_sha256": "51debcb378e807924456450f0450361b33036c48d7fc1292ff64c38e44961b07"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 672,
+      "pose_t": 96.49113893508911,
+      "image_t": 96.49113893508911,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/96.49113893508911.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/96.49113893508911.jpeg",
+      "left_sha256": "7ab223bdfa6d59da749a8cb0d0c7eab4bd0c4409e6253729af0b224c91ada7e3",
+      "right_sha256": "04abee5acb08d576e5f964c04375ef0ccb0d989d2dcd509795471c7dd446d9c7"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 688,
+      "pose_t": 98.6289849281311,
+      "image_t": 98.6289849281311,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/98.6289849281311.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/98.6289849281311.jpeg",
+      "left_sha256": "ba243596072ac0638250d6822d23daeb7ddb391ed7a26f11e277629aad4e3ef7",
+      "right_sha256": "c4937289d656c40b1da314eed4d3369eb714063f91551cb46368ccf4a353c345"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 704,
+      "pose_t": 100.76707172393799,
+      "image_t": 100.76707172393799,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/100.76707172393799.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/100.76707172393799.jpeg",
+      "left_sha256": "295a01171ea275d3838bd17c4a902b19e6e8ff006765a7431e3b1d0114a815d0",
+      "right_sha256": "a921ac13cae4e25ed6ded73b64fc0d93a5831ead643f7c52b2f440e450bd0d5c"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 720,
+      "pose_t": 102.90444540977478,
+      "image_t": 102.90444540977478,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/102.90444540977478.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/102.90444540977478.jpeg",
+      "left_sha256": "074a930ce8e0cd02800b958dedec974f3c66a4433ca967782de50bc2dab323d1",
+      "right_sha256": "b0759ad052adbe2f2f60b38d183fefd5d8df9c61b99091dc88496ef9aa0da001"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 736,
+      "pose_t": 105.0371561050415,
+      "image_t": 105.0371561050415,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/105.0371561050415.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/105.0371561050415.jpeg",
+      "left_sha256": "ac65e6e7abc0330c29fd416e79b2758478fae0589589405bd2cb84ee2a464b1a",
+      "right_sha256": "2f7ff511debe828db3a61a37b28e4dd80a0294080fff75edb016cd923ca27324"
+    },
+    {
+      "robot": "ifo003",
+      "pose_index": 752,
+      "pose_t": 107.16939878463745,
+      "image_t": 107.16939878463745,
+      "left": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra1/107.16939878463745.jpeg",
+      "right": "/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0/ifo003/infra2/107.16939878463745.jpeg",
+      "left_sha256": "7b1ffc82463c0f9cc0cdbd3d823a3f5f75599392d878333f83ac0e1224bb277b",
+      "right_sha256": "d3f09ed8c9b4473f107898c6c20ce8df52da3de8627d8f1ac9841778c2dc6d65"
+    }
+  ],
+  "pose_hashes": {
+    "/src/gs25058/cr_RNE/covor_slam/vo_output/occ_default_3_zigzag_0_ifo001_af.npz": "c0b1b298e711ef27603ccc83a0d31a61da7526fde5c02fb1c6f2810af7b79cfb",
+    "/src/gs25058/cr_RNE/covor_slam/vo_output/occ_default_3_zigzag_0_ifo002_af.npz": "e7602922c18bef72c00354061a36aea433df982f808d387980ebe636e07bf721",
+    "/src/gs25058/cr_RNE/covor_slam/vo_output/occ_default_3_zigzag_0_ifo003_af.npz": "1f1dc65da18d2a9d46a705fec423476dedef651b7228957903962e0a51c241cc"
+  },
+  "map_domain": {
+    "ijk_min": [
+      -72,
+      -73,
+      -37
+    ],
+    "shape": [
+      146,
+      150,
+      77
+    ]
+  },
+  "occ_cfg": {
+    "resolution": 0.1,
+    "l_occ": 0.85,
+    "l_free": -0.4,
+    "clamp_min": -2.0,
+    "clamp_max": 3.5,
+    "tau_occ": 0.85,
+    "tau_free": 0.0,
+    "weighted": true,
+    "use_w_pose": false,
+    "track_sigma_attribution": false,
+    "pose_mode": "off",
+    "alpha_u": null,
+    "trunc_k": 1.0,
+    "spread_pose_sigma": false,
+    "spread_trunc": 2.0,
+    "alpha": 0.3,
+    "beta": 0.5,
+    "max_ray": 5.0,
+    "dyn_radius": 0.35
+  },
+  "depth_cfg": {
+    "z_max": 5.0,
+    "z_min": 0.3,
+    "disp_sigma_px": 1.0,
+    "min_disp": 0,
+    "num_disp": 96,
+    "block": 7
+  },
+  "elapsed_s": 371.65957045555115,
+  "protocol": "fixed fused anchor-free poses; clean map is a comparison, not occupancy GT"
+}

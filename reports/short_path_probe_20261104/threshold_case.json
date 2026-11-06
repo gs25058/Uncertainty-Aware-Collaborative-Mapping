@@ -1,0 +1,108 @@
+{
+  "accepted": true,
+  "retained_initial_view": {
+    "robot": "ifo001",
+    "index": 336,
+    "evidence": 0.8364419937133789
+  },
+  "target_support_key": [
+    -24,
+    -195,
+    0
+  ],
+  "target_statistics": [
+    0.8364419937133789,
+    0.04187627895586836,
+    0.002096526420684903,
+    1.0,
+    0.0
+  ],
+  "initial_decision": {
+    "goal": "corridor915f:south:south_0",
+    "verdict": "unverified",
+    "reason": "short_uncertain_connections",
+    "path": [],
+    "possible_path": [
+      {
+        "node": 3899,
+        "ijk": [
+          -24,
+          -196,
+          0
+        ],
+        "xyz": [
+          -2.35,
+          -19.55,
+          0.05506475269794464
+        ],
+        "posture": 1,
+        "width": 1,
+        "observed_support": true,
+        "confirmed": true,
+        "segment": 0
+      },
+      {
+        "node": 3900,
+        "ijk": [
+          -24,
+          -195,
+          0
+        ],
+        "xyz": [
+          -2.35,
+          -19.450000000000003,
+          0.05506477132439613
+        ],
+        "posture": 0,
+        "width": 1,
+        "observed_support": false,
+        "confirmed": false,
+        "segment": 109
+      },
+      {
+        "node": 3901,
+        "ijk": [
+          -24,
+          -194,
+          0
+        ],
+        "xyz": [
+          -2.35,
+          -19.35,
+          0.05506474897265434
+        ],
+        "posture": 0,
+        "width": 1,
+        "observed_support": true,
+        "confirmed": true,
+        "segment": 0
+      },
+      {
+        "node": 3902,
+        "ijk": [
+          -24,
+          -193,
+          0
+        ],
+        "xyz": [
+          -2.35,
+          -19.25,
+          0.055064763873815536
+        ],
+        "posture": 0,
+        "width": 0,
+        "observed_support": true,
+        "confirmed": true,
+        "segment": 0
+      }
+    ],
+    "uncertain_segments": [
+      109
+    ],
+    "blockage_certificate": null
+  },
+  "n_uncertain_segments": 1,
+  "unconfirmed_path_nodes_outside_strip": [],
+  "case_type": "controlled depth endpoint withholding; no truth labels inserted into map",
+  "inputs_unchanged_except_fixed_initial_depth_strip": true
+}

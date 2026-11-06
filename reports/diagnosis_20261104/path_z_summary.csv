@@ -1,0 +1,7 @@
+engine,shift,n_queries,valid,invalid,unverifiable,first_point_failure,reason_counts
+legacy_confirmed,0.0,79,0,79,0,79,"{""mesh_body_collision"": 47, ""wrong_entry_or_goal_region_or_floor"": 32}"
+legacy_confirmed,0.05,79,0,79,0,58,"{""mesh_body_collision"": 79}"
+legacy_confirmed,0.1,79,0,79,0,79,"{""mesh_body_collision"": 79}"
+legacy_gap,0.0,125,0,125,0,125,"{""mesh_body_collision"": 85, ""wrong_entry_or_goal_region_or_floor"": 40}"
+legacy_gap,0.05,125,11,114,0,98,"{""mesh_body_collision"": 99, ""mesh_support_and_swept_body_verified"": 11, ""observed_no_foot_support"": 15}"
+legacy_gap,0.1,125,0,125,0,125,"{""mesh_body_collision"": 125}"

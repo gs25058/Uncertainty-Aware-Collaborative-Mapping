@@ -1,0 +1,2 @@
+condition,beta,field,seed,airlight,fallback_z,samples,n_frames,valid_fraction,depth_absdiff_mean_m,joint_fraction,n_occupied,n_free,n_unknown,domain_voxels,occupied_iou_clean,free_iou_clean,known_iou_clean
+clean,0.0,uniform,0,0.8,5.0,8,12,0.5682535295466458,0.0,0.5682535295466458,3398,84477,296425,384300,1.0,1.0,1.0

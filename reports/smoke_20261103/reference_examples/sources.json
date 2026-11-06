@@ -1,0 +1,17 @@
+{
+  "Demo_fog_simulation_Cityscapes.m": {
+    "url": "https://raw.githubusercontent.com/sakaridis/fog_simulation-SFSU_synthetic/master/source/Demo_fog_simulation_Cityscapes.m",
+    "sha256": "a5e1a22803bc1083518c84b3b2266f623b4a3ae1c9d09caa5b138b7b34b39e5d",
+    "bytes": 6280
+  },
+  "haze_linear.m": {
+    "url": "https://raw.githubusercontent.com/sakaridis/fog_simulation-SFSU_synthetic/master/source/Fog_simulation/haze_linear.m",
+    "sha256": "87c39d29dd4b9feda4d4f28b564ba34bd0380031931888f06d1a5d2183397d0a",
+    "bytes": 760
+  },
+  "transmission_homogeneous_medium.m": {
+    "url": "https://raw.githubusercontent.com/sakaridis/fog_simulation-SFSU_synthetic/master/source/Fog_simulation/transmission_homogeneous_medium.m",
+    "sha256": "6d3f1fa84e7ecd35dd0c4639e1cadf6845caaf02fb5fd67bdfa702d815caf3d2",
+    "bytes": 1028
+  }
+}

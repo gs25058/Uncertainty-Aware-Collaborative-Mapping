@@ -1,0 +1,3210 @@
+{
+  "probes": [
+    {
+      "id": 0,
+      "xy_ij": [
+        4,
+        95
+      ],
+      "reference_xyz": [
+        -5.45,
+        -11.55,
+        0.05506477534770964
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 1,
+      "xy_ij": [
+        11,
+        95
+      ],
+      "reference_xyz": [
+        -4.75,
+        -11.55,
+        0.05506477534770964
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 2,
+      "xy_ij": [
+        15,
+        346
+      ],
+      "reference_xyz": [
+        -4.3500000000000005,
+        13.55,
+        0.05506478279829024
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 3,
+      "xy_ij": [
+        19,
+        81
+      ],
+      "reference_xyz": [
+        -3.95,
+        -12.950000000000001,
+        0.9456936287879943
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        0.7956936287879943,
+        1.0956936287879944
+      ]
+    },
+    {
+      "id": 4,
+      "xy_ij": [
+        21,
+        361
+      ],
+      "reference_xyz": [
+        -3.75,
+        15.05,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 5,
+      "xy_ij": [
+        23,
+        284
+      ],
+      "reference_xyz": [
+        -3.5500000000000003,
+        7.3500000000000005,
+        2.275835302770138
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        2.125835302770138,
+        2.425835302770138
+      ]
+    },
+    {
+      "id": 6,
+      "xy_ij": [
+        25,
+        80
+      ],
+      "reference_xyz": [
+        -3.35,
+        -13.05,
+        0.16682843744754794
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        0.016828437447547945,
+        0.31682843744754796
+      ]
+    },
+    {
+      "id": 7,
+      "xy_ij": [
+        26,
+        127
+      ],
+      "reference_xyz": [
+        -3.25,
+        -8.35,
+        0.9615089091658592
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        0.8115089091658592,
+        1.1115089091658592
+      ]
+    },
+    {
+      "id": 8,
+      "xy_ij": [
+        27,
+        159
+      ],
+      "reference_xyz": [
+        -3.1500000000000004,
+        -5.15,
+        0.9612409564852714
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        0.8112409564852714,
+        1.1112409564852714
+      ]
+    },
+    {
+      "id": 9,
+      "xy_ij": [
+        28,
+        89
+      ],
+      "reference_xyz": [
+        -3.0500000000000003,
+        -12.15,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 10,
+      "xy_ij": [
+        29,
+        50
+      ],
+      "reference_xyz": [
+        -2.95,
+        -16.05,
+        0.05506478279829024
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 11,
+      "xy_ij": [
+        29,
+        174
+      ],
+      "reference_xyz": [
+        -2.95,
+        -3.6500000000000004,
+        0.05506478279829024
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 12,
+      "xy_ij": [
+        29,
+        294
+      ],
+      "reference_xyz": [
+        -2.95,
+        8.35,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 13,
+      "xy_ij": [
+        30,
+        75
+      ],
+      "reference_xyz": [
+        -2.85,
+        -13.55,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "invalid",
+        "valid",
+        "invalid",
+        "valid",
+        "invalid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 14,
+      "xy_ij": [
+        30,
+        197
+      ],
+      "reference_xyz": [
+        -2.85,
+        -1.35,
+        0.05506477534770964
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 15,
+      "xy_ij": [
+        30,
+        317
+      ],
+      "reference_xyz": [
+        -2.85,
+        10.65,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 16,
+      "xy_ij": [
+        31,
+        45
+      ],
+      "reference_xyz": [
+        -2.75,
+        -16.55,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 17,
+      "xy_ij": [
+        31,
+        167
+      ],
+      "reference_xyz": [
+        -2.75,
+        -4.3500000000000005,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "invalid",
+        "valid",
+        "invalid",
+        "valid",
+        "invalid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 18,
+      "xy_ij": [
+        31,
+        286
+      ],
+      "reference_xyz": [
+        -2.75,
+        7.550000000000001,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 19,
+      "xy_ij": [
+        32,
+        16
+      ],
+      "reference_xyz": [
+        -2.6500000000000004,
+        -19.450000000000003,
+        0.055064790248870836
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493520975112915,
+        0.20506479024887084
+      ]
+    },
+    {
+      "id": 20,
+      "xy_ij": [
+        32,
+        135
+      ],
+      "reference_xyz": [
+        -2.6500000000000004,
+        -7.550000000000001,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 21,
+      "xy_ij": [
+        32,
+        255
+      ],
+      "reference_xyz": [
+        -2.6500000000000004,
+        4.45,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 22,
+      "xy_ij": [
+        32,
+        382
+      ],
+      "reference_xyz": [
+        -2.6500000000000004,
+        17.150000000000002,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "invalid",
+        "valid",
+        "invalid",
+        "valid",
+        "invalid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 23,
+      "xy_ij": [
+        33,
+        93
+      ],
+      "reference_xyz": [
+        -2.5500000000000003,
+        -11.75,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 24,
+      "xy_ij": [
+        33,
+        215
+      ],
+      "reference_xyz": [
+        -2.5500000000000003,
+        0.45,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 25,
+      "xy_ij": [
+        33,
+        334
+      ],
+      "reference_xyz": [
+        -2.5500000000000003,
+        12.350000000000001,
+        0.055064767897129045
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493523210287094,
+        0.20506476789712905
+      ]
+    },
+    {
+      "id": 26,
+      "xy_ij": [
+        34,
+        43
+      ],
+      "reference_xyz": [
+        -2.45,
+        -16.75,
+        0.055064767897129045
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493523210287094,
+        0.20506476789712905
+      ]
+    },
+    {
+      "id": 27,
+      "xy_ij": [
+        34,
+        165
+      ],
+      "reference_xyz": [
+        -2.45,
+        -4.55,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 28,
+      "xy_ij": [
+        34,
+        284
+      ],
+      "reference_xyz": [
+        -2.45,
+        7.3500000000000005,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 29,
+      "xy_ij": [
+        34,
+        403
+      ],
+      "reference_xyz": [
+        -2.45,
+        19.25,
+        0.05506477534770964
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 30,
+      "xy_ij": [
+        35,
+        113
+      ],
+      "reference_xyz": [
+        -2.35,
+        -9.75,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 31,
+      "xy_ij": [
+        35,
+        234
+      ],
+      "reference_xyz": [
+        -2.35,
+        2.35,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 32,
+      "xy_ij": [
+        35,
+        353
+      ],
+      "reference_xyz": [
+        -2.35,
+        14.25,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 33,
+      "xy_ij": [
+        36,
+        62
+      ],
+      "reference_xyz": [
+        -2.25,
+        -14.850000000000001,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 34,
+      "xy_ij": [
+        36,
+        184
+      ],
+      "reference_xyz": [
+        -2.25,
+        -2.6500000000000004,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 35,
+      "xy_ij": [
+        36,
+        303
+      ],
+      "reference_xyz": [
+        -2.25,
+        9.25,
+        0.055064767897129045
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493523210287094,
+        0.20506476789712905
+      ]
+    },
+    {
+      "id": 36,
+      "xy_ij": [
+        37,
+        12
+      ],
+      "reference_xyz": [
+        -2.15,
+        -19.85,
+        0.055064767897129045
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493523210287094,
+        0.20506476789712905
+      ]
+    },
+    {
+      "id": 37,
+      "xy_ij": [
+        37,
+        133
+      ],
+      "reference_xyz": [
+        -2.15,
+        -7.75,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 38,
+      "xy_ij": [
+        37,
+        255
+      ],
+      "reference_xyz": [
+        -2.15,
+        4.45,
+        0.055064767897129045
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493523210287094,
+        0.20506476789712905
+      ]
+    },
+    {
+      "id": 39,
+      "xy_ij": [
+        37,
+        374
+      ],
+      "reference_xyz": [
+        -2.15,
+        16.35,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 40,
+      "xy_ij": [
+        38,
+        83
+      ],
+      "reference_xyz": [
+        -2.0500000000000003,
+        -12.75,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "invalid",
+        "valid",
+        "invalid",
+        "valid",
+        "invalid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 41,
+      "xy_ij": [
+        38,
+        206
+      ],
+      "reference_xyz": [
+        -2.0500000000000003,
+        -0.45,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 42,
+      "xy_ij": [
+        38,
+        326
+      ],
+      "reference_xyz": [
+        -2.0500000000000003,
+        11.55,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 43,
+      "xy_ij": [
+        39,
+        35
+      ],
+      "reference_xyz": [
+        -1.9500000000000002,
+        -17.55,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 44,
+      "xy_ij": [
+        39,
+        160
+      ],
+      "reference_xyz": [
+        -1.9500000000000002,
+        -5.050000000000001,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 45,
+      "xy_ij": [
+        39,
+        280
+      ],
+      "reference_xyz": [
+        -1.9500000000000002,
+        6.95,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 46,
+      "xy_ij": [
+        39,
+        399
+      ],
+      "reference_xyz": [
+        -1.9500000000000002,
+        18.85,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 47,
+      "xy_ij": [
+        40,
+        109
+      ],
+      "reference_xyz": [
+        -1.85,
+        -10.15,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 48,
+      "xy_ij": [
+        40,
+        232
+      ],
+      "reference_xyz": [
+        -1.85,
+        2.15,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 49,
+      "xy_ij": [
+        40,
+        352
+      ],
+      "reference_xyz": [
+        -1.85,
+        14.15,
+        0.055064767897129045
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493523210287094,
+        0.20506476789712905
+      ]
+    },
+    {
+      "id": 50,
+      "xy_ij": [
+        41,
+        62
+      ],
+      "reference_xyz": [
+        -1.75,
+        -14.850000000000001,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 51,
+      "xy_ij": [
+        41,
+        185
+      ],
+      "reference_xyz": [
+        -1.75,
+        -2.5500000000000003,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 52,
+      "xy_ij": [
+        41,
+        304
+      ],
+      "reference_xyz": [
+        -1.75,
+        9.35,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 53,
+      "xy_ij": [
+        42,
+        16
+      ],
+      "reference_xyz": [
+        -1.6500000000000001,
+        -19.450000000000003,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 54,
+      "xy_ij": [
+        42,
+        140
+      ],
+      "reference_xyz": [
+        -1.6500000000000001,
+        -7.050000000000001,
+        0.055064767897129045
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493523210287094,
+        0.20506476789712905
+      ]
+    },
+    {
+      "id": 55,
+      "xy_ij": [
+        42,
+        260
+      ],
+      "reference_xyz": [
+        -1.6500000000000001,
+        4.95,
+        0.055064767897129045
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493523210287094,
+        0.20506476789712905
+      ]
+    },
+    {
+      "id": 56,
+      "xy_ij": [
+        42,
+        378
+      ],
+      "reference_xyz": [
+        -1.6500000000000001,
+        16.75,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 57,
+      "xy_ij": [
+        43,
+        93
+      ],
+      "reference_xyz": [
+        -1.55,
+        -11.75,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 58,
+      "xy_ij": [
+        43,
+        214
+      ],
+      "reference_xyz": [
+        -1.55,
+        0.35000000000000003,
+        0.055064790248870836
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493520975112915,
+        0.20506479024887084
+      ]
+    },
+    {
+      "id": 59,
+      "xy_ij": [
+        43,
+        329
+      ],
+      "reference_xyz": [
+        -1.55,
+        11.850000000000001,
+        0.055064767897129045
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493523210287094,
+        0.20506476789712905
+      ]
+    },
+    {
+      "id": 60,
+      "xy_ij": [
+        44,
+        43
+      ],
+      "reference_xyz": [
+        -1.4500000000000002,
+        -16.75,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 61,
+      "xy_ij": [
+        44,
+        167
+      ],
+      "reference_xyz": [
+        -1.4500000000000002,
+        -4.3500000000000005,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "invalid",
+        "valid",
+        "invalid",
+        "valid",
+        "invalid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 62,
+      "xy_ij": [
+        44,
+        286
+      ],
+      "reference_xyz": [
+        -1.4500000000000002,
+        7.550000000000001,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 63,
+      "xy_ij": [
+        44,
+        397
+      ],
+      "reference_xyz": [
+        -1.4500000000000002,
+        18.650000000000002,
+        0.05506477534770964
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 64,
+      "xy_ij": [
+        45,
+        113
+      ],
+      "reference_xyz": [
+        -1.35,
+        -9.75,
+        0.05506478279829024
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 65,
+      "xy_ij": [
+        45,
+        232
+      ],
+      "reference_xyz": [
+        -1.35,
+        2.15,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "invalid",
+        "valid",
+        "invalid",
+        "valid",
+        "invalid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 66,
+      "xy_ij": [
+        45,
+        346
+      ],
+      "reference_xyz": [
+        -1.35,
+        13.55,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "invalid",
+        "valid",
+        "invalid",
+        "valid",
+        "invalid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 67,
+      "xy_ij": [
+        46,
+        60
+      ],
+      "reference_xyz": [
+        -1.25,
+        -15.05,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "invalid",
+        "valid",
+        "invalid",
+        "valid",
+        "invalid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 68,
+      "xy_ij": [
+        46,
+        189
+      ],
+      "reference_xyz": [
+        -1.25,
+        -2.15,
+        0.055064767897129045
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493523210287094,
+        0.20506476789712905
+      ]
+    },
+    {
+      "id": 69,
+      "xy_ij": [
+        46,
+        304
+      ],
+      "reference_xyz": [
+        -1.25,
+        9.35,
+        0.05506477534770964
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 70,
+      "xy_ij": [
+        47,
+        18
+      ],
+      "reference_xyz": [
+        -1.1500000000000001,
+        -19.25,
+        0.05506477534770964
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 71,
+      "xy_ij": [
+        47,
+        237
+      ],
+      "reference_xyz": [
+        -1.1500000000000001,
+        2.6500000000000004,
+        0.055064767897129045
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493523210287094,
+        0.20506476789712905
+      ]
+    },
+    {
+      "id": 72,
+      "xy_ij": [
+        47,
+        371
+      ],
+      "reference_xyz": [
+        -1.1500000000000001,
+        16.05,
+        0.05506477534770964
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 73,
+      "xy_ij": [
+        48,
+        162
+      ],
+      "reference_xyz": [
+        -1.05,
+        -4.8500000000000005,
+        0.05506477534770964
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 74,
+      "xy_ij": [
+        49,
+        60
+      ],
+      "reference_xyz": [
+        -0.9500000000000001,
+        -15.05,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "invalid",
+        "valid",
+        "invalid",
+        "valid",
+        "invalid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 75,
+      "xy_ij": [
+        49,
+        361
+      ],
+      "reference_xyz": [
+        -0.9500000000000001,
+        15.05,
+        2.2395917075872425
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        2.0895917075872426,
+        2.3895917075872424
+      ]
+    },
+    {
+      "id": 76,
+      "xy_ij": [
+        50,
+        358
+      ],
+      "reference_xyz": [
+        -0.8500000000000001,
+        14.75,
+        2.2425480681657795
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        2.0925480681657795,
+        2.3925480681657794
+      ]
+    },
+    {
+      "id": 77,
+      "xy_ij": [
+        51,
+        170
+      ],
+      "reference_xyz": [
+        -0.75,
+        -4.05,
+        0.05506477534770964
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 78,
+      "xy_ij": [
+        52,
+        124
+      ],
+      "reference_xyz": [
+        -0.65,
+        -8.65,
+        0.05506478279829024
+      ],
+      "reference": "undetermined",
+      "reference_modes": [
+        "invalid",
+        "unverifiable",
+        "invalid",
+        "unverifiable",
+        "invalid",
+        "unverifiable"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 79,
+      "xy_ij": [
+        53,
+        81
+      ],
+      "reference_xyz": [
+        -0.55,
+        -12.950000000000001,
+        0.05506478279829024
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 80,
+      "xy_ij": [
+        54,
+        46
+      ],
+      "reference_xyz": [
+        -0.45,
+        -16.45,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 81,
+      "xy_ij": [
+        54,
+        258
+      ],
+      "reference_xyz": [
+        -0.45,
+        4.75,
+        2.3626765641570096
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        2.2126765641570096,
+        2.5126765641570095
+      ]
+    },
+    {
+      "id": 82,
+      "xy_ij": [
+        55,
+        156
+      ],
+      "reference_xyz": [
+        -0.35000000000000003,
+        -5.45,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 83,
+      "xy_ij": [
+        56,
+        129
+      ],
+      "reference_xyz": [
+        -0.25,
+        -8.15,
+        0.05506477534770964
+      ],
+      "reference": "undetermined",
+      "reference_modes": [
+        "unverifiable",
+        "unverifiable",
+        "unverifiable",
+        "unverifiable",
+        "unverifiable",
+        "unverifiable"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 84,
+      "xy_ij": [
+        57,
+        88
+      ],
+      "reference_xyz": [
+        -0.15000000000000002,
+        -12.25,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 85,
+      "xy_ij": [
+        58,
+        61
+      ],
+      "reference_xyz": [
+        -0.05,
+        -14.950000000000001,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 86,
+      "xy_ij": [
+        59,
+        44
+      ],
+      "reference_xyz": [
+        0.05,
+        -16.650000000000002,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 87,
+      "xy_ij": [
+        59,
+        180
+      ],
+      "reference_xyz": [
+        0.05,
+        -3.0500000000000003,
+        0.05506478279829024
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 88,
+      "xy_ij": [
+        60,
+        161
+      ],
+      "reference_xyz": [
+        0.15000000000000002,
+        -4.95,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 89,
+      "xy_ij": [
+        61,
+        148
+      ],
+      "reference_xyz": [
+        0.25,
+        -6.25,
+        0.055064767897129045
+      ],
+      "reference": "undetermined",
+      "reference_modes": [
+        "unverifiable",
+        "unverifiable",
+        "unverifiable",
+        "unverifiable",
+        "unverifiable",
+        "unverifiable"
+      ],
+      "floor_bounds": [
+        -0.09493523210287094,
+        0.20506476789712905
+      ]
+    },
+    {
+      "id": 90,
+      "xy_ij": [
+        62,
+        138
+      ],
+      "reference_xyz": [
+        0.35000000000000003,
+        -7.25,
+        0.17376952499151233
+      ],
+      "reference": "undetermined",
+      "reference_modes": [
+        "unverifiable",
+        "unverifiable",
+        "unverifiable",
+        "unverifiable",
+        "unverifiable",
+        "unverifiable"
+      ],
+      "floor_bounds": [
+        0.02376952499151233,
+        0.32376952499151235
+      ]
+    },
+    {
+      "id": 91,
+      "xy_ij": [
+        63,
+        127
+      ],
+      "reference_xyz": [
+        0.45,
+        -8.35,
+        0.05506477534770964
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 92,
+      "xy_ij": [
+        64,
+        155
+      ],
+      "reference_xyz": [
+        0.55,
+        -5.550000000000001,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "unverifiable",
+        "unverifiable",
+        "unverifiable",
+        "unverifiable",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 93,
+      "xy_ij": [
+        66,
+        70
+      ],
+      "reference_xyz": [
+        0.75,
+        -14.05,
+        0.055064767897129045
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493523210287094,
+        0.20506476789712905
+      ]
+    },
+    {
+      "id": 94,
+      "xy_ij": [
+        67,
+        148
+      ],
+      "reference_xyz": [
+        0.8500000000000001,
+        -6.25,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "invalid",
+        "valid",
+        "invalid",
+        "valid",
+        "invalid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 95,
+      "xy_ij": [
+        68,
+        165
+      ],
+      "reference_xyz": [
+        0.9500000000000001,
+        -4.55,
+        0.055064767897129045
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493523210287094,
+        0.20506476789712905
+      ]
+    },
+    {
+      "id": 96,
+      "xy_ij": [
+        69,
+        171
+      ],
+      "reference_xyz": [
+        1.05,
+        -3.95,
+        0.055064767897129045
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493523210287094,
+        0.20506476789712905
+      ]
+    },
+    {
+      "id": 97,
+      "xy_ij": [
+        70,
+        177
+      ],
+      "reference_xyz": [
+        1.1500000000000001,
+        -3.35,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 98,
+      "xy_ij": [
+        72,
+        48
+      ],
+      "reference_xyz": [
+        1.35,
+        -16.25,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 99,
+      "xy_ij": [
+        73,
+        57
+      ],
+      "reference_xyz": [
+        1.4500000000000002,
+        -15.350000000000001,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 100,
+      "xy_ij": [
+        74,
+        69
+      ],
+      "reference_xyz": [
+        1.55,
+        -14.15,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 101,
+      "xy_ij": [
+        75,
+        86
+      ],
+      "reference_xyz": [
+        1.6500000000000001,
+        -12.450000000000001,
+        0.055064767897129045
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493523210287094,
+        0.20506476789712905
+      ]
+    },
+    {
+      "id": 102,
+      "xy_ij": [
+        76,
+        125
+      ],
+      "reference_xyz": [
+        1.75,
+        -8.55,
+        0.05506477534770964
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 103,
+      "xy_ij": [
+        77,
+        153
+      ],
+      "reference_xyz": [
+        1.85,
+        -5.75,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "invalid",
+        "valid",
+        "invalid",
+        "valid",
+        "invalid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 104,
+      "xy_ij": [
+        78,
+        162
+      ],
+      "reference_xyz": [
+        1.9500000000000002,
+        -4.8500000000000005,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 105,
+      "xy_ij": [
+        79,
+        169
+      ],
+      "reference_xyz": [
+        2.0500000000000003,
+        -4.15,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 106,
+      "xy_ij": [
+        81,
+        48
+      ],
+      "reference_xyz": [
+        2.25,
+        -16.25,
+        0.055064767897129045
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "unverifiable",
+        "valid",
+        "unverifiable",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493523210287094,
+        0.20506476789712905
+      ]
+    },
+    {
+      "id": 107,
+      "xy_ij": [
+        82,
+        63
+      ],
+      "reference_xyz": [
+        2.35,
+        -14.75,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "unverifiable",
+        "valid",
+        "unverifiable",
+        "valid",
+        "unverifiable",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 108,
+      "xy_ij": [
+        83,
+        79
+      ],
+      "reference_xyz": [
+        2.45,
+        -13.15,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 109,
+      "xy_ij": [
+        84,
+        111
+      ],
+      "reference_xyz": [
+        2.5500000000000003,
+        -9.950000000000001,
+        0.03366372764110564
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.11633627235889435,
+        0.18366372764110564
+      ]
+    },
+    {
+      "id": 110,
+      "xy_ij": [
+        85,
+        132
+      ],
+      "reference_xyz": [
+        2.6500000000000004,
+        -7.8500000000000005,
+        0.055064767897129045
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "unverifiable",
+        "valid",
+        "unverifiable",
+        "valid",
+        "unverifiable",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493523210287094,
+        0.20506476789712905
+      ]
+    },
+    {
+      "id": 111,
+      "xy_ij": [
+        86,
+        170
+      ],
+      "reference_xyz": [
+        2.75,
+        -4.05,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 112,
+      "xy_ij": [
+        88,
+        60
+      ],
+      "reference_xyz": [
+        2.95,
+        -15.05,
+        0.23136954486370093
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        0.08136954486370093,
+        0.3813695448637009
+      ]
+    },
+    {
+      "id": 113,
+      "xy_ij": [
+        89,
+        147
+      ],
+      "reference_xyz": [
+        3.0500000000000003,
+        -6.3500000000000005,
+        0.05506478279829024
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 114,
+      "xy_ij": [
+        91,
+        121
+      ],
+      "reference_xyz": [
+        3.25,
+        -8.950000000000001,
+        0.05506477534770964
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 115,
+      "xy_ij": [
+        92,
+        180
+      ],
+      "reference_xyz": [
+        3.35,
+        -3.0500000000000003,
+        0.05506478279829024
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 116,
+      "xy_ij": [
+        94,
+        153
+      ],
+      "reference_xyz": [
+        3.5500000000000003,
+        -5.75,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 117,
+      "xy_ij": [
+        96,
+        123
+      ],
+      "reference_xyz": [
+        3.75,
+        -8.75,
+        0.05506478279829024
+      ],
+      "reference": "undetermined",
+      "reference_modes": [
+        "unverifiable",
+        "unverifiable",
+        "unverifiable",
+        "unverifiable",
+        "unverifiable",
+        "unverifiable"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 118,
+      "xy_ij": [
+        97,
+        174
+      ],
+      "reference_xyz": [
+        3.85,
+        -3.6500000000000004,
+        0.05506478279829024
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "invalid",
+        "valid",
+        "invalid",
+        "valid",
+        "invalid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493521720170975,
+        0.20506478279829024
+      ]
+    },
+    {
+      "id": 119,
+      "xy_ij": [
+        99,
+        149
+      ],
+      "reference_xyz": [
+        4.05,
+        -6.15,
+        0.055064767897129045
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493523210287094,
+        0.20506476789712905
+      ]
+    },
+    {
+      "id": 120,
+      "xy_ij": [
+        101,
+        129
+      ],
+      "reference_xyz": [
+        4.25,
+        -8.15,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "invalid",
+        "valid",
+        "invalid",
+        "valid",
+        "invalid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 121,
+      "xy_ij": [
+        102,
+        175
+      ],
+      "reference_xyz": [
+        4.3500000000000005,
+        -3.5500000000000003,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 122,
+      "xy_ij": [
+        104,
+        137
+      ],
+      "reference_xyz": [
+        4.55,
+        -7.3500000000000005,
+        0.7514980781078339
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "unverifiable",
+        "unverifiable",
+        "unverifiable",
+        "unverifiable",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        0.6014980781078338,
+        0.9014980781078339
+      ]
+    },
+    {
+      "id": 123,
+      "xy_ij": [
+        105,
+        174
+      ],
+      "reference_xyz": [
+        4.65,
+        -3.6500000000000004,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 124,
+      "xy_ij": [
+        107,
+        127
+      ],
+      "reference_xyz": [
+        4.8500000000000005,
+        -8.35,
+        0.05506477534770964
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 125,
+      "xy_ij": [
+        108,
+        147
+      ],
+      "reference_xyz": [
+        4.95,
+        -6.3500000000000005,
+        0.05506477534770964
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    {
+      "id": 126,
+      "xy_ij": [
+        110,
+        119
+      ],
+      "reference_xyz": [
+        5.15,
+        -9.15,
+        0.7559277239441872
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        0.6059277239441871,
+        0.9059277239441872
+      ]
+    },
+    {
+      "id": 127,
+      "xy_ij": [
+        113,
+        170
+      ],
+      "reference_xyz": [
+        5.45,
+        -4.05,
+        0.055064767897129045
+      ],
+      "reference": "not_feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid",
+        "invalid"
+      ],
+      "floor_bounds": [
+        -0.09493523210287094,
+        0.20506476789712905
+      ]
+    }
+  ],
+  "n_gt_surface_candidates": 17780,
+  "n_mesh_verified_supports": 15148,
+  "n_excluded_reference_supports": 2632,
+  "scope": "fixed local configurations, not global entry reachability; no route replacement",
+  "deterministic": "linspace of lexicographically ordered reference support candidates",
+  "support_tolerance_m": 0.075
+}

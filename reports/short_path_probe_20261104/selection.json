@@ -1,0 +1,2175 @@
+{
+  "picks": {
+    "nearest": 23,
+    "unknown": 4,
+    "decision_impact": 3,
+    "decision_readiness": 2
+  },
+  "scores": [
+    {
+      "id": 0,
+      "robot": "ifo001",
+      "move_cost": 7.38072312803305,
+      "eligible": false,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 0
+    },
+    {
+      "id": 1,
+      "robot": "ifo001",
+      "move_cost": 6.432351553470266,
+      "eligible": false,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 0
+    },
+    {
+      "id": 2,
+      "robot": "ifo001",
+      "move_cost": 3.965768196021087,
+      "eligible": true,
+      "goal_scores": {
+        "corridor915f:south:south_0": 0.32142857142857145
+      },
+      "segments": [
+        {
+          "id": 109,
+          "goals": [
+            "corridor915f:south:south_0"
+          ],
+          "support": {
+            "fraction": 0.32142857142857145,
+            "through_unknown": 0.21428571428571427,
+            "n": 28
+          },
+          "body": {
+            "fraction": 0.51953125,
+            "through_unknown": 0.0,
+            "n": 512
+          },
+          "support_population": 28,
+          "body_population": 1850,
+          "observability": 0.32142857142857145,
+          "one_frame_evidence_readiness": 1.0
+        }
+      ],
+      "priority": 0.32142857142857145,
+      "unknown_voxels": 191
+    },
+    {
+      "id": 3,
+      "robot": "ifo001",
+      "move_cost": 3.776242885284025,
+      "eligible": true,
+      "goal_scores": {
+        "corridor915f:south:south_0": 0.32142857142857145
+      },
+      "segments": [
+        {
+          "id": 109,
+          "goals": [
+            "corridor915f:south:south_0"
+          ],
+          "support": {
+            "fraction": 0.32142857142857145,
+            "through_unknown": 0.21428571428571427,
+            "n": 28
+          },
+          "body": {
+            "fraction": 0.96484375,
+            "through_unknown": 0.0,
+            "n": 512
+          },
+          "support_population": 28,
+          "body_population": 1850,
+          "observability": 0.32142857142857145,
+          "one_frame_evidence_readiness": 1.0
+        }
+      ],
+      "priority": 0.32142857142857145,
+      "unknown_voxels": 184
+    },
+    {
+      "id": 4,
+      "robot": "ifo001",
+      "move_cost": 4.541075459039247,
+      "eligible": true,
+      "goal_scores": {
+        "corridor915f:south:south_0": 0.0
+      },
+      "segments": [
+        {
+          "id": 109,
+          "goals": [
+            "corridor915f:south:south_0"
+          ],
+          "support": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 28
+          },
+          "body": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 512
+          },
+          "support_population": 28,
+          "body_population": 1850,
+          "observability": 0.0,
+          "one_frame_evidence_readiness": 1.0
+        }
+      ],
+      "priority": 0.0,
+      "unknown_voxels": 5184
+    },
+    {
+      "id": 5,
+      "robot": "ifo001",
+      "move_cost": 0.5470931106039513,
+      "eligible": true,
+      "goal_scores": {
+        "corridor915f:south:south_0": 0.0
+      },
+      "segments": [
+        {
+          "id": 109,
+          "goals": [
+            "corridor915f:south:south_0"
+          ],
+          "support": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 28
+          },
+          "body": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 512
+          },
+          "support_population": 28,
+          "body_population": 1850,
+          "observability": 0.0,
+          "one_frame_evidence_readiness": 1.0
+        }
+      ],
+      "priority": 0.0,
+      "unknown_voxels": 1
+    },
+    {
+      "id": 6,
+      "robot": "ifo001",
+      "move_cost": 3.5175260057769933,
+      "eligible": true,
+      "goal_scores": {
+        "corridor915f:south:south_0": 0.0
+      },
+      "segments": [
+        {
+          "id": 109,
+          "goals": [
+            "corridor915f:south:south_0"
+          ],
+          "support": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 28
+          },
+          "body": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 512
+          },
+          "support_population": 28,
+          "body_population": 1850,
+          "observability": 0.0,
+          "one_frame_evidence_readiness": 1.0
+        }
+      ],
+      "priority": 0.0,
+      "unknown_voxels": 1006
+    },
+    {
+      "id": 7,
+      "robot": "ifo001",
+      "move_cost": 0.2230337346755033,
+      "eligible": true,
+      "goal_scores": {
+        "corridor915f:south:south_0": 0.0
+      },
+      "segments": [
+        {
+          "id": 109,
+          "goals": [
+            "corridor915f:south:south_0"
+          ],
+          "support": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 28
+          },
+          "body": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 512
+          },
+          "support_population": 28,
+          "body_population": 1850,
+          "observability": 0.0,
+          "one_frame_evidence_readiness": 1.0
+        }
+      ],
+      "priority": 0.0,
+      "unknown_voxels": 285
+    },
+    {
+      "id": 8,
+      "robot": "ifo002",
+      "move_cost": 14.778578269045203,
+      "eligible": false,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 0
+    },
+    {
+      "id": 9,
+      "robot": "ifo002",
+      "move_cost": 13.808374009499708,
+      "eligible": false,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 0
+    },
+    {
+      "id": 10,
+      "robot": "ifo002",
+      "move_cost": 11.998388519874654,
+      "eligible": false,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 0
+    },
+    {
+      "id": 11,
+      "robot": "ifo002",
+      "move_cost": 9.810829180694546,
+      "eligible": false,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 0
+    },
+    {
+      "id": 12,
+      "robot": "ifo002",
+      "move_cost": 7.367749096152656,
+      "eligible": false,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 0
+    },
+    {
+      "id": 13,
+      "robot": "ifo002",
+      "move_cost": 4.786144976657455,
+      "eligible": true,
+      "goal_scores": {
+        "corridor915f:south:south_0": 0.0
+      },
+      "segments": [
+        {
+          "id": 109,
+          "goals": [
+            "corridor915f:south:south_0"
+          ],
+          "support": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 28
+          },
+          "body": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 512
+          },
+          "support_population": 28,
+          "body_population": 1850,
+          "observability": 0.0,
+          "one_frame_evidence_readiness": 1.0
+        }
+      ],
+      "priority": 0.0,
+      "unknown_voxels": 11
+    },
+    {
+      "id": 14,
+      "robot": "ifo002",
+      "move_cost": 2.137969653027294,
+      "eligible": true,
+      "goal_scores": {
+        "corridor915f:south:south_0": 0.0
+      },
+      "segments": [
+        {
+          "id": 109,
+          "goals": [
+            "corridor915f:south:south_0"
+          ],
+          "support": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 28
+          },
+          "body": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 512
+          },
+          "support_population": 28,
+          "body_population": 1850,
+          "observability": 0.0,
+          "one_frame_evidence_readiness": 1.0
+        }
+      ],
+      "priority": 0.0,
+      "unknown_voxels": 1460
+    },
+    {
+      "id": 15,
+      "robot": "ifo002",
+      "move_cost": 0.21067057547775445,
+      "eligible": true,
+      "goal_scores": {
+        "corridor915f:south:south_0": 0.0
+      },
+      "segments": [
+        {
+          "id": 109,
+          "goals": [
+            "corridor915f:south:south_0"
+          ],
+          "support": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 28
+          },
+          "body": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 512
+          },
+          "support_population": 28,
+          "body_population": 1850,
+          "observability": 0.0,
+          "one_frame_evidence_readiness": 1.0
+        }
+      ],
+      "priority": 0.0,
+      "unknown_voxels": 577
+    },
+    {
+      "id": 16,
+      "robot": "ifo003",
+      "move_cost": 14.511745375412772,
+      "eligible": false,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 0
+    },
+    {
+      "id": 17,
+      "robot": "ifo003",
+      "move_cost": 12.056044910868811,
+      "eligible": false,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 0
+    },
+    {
+      "id": 18,
+      "robot": "ifo003",
+      "move_cost": 9.928334481402237,
+      "eligible": false,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 0
+    },
+    {
+      "id": 19,
+      "robot": "ifo003",
+      "move_cost": 7.612259916212754,
+      "eligible": false,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 0
+    },
+    {
+      "id": 20,
+      "robot": "ifo003",
+      "move_cost": 5.3774781974694985,
+      "eligible": true,
+      "goal_scores": {
+        "corridor915f:south:south_0": 0.0
+      },
+      "segments": [
+        {
+          "id": 109,
+          "goals": [
+            "corridor915f:south:south_0"
+          ],
+          "support": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 28
+          },
+          "body": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 512
+          },
+          "support_population": 28,
+          "body_population": 1850,
+          "observability": 0.0,
+          "one_frame_evidence_readiness": 1.0
+        }
+      ],
+      "priority": 0.0,
+      "unknown_voxels": 333
+    },
+    {
+      "id": 21,
+      "robot": "ifo003",
+      "move_cost": 2.973918218744583,
+      "eligible": true,
+      "goal_scores": {
+        "corridor915f:south:south_0": 0.0
+      },
+      "segments": [
+        {
+          "id": 109,
+          "goals": [
+            "corridor915f:south:south_0"
+          ],
+          "support": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 28
+          },
+          "body": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 512
+          },
+          "support_population": 28,
+          "body_population": 1850,
+          "observability": 0.0,
+          "one_frame_evidence_readiness": 1.0
+        }
+      ],
+      "priority": 0.0,
+      "unknown_voxels": 1857
+    },
+    {
+      "id": 22,
+      "robot": "ifo003",
+      "move_cost": 1.0207248666581237,
+      "eligible": true,
+      "goal_scores": {
+        "corridor915f:south:south_0": 0.0
+      },
+      "segments": [
+        {
+          "id": 109,
+          "goals": [
+            "corridor915f:south:south_0"
+          ],
+          "support": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 28
+          },
+          "body": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 512
+          },
+          "support_population": 28,
+          "body_population": 1850,
+          "observability": 0.0,
+          "one_frame_evidence_readiness": 1.0
+        }
+      ],
+      "priority": 0.0,
+      "unknown_voxels": 494
+    },
+    {
+      "id": 23,
+      "robot": "ifo003",
+      "move_cost": 0.20293951169759453,
+      "eligible": true,
+      "goal_scores": {
+        "corridor915f:south:south_0": 0.0
+      },
+      "segments": [
+        {
+          "id": 109,
+          "goals": [
+            "corridor915f:south:south_0"
+          ],
+          "support": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 28
+          },
+          "body": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 512
+          },
+          "support_population": 28,
+          "body_population": 1850,
+          "observability": 0.0,
+          "one_frame_evidence_readiness": 1.0
+        }
+      ],
+      "priority": 0.0,
+      "unknown_voxels": 0
+    }
+  ],
+  "readiness_scores": [
+    {
+      "id": 0,
+      "robot": "ifo001",
+      "move_cost": 7.38072312803305,
+      "eligible": false,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 0
+    },
+    {
+      "id": 1,
+      "robot": "ifo001",
+      "move_cost": 6.432351553470266,
+      "eligible": false,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 0
+    },
+    {
+      "id": 2,
+      "robot": "ifo001",
+      "move_cost": 3.965768196021087,
+      "eligible": true,
+      "goal_scores": {
+        "corridor915f:south:south_0": 0.32142857142857145
+      },
+      "segments": [
+        {
+          "id": 109,
+          "goals": [
+            "corridor915f:south:south_0"
+          ],
+          "support": {
+            "fraction": 0.32142857142857145,
+            "through_unknown": 0.21428571428571427,
+            "n": 28
+          },
+          "body": {
+            "fraction": 0.51953125,
+            "through_unknown": 0.0,
+            "n": 512
+          },
+          "support_population": 28,
+          "body_population": 1850,
+          "observability": 0.32142857142857145,
+          "one_frame_evidence_readiness": 1.0
+        }
+      ],
+      "priority": 0.32142857142857145,
+      "unknown_voxels": 191
+    },
+    {
+      "id": 3,
+      "robot": "ifo001",
+      "move_cost": 3.776242885284025,
+      "eligible": true,
+      "goal_scores": {
+        "corridor915f:south:south_0": 0.20663265306122452
+      },
+      "segments": [
+        {
+          "id": 109,
+          "goals": [
+            "corridor915f:south:south_0"
+          ],
+          "support": {
+            "fraction": 0.32142857142857145,
+            "through_unknown": 0.21428571428571427,
+            "n": 28
+          },
+          "body": {
+            "fraction": 0.96484375,
+            "through_unknown": 0.0,
+            "n": 512
+          },
+          "support_population": 28,
+          "body_population": 1850,
+          "observability": 0.20663265306122452,
+          "one_frame_evidence_readiness": 0.6428571428571429
+        }
+      ],
+      "priority": 0.20663265306122452,
+      "unknown_voxels": 184
+    },
+    {
+      "id": 4,
+      "robot": "ifo001",
+      "move_cost": 4.541075459039247,
+      "eligible": true,
+      "goal_scores": {
+        "corridor915f:south:south_0": 0.0
+      },
+      "segments": [
+        {
+          "id": 109,
+          "goals": [
+            "corridor915f:south:south_0"
+          ],
+          "support": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 28
+          },
+          "body": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 512
+          },
+          "support_population": 28,
+          "body_population": 1850,
+          "observability": 0.0,
+          "one_frame_evidence_readiness": 1.0
+        }
+      ],
+      "priority": 0.0,
+      "unknown_voxels": 5184
+    },
+    {
+      "id": 5,
+      "robot": "ifo001",
+      "move_cost": 0.5470931106039513,
+      "eligible": true,
+      "goal_scores": {
+        "corridor915f:south:south_0": 0.0
+      },
+      "segments": [
+        {
+          "id": 109,
+          "goals": [
+            "corridor915f:south:south_0"
+          ],
+          "support": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 28
+          },
+          "body": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 512
+          },
+          "support_population": 28,
+          "body_population": 1850,
+          "observability": 0.0,
+          "one_frame_evidence_readiness": 1.0
+        }
+      ],
+      "priority": 0.0,
+      "unknown_voxels": 1
+    },
+    {
+      "id": 6,
+      "robot": "ifo001",
+      "move_cost": 3.5175260057769933,
+      "eligible": true,
+      "goal_scores": {
+        "corridor915f:south:south_0": 0.0
+      },
+      "segments": [
+        {
+          "id": 109,
+          "goals": [
+            "corridor915f:south:south_0"
+          ],
+          "support": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 28
+          },
+          "body": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 512
+          },
+          "support_population": 28,
+          "body_population": 1850,
+          "observability": 0.0,
+          "one_frame_evidence_readiness": 0.9642857142857143
+        }
+      ],
+      "priority": 0.0,
+      "unknown_voxels": 1006
+    },
+    {
+      "id": 7,
+      "robot": "ifo001",
+      "move_cost": 0.2230337346755033,
+      "eligible": true,
+      "goal_scores": {
+        "corridor915f:south:south_0": 0.0
+      },
+      "segments": [
+        {
+          "id": 109,
+          "goals": [
+            "corridor915f:south:south_0"
+          ],
+          "support": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 28
+          },
+          "body": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 512
+          },
+          "support_population": 28,
+          "body_population": 1850,
+          "observability": 0.0,
+          "one_frame_evidence_readiness": 0.7857142857142857
+        }
+      ],
+      "priority": 0.0,
+      "unknown_voxels": 285
+    },
+    {
+      "id": 8,
+      "robot": "ifo002",
+      "move_cost": 14.778578269045203,
+      "eligible": false,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 0
+    },
+    {
+      "id": 9,
+      "robot": "ifo002",
+      "move_cost": 13.808374009499708,
+      "eligible": false,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 0
+    },
+    {
+      "id": 10,
+      "robot": "ifo002",
+      "move_cost": 11.998388519874654,
+      "eligible": false,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 0
+    },
+    {
+      "id": 11,
+      "robot": "ifo002",
+      "move_cost": 9.810829180694546,
+      "eligible": false,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 0
+    },
+    {
+      "id": 12,
+      "robot": "ifo002",
+      "move_cost": 7.367749096152656,
+      "eligible": false,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 0
+    },
+    {
+      "id": 13,
+      "robot": "ifo002",
+      "move_cost": 4.786144976657455,
+      "eligible": true,
+      "goal_scores": {
+        "corridor915f:south:south_0": 0.0
+      },
+      "segments": [
+        {
+          "id": 109,
+          "goals": [
+            "corridor915f:south:south_0"
+          ],
+          "support": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 28
+          },
+          "body": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 512
+          },
+          "support_population": 28,
+          "body_population": 1850,
+          "observability": 0.0,
+          "one_frame_evidence_readiness": 0.0
+        }
+      ],
+      "priority": 0.0,
+      "unknown_voxels": 11
+    },
+    {
+      "id": 14,
+      "robot": "ifo002",
+      "move_cost": 2.137969653027294,
+      "eligible": true,
+      "goal_scores": {
+        "corridor915f:south:south_0": 0.0
+      },
+      "segments": [
+        {
+          "id": 109,
+          "goals": [
+            "corridor915f:south:south_0"
+          ],
+          "support": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 28
+          },
+          "body": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 512
+          },
+          "support_population": 28,
+          "body_population": 1850,
+          "observability": 0.0,
+          "one_frame_evidence_readiness": 0.0
+        }
+      ],
+      "priority": 0.0,
+      "unknown_voxels": 1460
+    },
+    {
+      "id": 15,
+      "robot": "ifo002",
+      "move_cost": 0.21067057547775445,
+      "eligible": true,
+      "goal_scores": {
+        "corridor915f:south:south_0": 0.0
+      },
+      "segments": [
+        {
+          "id": 109,
+          "goals": [
+            "corridor915f:south:south_0"
+          ],
+          "support": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 28
+          },
+          "body": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 512
+          },
+          "support_population": 28,
+          "body_population": 1850,
+          "observability": 0.0,
+          "one_frame_evidence_readiness": 0.0
+        }
+      ],
+      "priority": 0.0,
+      "unknown_voxels": 577
+    },
+    {
+      "id": 16,
+      "robot": "ifo003",
+      "move_cost": 14.511745375412772,
+      "eligible": false,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 0
+    },
+    {
+      "id": 17,
+      "robot": "ifo003",
+      "move_cost": 12.056044910868811,
+      "eligible": false,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 0
+    },
+    {
+      "id": 18,
+      "robot": "ifo003",
+      "move_cost": 9.928334481402237,
+      "eligible": false,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 0
+    },
+    {
+      "id": 19,
+      "robot": "ifo003",
+      "move_cost": 7.612259916212754,
+      "eligible": false,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 0
+    },
+    {
+      "id": 20,
+      "robot": "ifo003",
+      "move_cost": 5.3774781974694985,
+      "eligible": true,
+      "goal_scores": {
+        "corridor915f:south:south_0": 0.0
+      },
+      "segments": [
+        {
+          "id": 109,
+          "goals": [
+            "corridor915f:south:south_0"
+          ],
+          "support": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 28
+          },
+          "body": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 512
+          },
+          "support_population": 28,
+          "body_population": 1850,
+          "observability": 0.0,
+          "one_frame_evidence_readiness": 0.0
+        }
+      ],
+      "priority": 0.0,
+      "unknown_voxels": 333
+    },
+    {
+      "id": 21,
+      "robot": "ifo003",
+      "move_cost": 2.973918218744583,
+      "eligible": true,
+      "goal_scores": {
+        "corridor915f:south:south_0": 0.0
+      },
+      "segments": [
+        {
+          "id": 109,
+          "goals": [
+            "corridor915f:south:south_0"
+          ],
+          "support": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 28
+          },
+          "body": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 512
+          },
+          "support_population": 28,
+          "body_population": 1850,
+          "observability": 0.0,
+          "one_frame_evidence_readiness": 0.0
+        }
+      ],
+      "priority": 0.0,
+      "unknown_voxels": 1857
+    },
+    {
+      "id": 22,
+      "robot": "ifo003",
+      "move_cost": 1.0207248666581237,
+      "eligible": true,
+      "goal_scores": {
+        "corridor915f:south:south_0": 0.0
+      },
+      "segments": [
+        {
+          "id": 109,
+          "goals": [
+            "corridor915f:south:south_0"
+          ],
+          "support": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 28
+          },
+          "body": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 512
+          },
+          "support_population": 28,
+          "body_population": 1850,
+          "observability": 0.0,
+          "one_frame_evidence_readiness": 0.0
+        }
+      ],
+      "priority": 0.0,
+      "unknown_voxels": 494
+    },
+    {
+      "id": 23,
+      "robot": "ifo003",
+      "move_cost": 0.20293951169759453,
+      "eligible": true,
+      "goal_scores": {
+        "corridor915f:south:south_0": 0.0
+      },
+      "segments": [
+        {
+          "id": 109,
+          "goals": [
+            "corridor915f:south:south_0"
+          ],
+          "support": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 28
+          },
+          "body": {
+            "fraction": 0.0,
+            "through_unknown": 0.0,
+            "n": 512
+          },
+          "support_population": 28,
+          "body_population": 1850,
+          "observability": 0.0,
+          "one_frame_evidence_readiness": 0.0
+        }
+      ],
+      "priority": 0.0,
+      "unknown_voxels": 0
+    }
+  ],
+  "reason": {
+    "fallback": false,
+    "reason": "maximum distinct-goal observability sum",
+    "max_move_m": 6.0,
+    "score_model": "cut impact visibility"
+  },
+  "readiness_reason": {
+    "fallback": false,
+    "reason": "maximum distinct-goal observability sum",
+    "max_move_m": 6.0,
+    "score_model": "single-frame evidence readiness and serial visibility bottleneck"
+  },
+  "candidates": [
+    {
+      "id": 0,
+      "robot": "ifo001",
+      "index": 6,
+      "timestamp": 0.5999999046325684,
+      "T": [
+        [
+          0.23649809972387484,
+          0.017808023515206543,
+          0.9714687419503654,
+          -2.036649115875326
+        ],
+        [
+          -0.9711069377224408,
+          0.03719582367699098,
+          0.23572817764468518,
+          -19.526521005318383
+        ],
+        [
+          -0.03193672773266291,
+          -0.9991493070868502,
+          0.02609024254394143,
+          1.0846371253198153
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "move_cost": 7.38072312803305,
+      "pose_scope": "perfect-localization diagnostic catalog; offline simulator poses known before depth"
+    },
+    {
+      "id": 1,
+      "robot": "ifo001",
+      "index": 174,
+      "timestamp": 17.40000009536743,
+      "T": [
+        [
+          0.23652948567936713,
+          0.019486007601829173,
+          0.9714288915587356,
+          -0.10526104809867011
+        ],
+        [
+          -0.9714021316429611,
+          0.026122199339206342,
+          0.2359989764976789,
+          -17.726990978150948
+        ],
+        [
+          -0.02077718189977234,
+          -0.9994688184541255,
+          0.025107425501758603,
+          1.018330530205696
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "move_cost": 6.432351553470266,
+      "pose_scope": "perfect-localization diagnostic catalog; offline simulator poses known before depth"
+    },
+    {
+      "id": 2,
+      "robot": "ifo001",
+      "index": 342,
+      "timestamp": 34.200000047683716,
+      "T": [
+        [
+          -0.6716511426577166,
+          0.041743955433825704,
+          0.7396905903027413,
+          -2.1926929686249674
+        ],
+        [
+          -0.7408674181205449,
+          -0.038449020709286914,
+          -0.6705498770492329,
+          -16.024240014540393
+        ],
+        [
+          0.0004489742891397637,
+          -0.9983882550610744,
+          0.056751071224715254,
+          1.1117395448115446
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "move_cost": 3.965768196021087,
+      "pose_scope": "perfect-localization diagnostic catalog; offline simulator poses known before depth"
+    },
+    {
+      "id": 3,
+      "robot": "ifo001",
+      "index": 510,
+      "timestamp": 51.0,
+      "T": [
+        [
+          -0.7455923641612283,
+          -0.00018131111387718532,
+          -0.6664022733458778,
+          -1.057731446351978
+        ],
+        [
+          0.6662996635648585,
+          -0.017752415107498892,
+          -0.7454727325359306,
+          -15.126956031141901
+        ],
+        [
+          -0.011695087932894008,
+          -0.9998423934484837,
+          0.013356878496525419,
+          0.9959877188373003
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "move_cost": 3.776242885284025,
+      "pose_scope": "perfect-localization diagnostic catalog; offline simulator poses known before depth"
+    },
+    {
+      "id": 4,
+      "robot": "ifo001",
+      "index": 678,
+      "timestamp": 67.80000019073486,
+      "T": [
+        [
+          -0.6710957085816737,
+          0.06797916261712245,
+          0.7382474976434565,
+          0.5440719962016153
+        ],
+        [
+          -0.7412716748675583,
+          -0.0452507098465763,
+          -0.6696780370332215,
+          -14.224455388327177
+        ],
+        [
+          -0.012117929123300045,
+          -0.9966600220541191,
+          0.08075859097840823,
+          1.1321633467037198
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "move_cost": 4.541075459039247,
+      "pose_scope": "perfect-localization diagnostic catalog; offline simulator poses known before depth"
+    },
+    {
+      "id": 5,
+      "robot": "ifo001",
+      "index": 846,
+      "timestamp": 84.59999990463257,
+      "T": [
+        [
+          -0.07385256450425878,
+          -0.03753101845522958,
+          -0.9965626989080169,
+          -4.088025937265205
+        ],
+        [
+          0.9972690891088352,
+          -0.003171127433913956,
+          -0.07378548136071464,
+          -12.482954211467232
+        ],
+        [
+          -0.0003909835159236933,
+          -0.9992904279823621,
+          0.03766272645267305,
+          0.9845052647493
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "move_cost": 0.5470931106039513,
+      "pose_scope": "perfect-localization diagnostic catalog; offline simulator poses known before depth"
+    },
+    {
+      "id": 6,
+      "robot": "ifo001",
+      "index": 1014,
+      "timestamp": 101.40000009536743,
+      "T": [
+        [
+          -0.23706721248124987,
+          -0.058053149141604365,
+          -0.9697571663399082,
+          -0.05602746139707151
+        ],
+        [
+          0.9714674913159921,
+          -0.02143443638929612,
+          -0.2362021715305224,
+          -12.272819531987668
+        ],
+        [
+          -0.007073918752255089,
+          -0.9980833580739019,
+          0.061478155266474405,
+          1.1399919117169113
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "move_cost": 3.5175260057769933,
+      "pose_scope": "perfect-localization diagnostic catalog; offline simulator poses known before depth"
+    },
+    {
+      "id": 7,
+      "robot": "ifo001",
+      "index": 1194,
+      "timestamp": 119.40000009536743,
+      "T": [
+        [
+          -0.2958437571286593,
+          0.029068403897643688,
+          0.9547939498694681,
+          -3.3484372185010343
+        ],
+        [
+          -0.9550956580257843,
+          0.008152360439694957,
+          -0.2961854429345278,
+          -12.283540846490315
+        ],
+        [
+          -0.016393463094288768,
+          -0.9995441759956214,
+          0.025351287238501094,
+          0.994352282004869
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "move_cost": 0.2230337346755033,
+      "pose_scope": "perfect-localization diagnostic catalog; offline simulator poses known before depth"
+    },
+    {
+      "id": 8,
+      "robot": "ifo002",
+      "index": 6,
+      "timestamp": 0.5999999046325684,
+      "T": [
+        [
+          0.5911456048277155,
+          0.02292372955232116,
+          0.8062390320216728,
+          -4.653499876431928
+        ],
+        [
+          -0.8065647660994946,
+          0.017291782505737274,
+          0.5908927778859885,
+          -12.088992043048684
+        ],
+        [
+          -0.00039583743015759337,
+          -0.9995876614362057,
+          0.028711426255593878,
+          1.295763265584066
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "move_cost": 14.778578269045203,
+      "pose_scope": "perfect-localization diagnostic catalog; offline simulator poses known before depth"
+    },
+    {
+      "id": 9,
+      "robot": "ifo002",
+      "index": 174,
+      "timestamp": 17.40000009536743,
+      "T": [
+        [
+          0.7686473057599482,
+          -0.005867338700250733,
+          -0.6396459142873896,
+          -0.005792051278882972
+        ],
+        [
+          0.6394126385631361,
+          -0.021470370576801574,
+          0.7685639214195803,
+          -11.168919228790886
+        ],
+        [
+          -0.01824285342895687,
+          -0.9997522660830471,
+          -0.012751499453067356,
+          1.1335752244364738
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "move_cost": 13.808374009499708,
+      "pose_scope": "perfect-localization diagnostic catalog; offline simulator poses known before depth"
+    },
+    {
+      "id": 10,
+      "robot": "ifo002",
+      "index": 342,
+      "timestamp": 34.200000047683716,
+      "T": [
+        [
+          -0.6817330341397897,
+          -0.026265754944795376,
+          -0.731129387509421,
+          -1.7933786009043173
+        ],
+        [
+          0.7308016077485455,
+          0.022256897392596616,
+          -0.6822269722505303,
+          -9.519341043600464
+        ],
+        [
+          0.03419188474223414,
+          -0.9994071926146778,
+          0.004021786253333742,
+          1.2947942544790578
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "move_cost": 11.998388519874654,
+      "pose_scope": "perfect-localization diagnostic catalog; offline simulator poses known before depth"
+    },
+    {
+      "id": 11,
+      "robot": "ifo002",
+      "index": 510,
+      "timestamp": 51.0,
+      "T": [
+        [
+          0.7911911460601857,
+          -0.020590316278573863,
+          0.61122222747309,
+          -2.604194057885542
+        ],
+        [
+          -0.6115088872688443,
+          -0.012628972341452561,
+          0.7911367706976296,
+          -7.325969483311342
+        ],
+        [
+          -0.008570641441487852,
+          -0.9997082294086928,
+          -0.022583099956718027,
+          1.1356855393298373
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "move_cost": 9.810829180694546,
+      "pose_scope": "perfect-localization diagnostic catalog; offline simulator poses known before depth"
+    },
+    {
+      "id": 12,
+      "robot": "ifo002",
+      "index": 678,
+      "timestamp": 67.80000019073486,
+      "T": [
+        [
+          0.7030142893803251,
+          -0.00011963074166503698,
+          0.7111757137034224,
+          -1.47406255630108
+        ],
+        [
+          -0.7111708683201378,
+          0.0035779246538854333,
+          0.7030100965489836,
+          -4.863472002699945
+        ],
+        [
+          -0.002628628423132687,
+          -0.999993590058443,
+          0.002430246759349882,
+          1.2868380880738257
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "move_cost": 7.367749096152656,
+      "pose_scope": "perfect-localization diagnostic catalog; offline simulator poses known before depth"
+    },
+    {
+      "id": 13,
+      "robot": "ifo002",
+      "index": 846,
+      "timestamp": 84.59999990463257,
+      "T": [
+        [
+          -0.5911453678931857,
+          0.016265251750399813,
+          -0.8064010141752298,
+          -2.287776965217391
+        ],
+        [
+          0.8065649455948387,
+          0.012396758665560373,
+          -0.5910154913023988,
+          -2.309976098606938
+        ],
+        [
+          0.00038374933716675753,
+          -0.9997908571168275,
+          -0.020447275819517496,
+          1.1479719036308584
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "move_cost": 4.786144976657455,
+      "pose_scope": "perfect-localization diagnostic catalog; offline simulator poses known before depth"
+    },
+    {
+      "id": 14,
+      "robot": "ifo002",
+      "index": 1014,
+      "timestamp": 101.40000009536743,
+      "T": [
+        [
+          -0.7646978854887501,
+          0.02807030789423586,
+          0.6437772938753475,
+          -2.497306706796556
+        ],
+        [
+          -0.644379421661887,
+          -0.027871070606282265,
+          -0.7641978572636747,
+          0.3676311392131876
+        ],
+        [
+          -0.003508500428343714,
+          -0.999217322333985,
+          0.039400869975637666,
+          1.2746948916117635
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "move_cost": 2.137969653027294,
+      "pose_scope": "perfect-localization diagnostic catalog; offline simulator poses known before depth"
+    },
+    {
+      "id": 15,
+      "robot": "ifo002",
+      "index": 1194,
+      "timestamp": 119.40000009536743,
+      "T": [
+        [
+          -0.7556999468541403,
+          0.021549419521581886,
+          -0.6545633770086834,
+          -2.3473788125900676
+        ],
+        [
+          0.6548881240019108,
+          0.015316926029835459,
+          -0.7555706037499839,
+          2.4725762520892043
+        ],
+        [
+          -0.0062562027969414935,
+          -0.9996504440601204,
+          -0.025687466565776928,
+          1.218994959001324
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "move_cost": 0.21067057547775445,
+      "pose_scope": "perfect-localization diagnostic catalog; offline simulator poses known before depth"
+    },
+    {
+      "id": 16,
+      "robot": "ifo003",
+      "index": 6,
+      "timestamp": 0.5999999046325684,
+      "T": [
+        [
+          -0.7142170347729399,
+          -0.026653956579187163,
+          0.6994166124619035,
+          -2.472228340935
+        ],
+        [
+          -0.6994573364315493,
+          -0.009315600419560997,
+          -0.7146136355411181,
+          2.570997382076358
+        ],
+        [
+          0.025562760992213048,
+          -0.9996013154515999,
+          -0.011989945163655109,
+          1.4189905302509227
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "move_cost": 14.511745375412772,
+      "pose_scope": "perfect-localization diagnostic catalog; offline simulator poses known before depth"
+    },
+    {
+      "id": 17,
+      "robot": "ifo003",
+      "index": 174,
+      "timestamp": 17.40000009536743,
+      "T": [
+        [
+          0.8950426327553371,
+          0.0524950788760861,
+          -0.44288029088597675,
+          -1.4889857138791185
+        ],
+        [
+          0.4438590643425865,
+          -0.008105580175100756,
+          0.896059947158766,
+          5.0302413569505156
+        ],
+        [
+          0.04344893035083684,
+          -0.9985882884997649,
+          -0.03055525677502848,
+          1.3129002950897761
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "move_cost": 12.056044910868811,
+      "pose_scope": "perfect-localization diagnostic catalog; offline simulator poses known before depth"
+    },
+    {
+      "id": 18,
+      "robot": "ifo003",
+      "index": 342,
+      "timestamp": 34.200000047683716,
+      "T": [
+        [
+          -0.08233015577492049,
+          0.055250921380491744,
+          -0.9950724018143516,
+          -2.1438975479524722
+        ],
+        [
+          0.9965756407426482,
+          0.012242059706979766,
+          -0.08177480223704327,
+          7.1477807305784555
+        ],
+        [
+          0.007663597443197182,
+          -0.9983974515821886,
+          -0.05606961334373677,
+          1.3922462092588102
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "move_cost": 9.928334481402237,
+      "pose_scope": "perfect-localization diagnostic catalog; offline simulator poses known before depth"
+    },
+    {
+      "id": 19,
+      "robot": "ifo003",
+      "index": 510,
+      "timestamp": 51.0,
+      "T": [
+        [
+          0.9045023145625931,
+          -0.004972494724480397,
+          0.42643971254710583,
+          -2.6003862350235942
+        ],
+        [
+          -0.4261334077134009,
+          -0.050181372247734606,
+          0.903267488268713,
+          9.486901082537827
+        ],
+        [
+          0.016907831877279983,
+          -0.9987277446034133,
+          -0.04750811376468803,
+          1.3354645891501205
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "move_cost": 7.612259916212754,
+      "pose_scope": "perfect-localization diagnostic catalog; offline simulator poses known before depth"
+    },
+    {
+      "id": 20,
+      "robot": "ifo003",
+      "index": 678,
+      "timestamp": 67.80000019073486,
+      "T": [
+        [
+          0.9155088390808153,
+          0.003963674715697802,
+          -0.40227832837563854,
+          -2.4864377753911455
+        ],
+        [
+          0.40229281416919593,
+          -0.004017689406601745,
+          0.9155022386096301,
+          11.719786622654663
+        ],
+        [
+          0.0020125183328163613,
+          -0.9999840754330296,
+          -0.005272788073035876,
+          1.3712683014714095
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "move_cost": 5.3774781974694985,
+      "pose_scope": "perfect-localization diagnostic catalog; offline simulator poses known before depth"
+    },
+    {
+      "id": 21,
+      "robot": "ifo003",
+      "index": 846,
+      "timestamp": 84.59999990463257,
+      "T": [
+        [
+          0.6999949135842278,
+          -0.04035129958866692,
+          0.7130069334866139,
+          -1.3730118927647872
+        ],
+        [
+          -0.7139968191199845,
+          -0.060073719117782615,
+          0.6975669822663115,
+          14.168405646110891
+        ],
+        [
+          0.01468523884950225,
+          -0.9973780249022606,
+          -0.07086199775544284,
+          1.3601738073972662
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "move_cost": 2.973918218744583,
+      "pose_scope": "perfect-localization diagnostic catalog; offline simulator poses known before depth"
+    },
+    {
+      "id": 22,
+      "robot": "ifo003",
+      "index": 1014,
+      "timestamp": 101.40000009536743,
+      "T": [
+        [
+          0.7928073325326676,
+          0.02730460974833657,
+          -0.6088604061634997,
+          -1.5078391950896035
+        ],
+        [
+          0.6091348789843074,
+          -0.0022592724206999854,
+          0.7930634213964126,
+          16.18340916583084
+        ],
+        [
+          0.020278700267101157,
+          -0.9996246083604039,
+          -0.01842335809346781,
+          1.3427794001934086
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "move_cost": 1.0207248666581237,
+      "pose_scope": "perfect-localization diagnostic catalog; offline simulator poses known before depth"
+    },
+    {
+      "id": 23,
+      "robot": "ifo003",
+      "index": 1194,
+      "timestamp": 119.40000009536743,
+      "T": [
+        [
+          0.42858125518336565,
+          0.03667798036437126,
+          -0.902758461633927,
+          -2.200676973424255
+        ],
+        [
+          0.9034510806824599,
+          -0.02813337174890396,
+          0.4277670501410798,
+          17.098883322726365
+        ],
+        [
+          -0.009708013002640008,
+          -0.9989310500807851,
+          -0.045194196927816496,
+          1.4288035053994403
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "move_cost": 0.20293951169759453,
+      "pose_scope": "perfect-localization diagnostic catalog; offline simulator poses known before depth"
+    }
+  ],
+  "impact": {
+    "1": [],
+    "2": [],
+    "3": [],
+    "4": [],
+    "5": [],
+    "6": [],
+    "7": [],
+    "8": [],
+    "9": [],
+    "10": [],
+    "11": [],
+    "12": [],
+    "13": [],
+    "14": [],
+    "15": [],
+    "16": [],
+    "17": [],
+    "18": [],
+    "19": [],
+    "20": [],
+    "21": [],
+    "22": [],
+    "23": [],
+    "24": [],
+    "25": [],
+    "26": [],
+    "27": [],
+    "28": [],
+    "29": [],
+    "30": [],
+    "31": [],
+    "32": [],
+    "33": [],
+    "34": [],
+    "35": [],
+    "36": [],
+    "37": [],
+    "38": [],
+    "39": [],
+    "40": [],
+    "41": [],
+    "42": [],
+    "43": [],
+    "44": [],
+    "45": [],
+    "46": [],
+    "47": [],
+    "48": [],
+    "49": [],
+    "50": [],
+    "51": [],
+    "52": [],
+    "53": [],
+    "54": [],
+    "55": [],
+    "56": [],
+    "57": [],
+    "58": [],
+    "59": [],
+    "60": [],
+    "61": [],
+    "62": [],
+    "63": [],
+    "64": [],
+    "65": [],
+    "66": [],
+    "67": [],
+    "68": [],
+    "69": [],
+    "70": [],
+    "71": [],
+    "72": [],
+    "73": [],
+    "74": [],
+    "75": [],
+    "76": [],
+    "77": [],
+    "78": [],
+    "79": [],
+    "80": [],
+    "81": [],
+    "82": [],
+    "83": [],
+    "84": [],
+    "85": [],
+    "86": [],
+    "87": [],
+    "88": [],
+    "89": [],
+    "90": [],
+    "91": [],
+    "92": [],
+    "93": [],
+    "94": [],
+    "95": [],
+    "96": [],
+    "97": [],
+    "98": [],
+    "99": [],
+    "100": [],
+    "101": [],
+    "102": [],
+    "103": [],
+    "104": [],
+    "105": [],
+    "106": [],
+    "107": [],
+    "108": [],
+    "109": [
+      "corridor915f:south:south_0"
+    ],
+    "110": [],
+    "111": [],
+    "112": [],
+    "113": [],
+    "114": [],
+    "115": [],
+    "116": [],
+    "117": [],
+    "118": [],
+    "119": [],
+    "120": [],
+    "121": [],
+    "122": [],
+    "123": [],
+    "124": [],
+    "125": [],
+    "126": [],
+    "127": [],
+    "128": [],
+    "129": [],
+    "130": [],
+    "131": [],
+    "132": [],
+    "133": [],
+    "134": [],
+    "135": [],
+    "136": [],
+    "137": [],
+    "138": [],
+    "139": [],
+    "140": [],
+    "141": [],
+    "142": [],
+    "143": [],
+    "144": [],
+    "145": [],
+    "146": [],
+    "147": [],
+    "148": [],
+    "149": [],
+    "150": [],
+    "151": [],
+    "152": [],
+    "153": [],
+    "154": [],
+    "155": [],
+    "156": [],
+    "157": [],
+    "158": [],
+    "159": [],
+    "160": [],
+    "161": [],
+    "162": [],
+    "163": [],
+    "164": [],
+    "165": [],
+    "166": [],
+    "167": [],
+    "168": [],
+    "169": [],
+    "170": [],
+    "171": [],
+    "172": [],
+    "173": [],
+    "174": [],
+    "175": [],
+    "176": [],
+    "177": [],
+    "178": [],
+    "179": [],
+    "180": [],
+    "181": [],
+    "182": [],
+    "183": [],
+    "184": [],
+    "185": [],
+    "186": [],
+    "187": [],
+    "188": [],
+    "189": [],
+    "190": [],
+    "191": [],
+    "192": [],
+    "193": [],
+    "194": [],
+    "195": [],
+    "196": [],
+    "197": [],
+    "198": [],
+    "199": [],
+    "200": [],
+    "201": [],
+    "202": [],
+    "203": [],
+    "204": [],
+    "205": [],
+    "206": [],
+    "207": [],
+    "208": [],
+    "209": [],
+    "210": [],
+    "211": [],
+    "212": [],
+    "213": [],
+    "214": [],
+    "215": [],
+    "216": [],
+    "217": [],
+    "218": [],
+    "219": [],
+    "220": [],
+    "221": [],
+    "222": [],
+    "223": [],
+    "224": [],
+    "225": [],
+    "226": [],
+    "227": [],
+    "228": [],
+    "229": [],
+    "230": [],
+    "231": [],
+    "232": [],
+    "233": [],
+    "234": [],
+    "235": [],
+    "236": [],
+    "237": [],
+    "238": [],
+    "239": [],
+    "240": [],
+    "241": [],
+    "242": [],
+    "243": [],
+    "244": [],
+    "245": []
+  },
+  "candidate_observation_access": false,
+  "reference_geometry_access": false,
+  "initial_map_sha256": "3a56bef4cbaa1424ee94e342696a4f9704559fc334d611c17ca1f0a324f1b198",
+  "initial_surface_sha256": "0acbf8f77076f990e52d36935d5ff2a0d3716745f0eb9c5db8a9cde62e25fa85",
+  "case_sha256": "29fd81758682e1f6739d56fb706c327a93b1f072af00ffbeb4e291a205b119a6",
+  "pose_scope": "perfect localization oracle, not field selection performance"
+}

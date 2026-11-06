@@ -1,0 +1,120 @@
+{
+  "path": [
+    {
+      "node": 3900,
+      "ijk": [
+        -24,
+        -196,
+        0
+      ],
+      "xyz": [
+        -2.35,
+        -19.55,
+        0.055064767599105835
+      ],
+      "posture": 1,
+      "width": 1,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 3901,
+      "ijk": [
+        -24,
+        -195,
+        0
+      ],
+      "xyz": [
+        -2.35,
+        -19.450000000000003,
+        0.05506480485200882
+      ],
+      "posture": 1,
+      "width": 1,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 3901,
+      "ijk": [
+        -24,
+        -195,
+        0
+      ],
+      "xyz": [
+        -2.35,
+        -19.450000000000003,
+        0.05506480485200882
+      ],
+      "posture": 0,
+      "width": 1,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0,
+      "mode_transition": true
+    },
+    {
+      "node": 3902,
+      "ijk": [
+        -24,
+        -194,
+        0
+      ],
+      "xyz": [
+        -2.35,
+        -19.35,
+        0.05506475642323494
+      ],
+      "posture": 0,
+      "width": 1,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 3903,
+      "ijk": [
+        -24,
+        -193,
+        0
+      ],
+      "xyz": [
+        -2.35,
+        -19.25,
+        0.055064763873815536
+      ],
+      "posture": 0,
+      "width": 1,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 3903,
+      "ijk": [
+        -24,
+        -193,
+        0
+      ],
+      "xyz": [
+        -2.35,
+        -19.25,
+        0.055064763873815536
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0,
+      "mode_transition": true
+    }
+  ],
+  "validation": {
+    "status": "valid",
+    "reason": "mesh_support_and_swept_body_verified",
+    "first_failure": null,
+    "gap_dependency": false
+  }
+}

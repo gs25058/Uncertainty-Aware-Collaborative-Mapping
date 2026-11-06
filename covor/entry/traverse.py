@@ -153,7 +153,7 @@ def entry_node(posture, xy, ijk_min, res, snap_m=None):
     return (i, j, k), float(d[n])
 
 
-def traverse(lab, cfg, entry_xy, ijk_min, snap_m=1.5):
+def traverse(lab, cfg, entry_xy, ijk_min, snap_m=1.5, return_paths=False):
     """Dijkstra over support nodes from the entry.
 
     Returns a dict of 2D arrays (per column, the best reached node):
@@ -161,6 +161,8 @@ def traverse(lab, cfg, entry_xy, ijk_min, snap_m=1.5):
       width, support_row (-1), feasible (any node fits, reached or not),
       feasible_stand (a node fits standing, normal width)
     plus the entry node and the snap distance.
+    return_paths=True additionally records path_parent, path_best and
+    path_modes; the default arrays and search order are unchanged.
     """
     S, P, W = node_modes(lab, cfg)
     _, PA, WA = node_modes(lab, cfg, air=True)
@@ -174,6 +176,9 @@ def traverse(lab, cfg, entry_xy, ijk_min, snap_m=1.5):
     feas3 = P >= 0
     out = dict(feasible=feas3.any(axis=2),
                feasible_stand=((P == STAND) & (W == NORMAL)).any(axis=2))
+    parents, path_best, path_modes = {}, {}, {}
+    if return_paths:
+        out.update(path_parent=parents, path_best=path_best, path_modes=path_modes)
     e = entry_node(P, entry_xy, ijk_min, cfg.res, snap_m)
     cost = np.full((nx, ny), np.inf)
     post = np.full((nx, ny), -1, np.int8)
@@ -189,6 +194,8 @@ def traverse(lab, cfg, entry_xy, ijk_min, snap_m=1.5):
     start, snapped = e
     st = cfg.step_rows
     dist = {start + (0,): 0.0}
+    if return_paths:
+        parents[start + (0,)] = None
     pq = [(0.0, start + (0,))]
     gapreach = np.zeros((nx, ny), bool)
     steps = [(-1, 0, 1.0), (1, 0, 1.0), (0, -1, 1.0), (0, 1, 1.0),
@@ -208,7 +215,11 @@ def traverse(lab, cfg, entry_xy, ijk_min, snap_m=1.5):
             wid[i, j] = wu
             sup[i, j] = k if g == 0 else -1
             lvl[i, j] = k
+            if return_paths:
+                path_best[(i,j)] = (i,j,k,g)
         fu = _factor(pu, wu, cfg)
+        if return_paths:
+            path_modes[(i,j,k,g)] = (int(pu),int(wu))
         for di, dj, ln in steps:
             a, b = i + di, j + dj
             if not (0 <= a < nx and 0 <= b < ny):
@@ -220,6 +231,8 @@ def traverse(lab, cfg, entry_xy, ijk_min, snap_m=1.5):
                 nd = d0 + cfg.res * ln * max(fu, fv)
                 if nd < dist.get((a, b, k, g + 1), np.inf):
                     dist[(a, b, k, g + 1)] = nd
+                    if return_paths:
+                        parents[(a,b,k,g+1)] = (i,j,k,g)
                     heapq.heappush(pq, (nd, (a, b, k, g + 1)))
             for kk in range(max(k - st, 0), min(k + st, nz - 1) + 1):
                 if P[a, b, kk] < 0:
@@ -235,6 +248,8 @@ def traverse(lab, cfg, entry_xy, ijk_min, snap_m=1.5):
                       + cfg.c_rise * abs(kk - k) * cfg.res)
                 if nd < dist.get((a, b, kk, 0), np.inf):
                     dist[(a, b, kk, 0)] = nd
+                    if return_paths:
+                        parents[(a,b,kk,0)] = (i,j,k,g)
                     heapq.heappush(pq, (nd, (a, b, kk, 0)))
     reach = np.isfinite(cost)
     out.update(reach=reach, cost=cost, posture=post, width=wid,

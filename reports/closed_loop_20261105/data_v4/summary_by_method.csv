@@ -1,0 +1,5 @@
+condition,policy,n_runs,valid_paths,reachable_denominator,valid_path_confirmation_rate,correct_blocked,blocked_denominator,correct_blocked_rate,balanced_score,invalid_paths,checked_path_denominator,wrong_path_ratio,proposed_paths,unverifiable_paths,false_blocked,decided,total_goal_denominator,decision_rate,unknown,reference_undecidable,mean_travel_distance,actual_captures,failed_drones,entry_fallback_seconds,total_sim_seconds
+clean,unknown,4,2,16,0.125,0,12,0.0,0.0625,0,2,0.0,2,0,0,2,28,0.07142857142857142,26,0,41.30102799952007,736,0,0.0,192.0
+clean,entry,4,1,16,0.0625,0,12,0.0,0.03125,0,1,0.0,1,0,1,2,28,0.07142857142857142,26,0,37.17109653115814,736,0,168.0,192.0
+smoke,unknown,4,1,16,0.0625,0,12,0.0,0.03125,0,1,0.0,1,0,0,1,28,0.03571428571428571,27,0,38.36094375650212,713,2,0.0,192.0
+smoke,entry,4,1,16,0.0625,0,12,0.0,0.03125,0,1,0.0,1,0,2,3,28,0.10714285714285714,25,0,37.59811958745855,715,1,180.0,192.0

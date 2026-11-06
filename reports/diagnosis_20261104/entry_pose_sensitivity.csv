@@ -1,0 +1,10 @@
+shift_z,posture_at_least,status,reason,first_failure,index,gap_dependency
+0.0,0,invalid,mesh_body_collision,"[-2.35, -19.55, 0.05006477067470551]",0,False
+0.0,1,invalid,mesh_body_collision,"[-2.35, -19.55, 0.05006477067470551]",0,False
+0.0,2,invalid,mesh_body_collision,"[-2.35, -19.55, 0.05006477067470551]",0,False
+0.05,0,invalid,mesh_body_collision,"[-2.425, -19.756998489795443, 1.9499]",0,False
+0.05,1,valid,mesh_support_and_swept_body_verified,,,False
+0.05,2,valid,mesh_support_and_swept_body_verified,,,False
+0.1,0,invalid,mesh_body_collision,"[-2.475, -19.725, 1.9910654140472412]",0,False
+0.1,1,valid,mesh_support_and_swept_body_verified,,,False
+0.1,2,valid,mesh_support_and_swept_body_verified,,,False

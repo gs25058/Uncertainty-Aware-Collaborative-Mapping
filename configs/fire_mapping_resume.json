@@ -1,0 +1,51 @@
+{
+  "objective": "Evaluate effective multi-drone human-useful 3D mapping under simulated smoke, without committing to uncertainty weighting.",
+  "conditions": [
+    "clean",
+    "heterogeneous_weak"
+  ],
+  "initial_frames_per_robot": 100,
+  "seed": 0,
+  "experiments": [
+    {
+      "id": "support",
+      "decision": "resume",
+      "hypothesis": "Separate observed surface support from volume occupancy to retain useful footing evidence.",
+      "control": "original volume-support graph; same fixed poses and depth"
+    },
+    {
+      "id": "surface_geometry",
+      "decision": "resume_primary",
+      "hypothesis": "Measured foot height and exact body-cell footprint improve geometric human-map validity.",
+      "control": "support layer with legacy voxel-height/body rules; no height registration"
+    },
+    {
+      "id": "relative_z",
+      "decision": "resume_secondary",
+      "hypothesis": "Observed overlapping floors can improve common-frame mapping.",
+      "limits": "Constant relative Z only; common-floor assumption and covariance limitations; do not adopt by recall alone."
+    },
+    {
+      "id": "single_reobservation",
+      "decision": "resume",
+      "hypothesis": "With equal one-view budget compare nearest, unknown, impact, and evidence-readiness; measure actual update rather than score alone.",
+      "limits": "Offline replay; two-frame support rule and serial-visibility score evaluated as explicit conservative variants, not mandatory research assumptions."
+    },
+    {
+      "id": "weighting",
+      "decision": "optional_component_ablation",
+      "hypothesis": "Use only if same-input uniform/depth/pose-depth comparison improves mapping and human usefulness.",
+      "control": "identical estimated poses and 300-frame observation budget"
+    }
+  ],
+  "excluded": [
+    "VIO rerun",
+    "new neural network",
+    "multi-drone simultaneous allocation",
+    "parameter tuning on goal outcomes",
+    "ground-truth height corrections"
+  ],
+  "legacy_cache_issue": "Interrupted repair smoke depths used a second stereo rectification; regenerate smoke depths and all dependent surfaces/registration/maps in this new output. Original 20261103 smoke outputs unaffected.",
+  "reference_cases": "results/decision_paths_20261103/cases_geometry.json",
+  "status": "reviewed_and_resumed"
+}

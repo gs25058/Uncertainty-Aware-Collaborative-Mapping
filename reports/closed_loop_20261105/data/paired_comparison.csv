@@ -1,0 +1,9 @@
+scene,seed,condition,entry_minus_unknown_valid,entry_minus_unknown_correct_blocked,entry_minus_unknown_invalid,entry_minus_unknown_false_blocked,entry_minus_unknown_distance,entry_minus_unknown_failed_drones
+11,0,clean,0,0,0,0,0.0,0
+11,0,smoke,0,0,0,0,0.0,0
+11,1,clean,0,0,0,0,-7.853192110254021,0
+11,1,smoke,0,0,0,2,-3.0512966761742746,-1
+29,0,clean,-2,0,0,0,-2.8743885706174765,0
+29,0,smoke,0,0,0,0,0.0,0
+29,1,clean,0,0,0,0,0.0,0
+29,1,smoke,0,0,0,0,0.0,0

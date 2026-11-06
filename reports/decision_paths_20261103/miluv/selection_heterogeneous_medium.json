@@ -1,0 +1,255 @@
+{
+  "picks": {
+    "nearest": 15,
+    "unknown": 14,
+    "decision": 15
+  },
+  "scores": [
+    {
+      "id": 0,
+      "robot": "ifo001",
+      "move_cost": 3.2506772468610263,
+      "eligible": true,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 21
+    },
+    {
+      "id": 1,
+      "robot": "ifo001",
+      "move_cost": 2.929126057290076,
+      "eligible": true,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 70
+    },
+    {
+      "id": 2,
+      "robot": "ifo001",
+      "move_cost": 2.8041683051817157,
+      "eligible": true,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 108
+    },
+    {
+      "id": 3,
+      "robot": "ifo001",
+      "move_cost": 2.9311581015429384,
+      "eligible": true,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 146
+    },
+    {
+      "id": 4,
+      "robot": "ifo001",
+      "move_cost": 2.9771224756671515,
+      "eligible": true,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 97
+    },
+    {
+      "id": 5,
+      "robot": "ifo001",
+      "move_cost": 2.7698426632808366,
+      "eligible": true,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 178
+    },
+    {
+      "id": 6,
+      "robot": "ifo001",
+      "move_cost": 2.894409841484734,
+      "eligible": true,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 265
+    },
+    {
+      "id": 7,
+      "robot": "ifo001",
+      "move_cost": 0.21429088164921367,
+      "eligible": true,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 780
+    },
+    {
+      "id": 8,
+      "robot": "ifo002",
+      "move_cost": 2.2709856778644215,
+      "eligible": true,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 85
+    },
+    {
+      "id": 9,
+      "robot": "ifo002",
+      "move_cost": 2.897757674559247,
+      "eligible": true,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 647
+    },
+    {
+      "id": 10,
+      "robot": "ifo002",
+      "move_cost": 2.7335712469123985,
+      "eligible": true,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 131
+    },
+    {
+      "id": 11,
+      "robot": "ifo002",
+      "move_cost": 2.1250658418046875,
+      "eligible": true,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 279
+    },
+    {
+      "id": 12,
+      "robot": "ifo002",
+      "move_cost": 2.426424545261507,
+      "eligible": true,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 171
+    },
+    {
+      "id": 13,
+      "robot": "ifo002",
+      "move_cost": 2.3032975546599483,
+      "eligible": true,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 290
+    },
+    {
+      "id": 14,
+      "robot": "ifo002",
+      "move_cost": 1.848599209597457,
+      "eligible": true,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 1571
+    },
+    {
+      "id": 15,
+      "robot": "ifo002",
+      "move_cost": 0.0995390903455225,
+      "eligible": true,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 86
+    },
+    {
+      "id": 16,
+      "robot": "ifo003",
+      "move_cost": 1.398128287945907,
+      "eligible": true,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 99
+    },
+    {
+      "id": 17,
+      "robot": "ifo003",
+      "move_cost": 1.7709651062622447,
+      "eligible": true,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 469
+    },
+    {
+      "id": 18,
+      "robot": "ifo003",
+      "move_cost": 3.221197772535923,
+      "eligible": true,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 78
+    },
+    {
+      "id": 19,
+      "robot": "ifo003",
+      "move_cost": 0.7388850950597569,
+      "eligible": true,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 279
+    },
+    {
+      "id": 20,
+      "robot": "ifo003",
+      "move_cost": 2.0980383712802095,
+      "eligible": true,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 881
+    },
+    {
+      "id": 21,
+      "robot": "ifo003",
+      "move_cost": 1.7014273326120628,
+      "eligible": true,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 259
+    },
+    {
+      "id": 22,
+      "robot": "ifo003",
+      "move_cost": 1.421055975978863,
+      "eligible": true,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 269
+    },
+    {
+      "id": 23,
+      "robot": "ifo003",
+      "move_cost": 0.6650964551395827,
+      "eligible": true,
+      "goal_scores": {},
+      "segments": [],
+      "priority": 0.0,
+      "unknown_voxels": 23
+    }
+  ],
+  "reason": {
+    "fallback": true,
+    "reason": "nearest: no positive dependency/visibility score",
+    "max_move_m": 6.0
+  },
+  "candidate_images_read": false
+}

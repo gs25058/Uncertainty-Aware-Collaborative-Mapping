@@ -1,0 +1,6878 @@
+{
+  "path": [
+    {
+      "node": 13338,
+      "ijk": [
+        -24,
+        -196,
+        0
+      ],
+      "xyz": [
+        -2.35,
+        -19.55,
+        0.1
+      ],
+      "posture": 1,
+      "width": 1,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13339,
+      "ijk": [
+        -24,
+        -195,
+        0
+      ],
+      "xyz": [
+        -2.35,
+        -19.450000000000003,
+        0.1
+      ],
+      "posture": 1,
+      "width": 1,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13339,
+      "ijk": [
+        -24,
+        -195,
+        0
+      ],
+      "xyz": [
+        -2.35,
+        -19.450000000000003,
+        0.1
+      ],
+      "posture": 0,
+      "width": 1,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0,
+      "mode_transition": true
+    },
+    {
+      "node": 13766,
+      "ijk": [
+        -23,
+        -194,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -19.35,
+        0.1
+      ],
+      "posture": 0,
+      "width": 1,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13766,
+      "ijk": [
+        -23,
+        -194,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -19.35,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0,
+      "mode_transition": true
+    },
+    {
+      "node": 13767,
+      "ijk": [
+        -23,
+        -193,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -19.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13768,
+      "ijk": [
+        -23,
+        -192,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -19.150000000000002,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13769,
+      "ijk": [
+        -23,
+        -191,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -19.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13770,
+      "ijk": [
+        -23,
+        -190,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -18.95,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13771,
+      "ijk": [
+        -23,
+        -189,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -18.85,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13772,
+      "ijk": [
+        -23,
+        -188,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -18.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13773,
+      "ijk": [
+        -23,
+        -187,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -18.650000000000002,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13774,
+      "ijk": [
+        -23,
+        -186,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -18.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13775,
+      "ijk": [
+        -23,
+        -185,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -18.45,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13776,
+      "ijk": [
+        -23,
+        -184,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -18.35,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13777,
+      "ijk": [
+        -23,
+        -183,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -18.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13778,
+      "ijk": [
+        -23,
+        -182,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -18.150000000000002,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13779,
+      "ijk": [
+        -23,
+        -181,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -18.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13780,
+      "ijk": [
+        -23,
+        -180,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -17.95,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13781,
+      "ijk": [
+        -23,
+        -179,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -17.85,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13782,
+      "ijk": [
+        -23,
+        -178,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -17.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13783,
+      "ijk": [
+        -23,
+        -177,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -17.650000000000002,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13784,
+      "ijk": [
+        -23,
+        -176,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -17.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13785,
+      "ijk": [
+        -23,
+        -175,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -17.45,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13786,
+      "ijk": [
+        -23,
+        -174,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -17.35,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13787,
+      "ijk": [
+        -23,
+        -173,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -17.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13788,
+      "ijk": [
+        -23,
+        -172,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -17.150000000000002,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13789,
+      "ijk": [
+        -23,
+        -171,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -17.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13790,
+      "ijk": [
+        -23,
+        -170,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -16.95,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13791,
+      "ijk": [
+        -23,
+        -169,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -16.85,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13792,
+      "ijk": [
+        -23,
+        -168,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -16.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13793,
+      "ijk": [
+        -23,
+        -167,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -16.650000000000002,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13794,
+      "ijk": [
+        -23,
+        -166,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -16.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13795,
+      "ijk": [
+        -23,
+        -165,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -16.45,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13796,
+      "ijk": [
+        -23,
+        -164,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -16.35,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13797,
+      "ijk": [
+        -23,
+        -163,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -16.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13798,
+      "ijk": [
+        -23,
+        -162,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -16.150000000000002,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13799,
+      "ijk": [
+        -23,
+        -161,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -16.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13800,
+      "ijk": [
+        -23,
+        -160,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -15.950000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13801,
+      "ijk": [
+        -23,
+        -159,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -15.850000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13802,
+      "ijk": [
+        -23,
+        -158,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -15.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13803,
+      "ijk": [
+        -23,
+        -157,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -15.65,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13804,
+      "ijk": [
+        -23,
+        -156,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -15.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13805,
+      "ijk": [
+        -23,
+        -155,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -15.450000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13806,
+      "ijk": [
+        -23,
+        -154,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -15.350000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13807,
+      "ijk": [
+        -23,
+        -153,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -15.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13808,
+      "ijk": [
+        -23,
+        -152,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -15.15,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13809,
+      "ijk": [
+        -23,
+        -151,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -15.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13810,
+      "ijk": [
+        -23,
+        -150,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -14.950000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13811,
+      "ijk": [
+        -23,
+        -149,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -14.850000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13812,
+      "ijk": [
+        -23,
+        -148,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -14.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13813,
+      "ijk": [
+        -23,
+        -147,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -14.65,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13814,
+      "ijk": [
+        -23,
+        -146,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -14.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13815,
+      "ijk": [
+        -23,
+        -145,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -14.450000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13816,
+      "ijk": [
+        -23,
+        -144,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -14.350000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13817,
+      "ijk": [
+        -23,
+        -143,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -14.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13818,
+      "ijk": [
+        -23,
+        -142,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -14.15,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13819,
+      "ijk": [
+        -23,
+        -141,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -14.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13820,
+      "ijk": [
+        -23,
+        -140,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -13.950000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13821,
+      "ijk": [
+        -23,
+        -139,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -13.850000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13822,
+      "ijk": [
+        -23,
+        -138,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -13.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13823,
+      "ijk": [
+        -23,
+        -137,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -13.65,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13824,
+      "ijk": [
+        -23,
+        -136,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -13.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13825,
+      "ijk": [
+        -23,
+        -135,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -13.450000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13826,
+      "ijk": [
+        -23,
+        -134,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -13.350000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13827,
+      "ijk": [
+        -23,
+        -133,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -13.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13828,
+      "ijk": [
+        -23,
+        -132,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -13.15,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13829,
+      "ijk": [
+        -23,
+        -131,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -13.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13830,
+      "ijk": [
+        -23,
+        -130,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -12.950000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13831,
+      "ijk": [
+        -23,
+        -129,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -12.850000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13832,
+      "ijk": [
+        -23,
+        -128,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -12.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13833,
+      "ijk": [
+        -23,
+        -127,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -12.65,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13834,
+      "ijk": [
+        -23,
+        -126,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -12.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13835,
+      "ijk": [
+        -23,
+        -125,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -12.450000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13836,
+      "ijk": [
+        -23,
+        -124,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -12.350000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13837,
+      "ijk": [
+        -23,
+        -123,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -12.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13838,
+      "ijk": [
+        -23,
+        -122,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -12.15,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13839,
+      "ijk": [
+        -23,
+        -121,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -12.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13840,
+      "ijk": [
+        -23,
+        -120,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -11.950000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13841,
+      "ijk": [
+        -23,
+        -119,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -11.850000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13842,
+      "ijk": [
+        -23,
+        -118,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -11.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13843,
+      "ijk": [
+        -23,
+        -117,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -11.65,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13844,
+      "ijk": [
+        -23,
+        -116,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -11.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13845,
+      "ijk": [
+        -23,
+        -115,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -11.450000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13846,
+      "ijk": [
+        -23,
+        -114,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -11.350000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13847,
+      "ijk": [
+        -23,
+        -113,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -11.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13848,
+      "ijk": [
+        -23,
+        -112,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -11.15,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13849,
+      "ijk": [
+        -23,
+        -111,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -11.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13850,
+      "ijk": [
+        -23,
+        -110,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -10.950000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13851,
+      "ijk": [
+        -23,
+        -109,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -10.850000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13852,
+      "ijk": [
+        -23,
+        -108,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -10.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13853,
+      "ijk": [
+        -23,
+        -107,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -10.65,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13854,
+      "ijk": [
+        -23,
+        -106,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -10.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13855,
+      "ijk": [
+        -23,
+        -105,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -10.450000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13856,
+      "ijk": [
+        -23,
+        -104,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -10.350000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13857,
+      "ijk": [
+        -23,
+        -103,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -10.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13858,
+      "ijk": [
+        -23,
+        -102,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -10.15,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13859,
+      "ijk": [
+        -23,
+        -101,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -10.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13860,
+      "ijk": [
+        -23,
+        -100,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -9.950000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13861,
+      "ijk": [
+        -23,
+        -99,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -9.850000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13862,
+      "ijk": [
+        -23,
+        -98,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -9.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13863,
+      "ijk": [
+        -23,
+        -97,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -9.65,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13864,
+      "ijk": [
+        -23,
+        -96,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -9.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13865,
+      "ijk": [
+        -23,
+        -95,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -9.450000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13866,
+      "ijk": [
+        -23,
+        -94,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -9.35,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13867,
+      "ijk": [
+        -23,
+        -93,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -9.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13868,
+      "ijk": [
+        -23,
+        -92,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -9.15,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13869,
+      "ijk": [
+        -23,
+        -91,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -9.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13870,
+      "ijk": [
+        -23,
+        -90,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -8.950000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13871,
+      "ijk": [
+        -23,
+        -89,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -8.85,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13872,
+      "ijk": [
+        -23,
+        -88,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -8.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13873,
+      "ijk": [
+        -23,
+        -87,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -8.65,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13874,
+      "ijk": [
+        -23,
+        -86,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -8.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13875,
+      "ijk": [
+        -23,
+        -85,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -8.450000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13876,
+      "ijk": [
+        -23,
+        -84,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -8.35,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13877,
+      "ijk": [
+        -23,
+        -83,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -8.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13878,
+      "ijk": [
+        -23,
+        -82,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -8.15,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13879,
+      "ijk": [
+        -23,
+        -81,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -8.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13880,
+      "ijk": [
+        -23,
+        -80,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -7.95,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13881,
+      "ijk": [
+        -23,
+        -79,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -7.8500000000000005,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13882,
+      "ijk": [
+        -23,
+        -78,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -7.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13883,
+      "ijk": [
+        -23,
+        -77,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -7.65,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13884,
+      "ijk": [
+        -23,
+        -76,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -7.550000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13885,
+      "ijk": [
+        -23,
+        -75,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -7.45,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13886,
+      "ijk": [
+        -23,
+        -74,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -7.3500000000000005,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13887,
+      "ijk": [
+        -23,
+        -73,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -7.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13888,
+      "ijk": [
+        -23,
+        -72,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -7.15,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13889,
+      "ijk": [
+        -23,
+        -71,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -7.050000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13890,
+      "ijk": [
+        -23,
+        -70,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -6.95,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13891,
+      "ijk": [
+        -23,
+        -69,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -6.8500000000000005,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13892,
+      "ijk": [
+        -23,
+        -68,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -6.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13893,
+      "ijk": [
+        -23,
+        -67,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -6.65,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13894,
+      "ijk": [
+        -23,
+        -66,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -6.550000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13895,
+      "ijk": [
+        -23,
+        -65,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -6.45,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13896,
+      "ijk": [
+        -23,
+        -64,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -6.3500000000000005,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13897,
+      "ijk": [
+        -23,
+        -63,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -6.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13898,
+      "ijk": [
+        -23,
+        -62,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -6.15,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13899,
+      "ijk": [
+        -23,
+        -61,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -6.050000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13900,
+      "ijk": [
+        -23,
+        -60,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -5.95,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13901,
+      "ijk": [
+        -23,
+        -59,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -5.8500000000000005,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13902,
+      "ijk": [
+        -23,
+        -58,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -5.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13903,
+      "ijk": [
+        -23,
+        -57,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -5.65,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13904,
+      "ijk": [
+        -23,
+        -56,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -5.550000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13905,
+      "ijk": [
+        -23,
+        -55,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -5.45,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13906,
+      "ijk": [
+        -23,
+        -54,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -5.3500000000000005,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13907,
+      "ijk": [
+        -23,
+        -53,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -5.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13908,
+      "ijk": [
+        -23,
+        -52,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -5.15,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13909,
+      "ijk": [
+        -23,
+        -51,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -5.050000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13910,
+      "ijk": [
+        -23,
+        -50,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -4.95,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13911,
+      "ijk": [
+        -23,
+        -49,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -4.8500000000000005,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13912,
+      "ijk": [
+        -23,
+        -48,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -4.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13913,
+      "ijk": [
+        -23,
+        -47,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -4.65,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13914,
+      "ijk": [
+        -23,
+        -46,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -4.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13915,
+      "ijk": [
+        -23,
+        -45,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -4.45,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13916,
+      "ijk": [
+        -23,
+        -44,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -4.3500000000000005,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13917,
+      "ijk": [
+        -23,
+        -43,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -4.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13918,
+      "ijk": [
+        -23,
+        -42,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -4.15,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13919,
+      "ijk": [
+        -23,
+        -41,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -4.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13920,
+      "ijk": [
+        -23,
+        -40,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -3.95,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13921,
+      "ijk": [
+        -23,
+        -39,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -3.85,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13922,
+      "ijk": [
+        -23,
+        -38,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -3.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13923,
+      "ijk": [
+        -23,
+        -37,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -3.6500000000000004,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13924,
+      "ijk": [
+        -23,
+        -36,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -3.5500000000000003,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13925,
+      "ijk": [
+        -23,
+        -35,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -3.45,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13926,
+      "ijk": [
+        -23,
+        -34,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -3.35,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13927,
+      "ijk": [
+        -23,
+        -33,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -3.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13928,
+      "ijk": [
+        -23,
+        -32,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -3.1500000000000004,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13929,
+      "ijk": [
+        -23,
+        -31,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -3.0500000000000003,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13930,
+      "ijk": [
+        -23,
+        -30,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -2.95,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13931,
+      "ijk": [
+        -23,
+        -29,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -2.85,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13932,
+      "ijk": [
+        -23,
+        -28,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -2.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13933,
+      "ijk": [
+        -23,
+        -27,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -2.6500000000000004,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13934,
+      "ijk": [
+        -23,
+        -26,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -2.5500000000000003,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13935,
+      "ijk": [
+        -23,
+        -25,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -2.45,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13936,
+      "ijk": [
+        -23,
+        -24,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -2.35,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13937,
+      "ijk": [
+        -23,
+        -23,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -2.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13938,
+      "ijk": [
+        -23,
+        -22,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -2.15,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13939,
+      "ijk": [
+        -23,
+        -21,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -2.0500000000000003,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13940,
+      "ijk": [
+        -23,
+        -20,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -1.9500000000000002,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13941,
+      "ijk": [
+        -23,
+        -19,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -1.85,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13942,
+      "ijk": [
+        -23,
+        -18,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -1.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13943,
+      "ijk": [
+        -23,
+        -17,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -1.6500000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13944,
+      "ijk": [
+        -23,
+        -16,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -1.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13945,
+      "ijk": [
+        -23,
+        -15,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -1.4500000000000002,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13946,
+      "ijk": [
+        -23,
+        -14,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -1.35,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13947,
+      "ijk": [
+        -23,
+        -13,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -1.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13948,
+      "ijk": [
+        -23,
+        -12,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -1.1500000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13949,
+      "ijk": [
+        -23,
+        -11,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -1.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13950,
+      "ijk": [
+        -23,
+        -10,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -0.9500000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13951,
+      "ijk": [
+        -23,
+        -9,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -0.8500000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13952,
+      "ijk": [
+        -23,
+        -8,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -0.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13953,
+      "ijk": [
+        -23,
+        -7,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -0.65,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13954,
+      "ijk": [
+        -23,
+        -6,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -0.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13955,
+      "ijk": [
+        -23,
+        -5,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -0.45,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13956,
+      "ijk": [
+        -23,
+        -4,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -0.35000000000000003,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13957,
+      "ijk": [
+        -23,
+        -3,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -0.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13958,
+      "ijk": [
+        -23,
+        -2,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -0.15000000000000002,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13959,
+      "ijk": [
+        -23,
+        -1,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        -0.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13960,
+      "ijk": [
+        -23,
+        0,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        0.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13961,
+      "ijk": [
+        -23,
+        1,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        0.15000000000000002,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13962,
+      "ijk": [
+        -23,
+        2,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        0.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13963,
+      "ijk": [
+        -23,
+        3,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        0.35000000000000003,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13964,
+      "ijk": [
+        -23,
+        4,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        0.45,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13965,
+      "ijk": [
+        -23,
+        5,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        0.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13966,
+      "ijk": [
+        -23,
+        6,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        0.65,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13967,
+      "ijk": [
+        -23,
+        7,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        0.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13968,
+      "ijk": [
+        -23,
+        8,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        0.8500000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13969,
+      "ijk": [
+        -23,
+        9,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        0.9500000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13970,
+      "ijk": [
+        -23,
+        10,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        1.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13971,
+      "ijk": [
+        -23,
+        11,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        1.1500000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13972,
+      "ijk": [
+        -23,
+        12,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        1.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13973,
+      "ijk": [
+        -23,
+        13,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        1.35,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13974,
+      "ijk": [
+        -23,
+        14,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        1.4500000000000002,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13975,
+      "ijk": [
+        -23,
+        15,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        1.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13976,
+      "ijk": [
+        -23,
+        16,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        1.6500000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13977,
+      "ijk": [
+        -23,
+        17,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        1.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13978,
+      "ijk": [
+        -23,
+        18,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        1.85,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13979,
+      "ijk": [
+        -23,
+        19,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        1.9500000000000002,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13980,
+      "ijk": [
+        -23,
+        20,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        2.0500000000000003,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13981,
+      "ijk": [
+        -23,
+        21,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        2.15,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13982,
+      "ijk": [
+        -23,
+        22,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        2.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13983,
+      "ijk": [
+        -23,
+        23,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        2.35,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13984,
+      "ijk": [
+        -23,
+        24,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        2.45,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13985,
+      "ijk": [
+        -23,
+        25,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        2.5500000000000003,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13986,
+      "ijk": [
+        -23,
+        26,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        2.6500000000000004,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13987,
+      "ijk": [
+        -23,
+        27,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        2.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13988,
+      "ijk": [
+        -23,
+        28,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        2.85,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13989,
+      "ijk": [
+        -23,
+        29,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        2.95,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13990,
+      "ijk": [
+        -23,
+        30,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        3.0500000000000003,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13991,
+      "ijk": [
+        -23,
+        31,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        3.1500000000000004,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13992,
+      "ijk": [
+        -23,
+        32,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        3.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13993,
+      "ijk": [
+        -23,
+        33,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        3.35,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13994,
+      "ijk": [
+        -23,
+        34,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        3.45,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13995,
+      "ijk": [
+        -23,
+        35,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        3.5500000000000003,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13996,
+      "ijk": [
+        -23,
+        36,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        3.6500000000000004,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13997,
+      "ijk": [
+        -23,
+        37,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        3.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13998,
+      "ijk": [
+        -23,
+        38,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        3.85,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13999,
+      "ijk": [
+        -23,
+        39,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        3.95,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14000,
+      "ijk": [
+        -23,
+        40,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        4.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14001,
+      "ijk": [
+        -23,
+        41,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        4.15,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14002,
+      "ijk": [
+        -23,
+        42,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        4.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14003,
+      "ijk": [
+        -23,
+        43,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        4.3500000000000005,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14004,
+      "ijk": [
+        -23,
+        44,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        4.45,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14005,
+      "ijk": [
+        -23,
+        45,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        4.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14006,
+      "ijk": [
+        -23,
+        46,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        4.65,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14007,
+      "ijk": [
+        -23,
+        47,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        4.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14008,
+      "ijk": [
+        -23,
+        48,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        4.8500000000000005,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14009,
+      "ijk": [
+        -23,
+        49,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        4.95,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14010,
+      "ijk": [
+        -23,
+        50,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        5.050000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14011,
+      "ijk": [
+        -23,
+        51,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        5.15,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14012,
+      "ijk": [
+        -23,
+        52,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        5.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14013,
+      "ijk": [
+        -23,
+        53,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        5.3500000000000005,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14014,
+      "ijk": [
+        -23,
+        54,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        5.45,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14015,
+      "ijk": [
+        -23,
+        55,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        5.550000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14016,
+      "ijk": [
+        -23,
+        56,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        5.65,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14017,
+      "ijk": [
+        -23,
+        57,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        5.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14018,
+      "ijk": [
+        -23,
+        58,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        5.8500000000000005,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14019,
+      "ijk": [
+        -23,
+        59,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        5.95,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14020,
+      "ijk": [
+        -23,
+        60,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        6.050000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14021,
+      "ijk": [
+        -23,
+        61,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        6.15,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14022,
+      "ijk": [
+        -23,
+        62,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        6.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14023,
+      "ijk": [
+        -23,
+        63,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        6.3500000000000005,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14024,
+      "ijk": [
+        -23,
+        64,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        6.45,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14025,
+      "ijk": [
+        -23,
+        65,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        6.550000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14026,
+      "ijk": [
+        -23,
+        66,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        6.65,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14027,
+      "ijk": [
+        -23,
+        67,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        6.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14028,
+      "ijk": [
+        -23,
+        68,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        6.8500000000000005,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14029,
+      "ijk": [
+        -23,
+        69,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        6.95,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14030,
+      "ijk": [
+        -23,
+        70,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        7.050000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14031,
+      "ijk": [
+        -23,
+        71,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        7.15,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14032,
+      "ijk": [
+        -23,
+        72,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        7.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14033,
+      "ijk": [
+        -23,
+        73,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        7.3500000000000005,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14034,
+      "ijk": [
+        -23,
+        74,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        7.45,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14035,
+      "ijk": [
+        -23,
+        75,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        7.550000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14036,
+      "ijk": [
+        -23,
+        76,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        7.65,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14037,
+      "ijk": [
+        -23,
+        77,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        7.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14038,
+      "ijk": [
+        -23,
+        78,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        7.8500000000000005,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14039,
+      "ijk": [
+        -23,
+        79,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        7.95,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14040,
+      "ijk": [
+        -23,
+        80,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        8.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14041,
+      "ijk": [
+        -23,
+        81,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        8.15,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14042,
+      "ijk": [
+        -23,
+        82,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        8.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14043,
+      "ijk": [
+        -23,
+        83,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        8.35,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14044,
+      "ijk": [
+        -23,
+        84,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        8.450000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14045,
+      "ijk": [
+        -23,
+        85,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        8.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14046,
+      "ijk": [
+        -23,
+        86,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        8.65,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14047,
+      "ijk": [
+        -23,
+        87,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        8.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14048,
+      "ijk": [
+        -23,
+        88,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        8.85,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14049,
+      "ijk": [
+        -23,
+        89,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        8.950000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14050,
+      "ijk": [
+        -23,
+        90,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        9.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14051,
+      "ijk": [
+        -23,
+        91,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        9.15,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14052,
+      "ijk": [
+        -23,
+        92,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        9.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14053,
+      "ijk": [
+        -23,
+        93,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        9.35,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14054,
+      "ijk": [
+        -23,
+        94,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        9.450000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14055,
+      "ijk": [
+        -23,
+        95,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        9.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14056,
+      "ijk": [
+        -23,
+        96,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        9.65,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14057,
+      "ijk": [
+        -23,
+        97,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        9.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14058,
+      "ijk": [
+        -23,
+        98,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        9.850000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14059,
+      "ijk": [
+        -23,
+        99,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        9.950000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14060,
+      "ijk": [
+        -23,
+        100,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        10.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14061,
+      "ijk": [
+        -23,
+        101,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        10.15,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14062,
+      "ijk": [
+        -23,
+        102,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        10.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14063,
+      "ijk": [
+        -23,
+        103,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        10.350000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14064,
+      "ijk": [
+        -23,
+        104,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        10.450000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14065,
+      "ijk": [
+        -23,
+        105,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        10.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14066,
+      "ijk": [
+        -23,
+        106,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        10.65,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14067,
+      "ijk": [
+        -23,
+        107,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        10.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14068,
+      "ijk": [
+        -23,
+        108,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        10.850000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14069,
+      "ijk": [
+        -23,
+        109,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        10.950000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14070,
+      "ijk": [
+        -23,
+        110,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        11.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14071,
+      "ijk": [
+        -23,
+        111,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        11.15,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14072,
+      "ijk": [
+        -23,
+        112,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        11.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14073,
+      "ijk": [
+        -23,
+        113,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        11.350000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14074,
+      "ijk": [
+        -23,
+        114,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        11.450000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14075,
+      "ijk": [
+        -23,
+        115,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        11.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14076,
+      "ijk": [
+        -23,
+        116,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        11.65,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14077,
+      "ijk": [
+        -23,
+        117,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        11.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14078,
+      "ijk": [
+        -23,
+        118,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        11.850000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14079,
+      "ijk": [
+        -23,
+        119,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        11.950000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14080,
+      "ijk": [
+        -23,
+        120,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        12.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14081,
+      "ijk": [
+        -23,
+        121,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        12.15,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14082,
+      "ijk": [
+        -23,
+        122,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        12.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14083,
+      "ijk": [
+        -23,
+        123,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        12.350000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14084,
+      "ijk": [
+        -23,
+        124,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        12.450000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14085,
+      "ijk": [
+        -23,
+        125,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        12.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14086,
+      "ijk": [
+        -23,
+        126,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        12.65,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14087,
+      "ijk": [
+        -23,
+        127,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        12.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14088,
+      "ijk": [
+        -23,
+        128,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        12.850000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14089,
+      "ijk": [
+        -23,
+        129,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        12.950000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14090,
+      "ijk": [
+        -23,
+        130,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        13.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14091,
+      "ijk": [
+        -23,
+        131,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        13.15,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14092,
+      "ijk": [
+        -23,
+        132,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        13.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14093,
+      "ijk": [
+        -23,
+        133,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        13.350000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14094,
+      "ijk": [
+        -23,
+        134,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        13.450000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14095,
+      "ijk": [
+        -23,
+        135,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        13.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14096,
+      "ijk": [
+        -23,
+        136,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        13.65,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14097,
+      "ijk": [
+        -23,
+        137,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        13.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14098,
+      "ijk": [
+        -23,
+        138,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        13.850000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14099,
+      "ijk": [
+        -23,
+        139,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        13.950000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14100,
+      "ijk": [
+        -23,
+        140,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        14.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14101,
+      "ijk": [
+        -23,
+        141,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        14.15,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14102,
+      "ijk": [
+        -23,
+        142,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        14.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14103,
+      "ijk": [
+        -23,
+        143,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        14.350000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14104,
+      "ijk": [
+        -23,
+        144,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        14.450000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14105,
+      "ijk": [
+        -23,
+        145,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        14.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14106,
+      "ijk": [
+        -23,
+        146,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        14.65,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14107,
+      "ijk": [
+        -23,
+        147,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        14.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14108,
+      "ijk": [
+        -23,
+        148,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        14.850000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14109,
+      "ijk": [
+        -23,
+        149,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        14.950000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14110,
+      "ijk": [
+        -23,
+        150,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        15.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14111,
+      "ijk": [
+        -23,
+        151,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        15.15,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14112,
+      "ijk": [
+        -23,
+        152,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        15.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14113,
+      "ijk": [
+        -23,
+        153,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        15.350000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14114,
+      "ijk": [
+        -23,
+        154,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        15.450000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14115,
+      "ijk": [
+        -23,
+        155,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        15.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14116,
+      "ijk": [
+        -23,
+        156,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        15.65,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14117,
+      "ijk": [
+        -23,
+        157,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        15.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14118,
+      "ijk": [
+        -23,
+        158,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        15.850000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14119,
+      "ijk": [
+        -23,
+        159,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        15.950000000000001,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14120,
+      "ijk": [
+        -23,
+        160,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        16.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14121,
+      "ijk": [
+        -23,
+        161,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        16.150000000000002,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14122,
+      "ijk": [
+        -23,
+        162,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        16.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14123,
+      "ijk": [
+        -23,
+        163,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        16.35,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14124,
+      "ijk": [
+        -23,
+        164,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        16.45,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14125,
+      "ijk": [
+        -23,
+        165,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        16.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14126,
+      "ijk": [
+        -23,
+        166,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        16.650000000000002,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14127,
+      "ijk": [
+        -23,
+        167,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        16.75,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14128,
+      "ijk": [
+        -23,
+        168,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        16.85,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14129,
+      "ijk": [
+        -23,
+        169,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        16.95,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14130,
+      "ijk": [
+        -23,
+        170,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        17.05,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14131,
+      "ijk": [
+        -23,
+        171,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        17.150000000000002,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14132,
+      "ijk": [
+        -23,
+        172,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        17.25,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14133,
+      "ijk": [
+        -23,
+        173,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        17.35,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14134,
+      "ijk": [
+        -23,
+        174,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        17.45,
+        0.1
+      ],
+      "posture": 0,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14134,
+      "ijk": [
+        -23,
+        174,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        17.45,
+        0.1
+      ],
+      "posture": 0,
+      "width": 1,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0,
+      "mode_transition": true
+    },
+    {
+      "node": 14135,
+      "ijk": [
+        -23,
+        175,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        17.55,
+        0.1
+      ],
+      "posture": 0,
+      "width": 1,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14135,
+      "ijk": [
+        -23,
+        175,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        17.55,
+        0.1
+      ],
+      "posture": 1,
+      "width": 1,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0,
+      "mode_transition": true
+    },
+    {
+      "node": 14136,
+      "ijk": [
+        -23,
+        176,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        17.650000000000002,
+        0.1
+      ],
+      "posture": 1,
+      "width": 1,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14136,
+      "ijk": [
+        -23,
+        176,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        17.650000000000002,
+        0.1
+      ],
+      "posture": 1,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0,
+      "mode_transition": true
+    },
+    {
+      "node": 14137,
+      "ijk": [
+        -23,
+        177,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        17.75,
+        0.1
+      ],
+      "posture": 1,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 14138,
+      "ijk": [
+        -23,
+        178,
+        0
+      ],
+      "xyz": [
+        -2.25,
+        17.85,
+        0.1
+      ],
+      "posture": 1,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    },
+    {
+      "node": 13713,
+      "ijk": [
+        -24,
+        179,
+        0
+      ],
+      "xyz": [
+        -2.35,
+        17.95,
+        0.1
+      ],
+      "posture": 1,
+      "width": 0,
+      "observed_support": true,
+      "confirmed": true,
+      "segment": 0
+    }
+  ],
+  "validation": {
+    "status": "unverifiable",
+    "reason": "reference_support_unknown",
+    "first_failure": [
+      -2.25,
+      -7.65,
+      0.1
+    ],
+    "index": 121,
+    "gap_dependency": false
+  }
+}

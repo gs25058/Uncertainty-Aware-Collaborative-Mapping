@@ -1,0 +1,614 @@
+[
+  {
+    "kind": "added_invalid",
+    "condition": "clean",
+    "before_variant": "raw",
+    "after_variant": "support",
+    "probe": {
+      "id": 43,
+      "xy_ij": [
+        39,
+        35
+      ],
+      "reference_xyz": [
+        -1.9500000000000002,
+        -17.55,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    "before": {
+      "condition": "clean",
+      "variant": "raw",
+      "probe_id": 43,
+      "reference": "feasible",
+      "status": "not_proposed",
+      "reason": "observed_support_or_body_missing",
+      "point": "null",
+      "first_failure": "null"
+    },
+    "after": {
+      "condition": "clean",
+      "variant": "support",
+      "probe_id": 43,
+      "reference": "feasible",
+      "status": "invalid",
+      "reason": "mesh_body_collision",
+      "point": "{\"xyz\": [-1.9500000000000002, -17.55, 0.0], \"posture\": 0, \"width\": 0, \"observed_support\": true}",
+      "first_failure": "[-1.9500000000000002, -17.55, 0.05006476694941521]"
+    }
+  },
+  {
+    "kind": "invalid_to_valid",
+    "condition": "clean",
+    "before_variant": "support",
+    "after_variant": "surface_geometry",
+    "probe": {
+      "id": 74,
+      "xy_ij": [
+        49,
+        60
+      ],
+      "reference_xyz": [
+        -0.9500000000000001,
+        -15.05,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "invalid",
+        "valid",
+        "invalid",
+        "valid",
+        "invalid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    "before": {
+      "condition": "clean",
+      "variant": "support",
+      "probe_id": 74,
+      "reference": "feasible",
+      "status": "invalid",
+      "reason": "mesh_body_collision",
+      "point": "{\"xyz\": [-0.9500000000000001, -15.05, 0.0], \"posture\": 0, \"width\": 1, \"observed_support\": true}",
+      "first_failure": "[-0.9500000000000001, -15.05, 0.05006476322412491]"
+    },
+    "after": {
+      "condition": "clean",
+      "variant": "surface_geometry",
+      "probe_id": 74,
+      "reference": "feasible",
+      "status": "valid",
+      "reason": "mesh_support_and_swept_body_verified",
+      "point": "{\"xyz\": [-0.9500000000000001, -15.05, 0.06150773912668228], \"posture\": 0, \"width\": 1, \"observed_support\": true}",
+      "first_failure": "null"
+    }
+  },
+  {
+    "kind": "valid_lost",
+    "condition": "clean",
+    "before_variant": "support",
+    "after_variant": "surface_geometry",
+    "probe": {
+      "id": 101,
+      "xy_ij": [
+        75,
+        86
+      ],
+      "reference_xyz": [
+        1.6500000000000001,
+        -12.450000000000001,
+        0.055064767897129045
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493523210287094,
+        0.20506476789712905
+      ]
+    },
+    "before": {
+      "condition": "clean",
+      "variant": "support",
+      "probe_id": 101,
+      "reference": "feasible",
+      "status": "valid",
+      "reason": "mesh_support_and_swept_body_verified",
+      "point": "{\"xyz\": [1.6500000000000001, -12.450000000000001, 0.1], \"posture\": 0, \"width\": 0, \"observed_support\": true}",
+      "first_failure": "null"
+    },
+    "after": {
+      "condition": "clean",
+      "variant": "surface_geometry",
+      "probe_id": 101,
+      "reference": "feasible",
+      "status": "invalid",
+      "reason": "mesh_body_collision",
+      "point": "{\"xyz\": [1.6500000000000001, -12.450000000000001, 0.03635404631495476], \"posture\": 0, \"width\": 1, \"observed_support\": true}",
+      "first_failure": "[1.6500000000000001, -12.450000000000001, 0.05006476694941521]"
+    }
+  },
+  {
+    "kind": "added_invalid",
+    "condition": "clean",
+    "before_variant": "support",
+    "after_variant": "surface_geometry",
+    "probe": {
+      "id": 101,
+      "xy_ij": [
+        75,
+        86
+      ],
+      "reference_xyz": [
+        1.6500000000000001,
+        -12.450000000000001,
+        0.055064767897129045
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493523210287094,
+        0.20506476789712905
+      ]
+    },
+    "before": {
+      "condition": "clean",
+      "variant": "support",
+      "probe_id": 101,
+      "reference": "feasible",
+      "status": "valid",
+      "reason": "mesh_support_and_swept_body_verified",
+      "point": "{\"xyz\": [1.6500000000000001, -12.450000000000001, 0.1], \"posture\": 0, \"width\": 0, \"observed_support\": true}",
+      "first_failure": "null"
+    },
+    "after": {
+      "condition": "clean",
+      "variant": "surface_geometry",
+      "probe_id": 101,
+      "reference": "feasible",
+      "status": "invalid",
+      "reason": "mesh_body_collision",
+      "point": "{\"xyz\": [1.6500000000000001, -12.450000000000001, 0.03635404631495476], \"posture\": 0, \"width\": 1, \"observed_support\": true}",
+      "first_failure": "[1.6500000000000001, -12.450000000000001, 0.05006476694941521]"
+    }
+  },
+  {
+    "kind": "valid_lost",
+    "condition": "clean",
+    "before_variant": "surface_geometry",
+    "after_variant": "geometry",
+    "probe": {
+      "id": 74,
+      "xy_ij": [
+        49,
+        60
+      ],
+      "reference_xyz": [
+        -0.9500000000000001,
+        -15.05,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "invalid",
+        "valid",
+        "invalid",
+        "valid",
+        "invalid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    "before": {
+      "condition": "clean",
+      "variant": "surface_geometry",
+      "probe_id": 74,
+      "reference": "feasible",
+      "status": "valid",
+      "reason": "mesh_support_and_swept_body_verified",
+      "point": "{\"xyz\": [-0.9500000000000001, -15.05, 0.06150773912668228], \"posture\": 0, \"width\": 1, \"observed_support\": true}",
+      "first_failure": "null"
+    },
+    "after": {
+      "condition": "clean",
+      "variant": "geometry",
+      "probe_id": 74,
+      "reference": "feasible",
+      "status": "invalid",
+      "reason": "mesh_body_collision",
+      "point": "{\"xyz\": [-0.9500000000000001, -15.05, 0.06150773912668228], \"posture\": 0, \"width\": 0, \"observed_support\": true}",
+      "first_failure": "[-1.1, -14.8, 0.2669962742201984]"
+    }
+  },
+  {
+    "kind": "added_invalid",
+    "condition": "clean",
+    "before_variant": "surface_geometry",
+    "after_variant": "geometry",
+    "probe": {
+      "id": 4,
+      "xy_ij": [
+        21,
+        361
+      ],
+      "reference_xyz": [
+        -3.75,
+        15.05,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    "before": {
+      "condition": "clean",
+      "variant": "surface_geometry",
+      "probe_id": 4,
+      "reference": "feasible",
+      "status": "not_proposed",
+      "reason": "observed_support_or_body_missing",
+      "point": "null",
+      "first_failure": "null"
+    },
+    "after": {
+      "condition": "clean",
+      "variant": "geometry",
+      "probe_id": 4,
+      "reference": "feasible",
+      "status": "invalid",
+      "reason": "mesh_body_collision",
+      "point": "{\"xyz\": [-3.75, 15.05, -0.018565353006124496], \"posture\": 0, \"width\": 0, \"observed_support\": true}",
+      "first_failure": "[-4.1, 15.05, 1.5775008192121982]"
+    }
+  },
+  {
+    "kind": "added_invalid",
+    "condition": "heterogeneous_weak",
+    "before_variant": "raw",
+    "after_variant": "support",
+    "probe": {
+      "id": 43,
+      "xy_ij": [
+        39,
+        35
+      ],
+      "reference_xyz": [
+        -1.9500000000000002,
+        -17.55,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    "before": {
+      "condition": "heterogeneous_weak",
+      "variant": "raw",
+      "probe_id": 43,
+      "reference": "feasible",
+      "status": "not_proposed",
+      "reason": "observed_support_or_body_missing",
+      "point": "null",
+      "first_failure": "null"
+    },
+    "after": {
+      "condition": "heterogeneous_weak",
+      "variant": "support",
+      "probe_id": 43,
+      "reference": "feasible",
+      "status": "invalid",
+      "reason": "mesh_body_collision",
+      "point": "{\"xyz\": [-1.9500000000000002, -17.55, 0.0], \"posture\": 0, \"width\": 0, \"observed_support\": true}",
+      "first_failure": "[-1.9500000000000002, -17.55, 0.05006476694941521]"
+    }
+  },
+  {
+    "kind": "invalid_to_valid",
+    "condition": "heterogeneous_weak",
+    "before_variant": "support",
+    "after_variant": "surface_geometry",
+    "probe": {
+      "id": 74,
+      "xy_ij": [
+        49,
+        60
+      ],
+      "reference_xyz": [
+        -0.9500000000000001,
+        -15.05,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "invalid",
+        "valid",
+        "invalid",
+        "valid",
+        "invalid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    "before": {
+      "condition": "heterogeneous_weak",
+      "variant": "support",
+      "probe_id": 74,
+      "reference": "feasible",
+      "status": "invalid",
+      "reason": "mesh_body_collision",
+      "point": "{\"xyz\": [-0.9500000000000001, -15.05, 0.0], \"posture\": 0, \"width\": 1, \"observed_support\": true}",
+      "first_failure": "[-0.9500000000000001, -15.05, 0.05006476322412491]"
+    },
+    "after": {
+      "condition": "heterogeneous_weak",
+      "variant": "surface_geometry",
+      "probe_id": 74,
+      "reference": "feasible",
+      "status": "valid",
+      "reason": "mesh_support_and_swept_body_verified",
+      "point": "{\"xyz\": [-0.9500000000000001, -15.05, 0.06054056063294411], \"posture\": 0, \"width\": 1, \"observed_support\": true}",
+      "first_failure": "null"
+    }
+  },
+  {
+    "kind": "valid_lost",
+    "condition": "heterogeneous_weak",
+    "before_variant": "support",
+    "after_variant": "surface_geometry",
+    "probe": {
+      "id": 101,
+      "xy_ij": [
+        75,
+        86
+      ],
+      "reference_xyz": [
+        1.6500000000000001,
+        -12.450000000000001,
+        0.055064767897129045
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493523210287094,
+        0.20506476789712905
+      ]
+    },
+    "before": {
+      "condition": "heterogeneous_weak",
+      "variant": "support",
+      "probe_id": 101,
+      "reference": "feasible",
+      "status": "valid",
+      "reason": "mesh_support_and_swept_body_verified",
+      "point": "{\"xyz\": [1.6500000000000001, -12.450000000000001, 0.1], \"posture\": 0, \"width\": 0, \"observed_support\": true}",
+      "first_failure": "null"
+    },
+    "after": {
+      "condition": "heterogeneous_weak",
+      "variant": "surface_geometry",
+      "probe_id": 101,
+      "reference": "feasible",
+      "status": "invalid",
+      "reason": "mesh_body_collision",
+      "point": "{\"xyz\": [1.6500000000000001, -12.450000000000001, 0.04331408441066742], \"posture\": 0, \"width\": 1, \"observed_support\": true}",
+      "first_failure": "[1.6500000000000001, -12.450000000000001, 0.05006476648375392]"
+    }
+  },
+  {
+    "kind": "added_invalid",
+    "condition": "heterogeneous_weak",
+    "before_variant": "support",
+    "after_variant": "surface_geometry",
+    "probe": {
+      "id": 101,
+      "xy_ij": [
+        75,
+        86
+      ],
+      "reference_xyz": [
+        1.6500000000000001,
+        -12.450000000000001,
+        0.055064767897129045
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493523210287094,
+        0.20506476789712905
+      ]
+    },
+    "before": {
+      "condition": "heterogeneous_weak",
+      "variant": "support",
+      "probe_id": 101,
+      "reference": "feasible",
+      "status": "valid",
+      "reason": "mesh_support_and_swept_body_verified",
+      "point": "{\"xyz\": [1.6500000000000001, -12.450000000000001, 0.1], \"posture\": 0, \"width\": 0, \"observed_support\": true}",
+      "first_failure": "null"
+    },
+    "after": {
+      "condition": "heterogeneous_weak",
+      "variant": "surface_geometry",
+      "probe_id": 101,
+      "reference": "feasible",
+      "status": "invalid",
+      "reason": "mesh_body_collision",
+      "point": "{\"xyz\": [1.6500000000000001, -12.450000000000001, 0.04331408441066742], \"posture\": 0, \"width\": 1, \"observed_support\": true}",
+      "first_failure": "[1.6500000000000001, -12.450000000000001, 0.05006476648375392]"
+    }
+  },
+  {
+    "kind": "valid_lost",
+    "condition": "heterogeneous_weak",
+    "before_variant": "surface_geometry",
+    "after_variant": "geometry",
+    "probe": {
+      "id": 74,
+      "xy_ij": [
+        49,
+        60
+      ],
+      "reference_xyz": [
+        -0.9500000000000001,
+        -15.05,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "invalid",
+        "valid",
+        "invalid",
+        "valid",
+        "invalid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    "before": {
+      "condition": "heterogeneous_weak",
+      "variant": "surface_geometry",
+      "probe_id": 74,
+      "reference": "feasible",
+      "status": "valid",
+      "reason": "mesh_support_and_swept_body_verified",
+      "point": "{\"xyz\": [-0.9500000000000001, -15.05, 0.06054056063294411], \"posture\": 0, \"width\": 1, \"observed_support\": true}",
+      "first_failure": "null"
+    },
+    "after": {
+      "condition": "heterogeneous_weak",
+      "variant": "geometry",
+      "probe_id": 74,
+      "reference": "feasible",
+      "status": "invalid",
+      "reason": "mesh_body_collision",
+      "point": "{\"xyz\": [-0.9500000000000001, -15.05, 0.06876475363969803], \"posture\": 0, \"width\": 0, \"observed_support\": true}",
+      "first_failure": "[-1.1, -14.75, 0.28539176749289036]"
+    }
+  },
+  {
+    "kind": "added_invalid",
+    "condition": "heterogeneous_weak",
+    "before_variant": "surface_geometry",
+    "after_variant": "geometry",
+    "probe": {
+      "id": 4,
+      "xy_ij": [
+        21,
+        361
+      ],
+      "reference_xyz": [
+        -3.75,
+        15.05,
+        0.05506477534770964
+      ],
+      "reference": "feasible",
+      "reference_modes": [
+        "invalid",
+        "invalid",
+        "valid",
+        "valid",
+        "valid",
+        "valid"
+      ],
+      "floor_bounds": [
+        -0.09493522465229035,
+        0.20506477534770964
+      ]
+    },
+    "before": {
+      "condition": "heterogeneous_weak",
+      "variant": "surface_geometry",
+      "probe_id": 4,
+      "reference": "feasible",
+      "status": "not_proposed",
+      "reason": "observed_support_or_body_missing",
+      "point": "null",
+      "first_failure": "null"
+    },
+    "after": {
+      "condition": "heterogeneous_weak",
+      "variant": "geometry",
+      "probe_id": 4,
+      "reference": "feasible",
+      "status": "invalid",
+      "reason": "mesh_body_collision",
+      "point": "{\"xyz\": [-3.75, 15.05, -0.02362332120537758], \"posture\": 2, \"width\": 1, \"observed_support\": true}",
+      "first_failure": "[-3.75, 15.05, 0.05006476694941521]"
+    }
+  }
+]

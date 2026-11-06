@@ -1,0 +1,7 @@
+condition,before,after,n_probes,gained_valid,lost_valid,invalid_to_valid,invalid_to_no_proposal,added_invalid
+clean,raw,support,128,1,0,0,1,1
+clean,support,surface_geometry,128,1,1,1,1,3
+clean,surface_geometry,geometry,128,1,1,0,0,37
+heterogeneous_weak,raw,support,128,1,0,0,1,3
+heterogeneous_weak,support,surface_geometry,128,1,1,1,2,1
+heterogeneous_weak,surface_geometry,geometry,128,2,1,0,0,34

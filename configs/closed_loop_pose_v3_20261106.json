@@ -1,0 +1,109 @@
+{
+  "comparison_name": "공통 다중 드론 탐색 파이프라인에서 관측 가치 함수 비교",
+  "scene_seeds": [
+    11,
+    29
+  ],
+  "run_seeds": [
+    0,
+    1
+  ],
+  "policies": [
+    "unknown",
+    "entry"
+  ],
+  "conditions": [
+    "clean"
+  ],
+  "n_drones": 4,
+  "duration": 48.0,
+  "dt": 0.25,
+  "sensor_period": 1.0,
+  "assessment_period": 4.0,
+  "assignment_period": 2.0,
+  "snapshot_period": 8.0,
+  "entry_interval": 2.0,
+  "minimum_task_time": 3.0,
+  "capture_dwell": 6.0,
+  "pose_mode": "controlled_translation_bias",
+  "map_resolution": 0.1,
+  "sensor": {
+    "width": 320,
+    "height": 192,
+    "fx": 210.0,
+    "baseline": 0.08,
+    "range": 4.5,
+    "num_disp": 64,
+    "block": 5,
+    "read_noise_sigma": 0.0,
+    "gimbal_scan": {
+      "period": 6.0,
+      "lower": -0.65,
+      "upper": 0.17,
+      "hold": 1.0,
+      "slew": 1.6,
+      "model": "common periodic lower/upper scan; physical pitch recorded each tick"
+    },
+    "teammate_exclusion_radius": 0.35
+  },
+  "motion": {
+    "radius": 0.14,
+    "margin": 0.04,
+    "vmax": 1.0,
+    "amax": 1.5,
+    "yaw_rate": 1.5707963267948966,
+    "pitch_rate": 1.0471975511965976,
+    "reservation_dt": 0.1,
+    "max_wait": 8.0,
+    "grid_stride": 2,
+    "stop_rule": "stop at first originally planned rest point whose complete future hover is jointly reservation-safe"
+  },
+  "candidates": {
+    "max_total": 24,
+    "max_frontier": 14,
+    "max_reobserve": 10,
+    "heights": [
+      0.85,
+      1.25,
+      1.85
+    ],
+    "pitches": [
+      -0.65,
+      0.17
+    ],
+    "max_route_trials_per_drone": 24,
+    "max_impact_segments": 6,
+    "observation_samples": 24,
+    "route_prefilter": "none; test every candidate; observed-free connectivity rejection only",
+    "visibility_range_m": 4.5
+  },
+  "utility": {
+    "time_penalty": 0.008,
+    "unknown_normalizer": 1500.0,
+    "completion_weight": 0.8,
+    "progress_weight": 0.2
+  },
+  "smoke": {
+    "beta": 0.4,
+    "field": "heterogeneous",
+    "airlight": 0.8
+  },
+  "human": {
+    "foot_contact_offset": 0.025,
+    "exact_step_limit": 0.18,
+    "contact_epsilon_m": 0.001
+  },
+  "fault_policy": "freeze_at_last_safe_position_and_continue_other_drones",
+  "communication": "instantaneous shared observed map and planned trajectories",
+  "common_prior": "staging free volume, building bounding volume, entry and anonymous target regions; no internal geometry or room labels",
+  "dynamics": "kinematic exact tracking of FUEL Polynomial quintics; no downwash or attitude/controller dynamics",
+  "timing": "synchronous simulation; component wall times logged separately; no real-time claim",
+  "pose_error": {
+    "max_norm_m": 0.05,
+    "distribution": "constant_per_drone_uniform_ball",
+    "seed_offset": 777,
+    "orientation_error": 0.0,
+    "interpretation": "controlled initial inter-drone translation registration error; perfect relative tracking, no VIO claim"
+  },
+  "protocol_version": "v3_all_candidates_joint_stop_reservation"
+}

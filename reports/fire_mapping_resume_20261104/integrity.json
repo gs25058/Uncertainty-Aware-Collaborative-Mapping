@@ -1,0 +1,16 @@
+{
+  "prior_report_artifacts_unchanged": 152,
+  "interrupted_artifacts_unchanged": 444,
+  "original_map_hashes_checked": 7,
+  "original_source_input_hashes_checked": 5,
+  "code_sha256": {
+    "covor/entry/surfaces.py": "8086a515329bc1e2df895cb78b9ece2a02213bb4248be65de581e30888deb4a1",
+    "covor/entry/registration.py": "e811fcd756af4d001bfb3a3d78c62d05dd4d7aea24c4888973b5af20af7e848f",
+    "covor/entry/decision.py": "8cbf95d4803e05f0e9ac298747d21e7c6af5e2452a1acc954f66d712865be627",
+    "covor/entry/assignment.py": "26efbe5751fd028151b82e9aed4fb3c2ea4ecb0f79dc21e2a2f2c9af438323ee",
+    "scripts/reobserve/repair.py": "62808eb3063820f16226eec2b72e812fdea8dbd27e1c163dbcc96afd7b644a61",
+    "scripts/reobserve/reviewed.py": "8e1426e3b1cb9663ac5172145bf0e59ba7fdef81afaab51db2d0e2812543dde0",
+    "scripts/smoke/common.py": "09082e61bf12ef3ee092e6fea780f27639c23975f7349668abf12797d47a2dbc",
+    "tests/test_support_surfaces.py": "38cb84a29a28bd5cf9c88018abafe675547861f5f1069d5cf5aa07eb04b60bf8"
+  }
+}

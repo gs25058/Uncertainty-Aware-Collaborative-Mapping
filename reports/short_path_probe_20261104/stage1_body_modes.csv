@@ -1,0 +1,49 @@
+arm,path_index,posture,width,n_body_cells,n_free,n_occupied,n_unknown,observed_body_clear,geometric_possibility,reference_body_status,reference_reason,occupied_world_ijk,unknown_world_ijk,first_reference_failure
+true,0,0,0,883,832,42,9,False,False,invalid,mesh_body_collision,"[[-28, -196, 19], [-27, -198, 15], [-27, -198, 16], [-27, -198, 17], [-27, -198, 18], [-27, -197, 18], [-27, -197, 19], [-26, -199, 13], [-26, -199, 14], [-26, -199, 15], [-26, -199, 16], [-26, -198, 16]]","[[-27, -198, 19], [-26, -199, 17], [-26, -199, 18], [-26, -199, 19], [-25, -199, 19], [-24, -200, 16], [-24, -200, 17], [-24, -200, 18], [-24, -200, 19]]","[-2.65, -19.7, 1.8161546243190765]"
+true,0,0,1,451,443,8,0,False,False,invalid,mesh_body_collision,"[[-26, -198, 16], [-26, -198, 17], [-26, -198, 18], [-26, -198, 19], [-25, -198, 17], [-25, -198, 18], [-25, -198, 19], [-24, -198, 19]]",[],"[-2.475, -19.73669000927511, 1.9549647675991058]"
+true,0,1,0,638,632,6,0,False,False,valid,,"[[-26, -199, 13], [-26, -199, 14], [-25, -199, 14], [-24, -200, 12], [-24, -200, 13], [-24, -200, 14]]",[],
+true,0,1,1,326,326,0,0,True,True,valid,,[],[],
+true,0,2,0,393,393,0,0,True,True,valid,,[],[],
+true,0,2,1,201,201,0,0,True,True,valid,,[],[],
+true,1,0,0,883,868,15,0,False,False,invalid,mesh_body_collision,"[[-27, -197, 18], [-27, -197, 19], [-26, -198, 16], [-26, -198, 17], [-26, -198, 18], [-26, -198, 19], [-25, -198, 17], [-25, -198, 18], [-25, -198, 19], [-24, -199, 15], [-24, -199, 16], [-24, -199, 17]]",[],"[-2.5, -19.750000000000004, 1.8743099598050117]"
+true,1,0,1,451,451,0,0,True,True,valid,,[],[],
+true,1,1,0,638,638,0,0,True,True,valid,,[],[],
+true,1,1,1,326,326,0,0,True,True,valid,,[],[],
+true,1,2,0,393,393,0,0,True,True,valid,,[],[],
+true,1,2,1,201,201,0,0,True,True,valid,,[],[],
+true,2,0,0,883,882,1,0,False,False,valid,,"[[-24, -198, 19]]",[],
+true,2,0,1,451,451,0,0,True,True,valid,,[],[],
+true,2,1,0,638,638,0,0,True,True,valid,,[],[],
+true,2,1,1,326,326,0,0,True,True,valid,,[],[],
+true,2,2,0,393,393,0,0,True,True,valid,,[],[],
+true,2,2,1,201,201,0,0,True,True,valid,,[],[],
+true,3,0,0,883,883,0,0,True,True,valid,,[],[],
+true,3,0,1,451,451,0,0,True,True,valid,,[],[],
+true,3,1,0,638,638,0,0,True,True,valid,,[],[],
+true,3,1,1,326,326,0,0,True,True,valid,,[],[],
+true,3,2,0,393,393,0,0,True,True,valid,,[],[],
+true,3,2,1,201,201,0,0,True,True,valid,,[],[],
+estimated,0,0,0,883,877,4,2,False,False,invalid,mesh_body_collision,"[[-26, -199, 18], [-24, -200, 16], [-24, -200, 17], [-24, -200, 18]]","[[-26, -199, 17], [-24, -200, 15]]","[-2.65, -19.7, 1.8161547323524951]"
+estimated,0,0,1,451,451,0,0,True,True,invalid,mesh_body_collision,[],[],"[-2.35, -19.55, 0.05006477439999581]"
+estimated,0,1,0,638,638,0,0,True,True,invalid,mesh_body_collision,[],[],"[-2.35, -19.55, 0.05006477439999581]"
+estimated,0,1,1,326,326,0,0,True,True,invalid,mesh_body_collision,[],[],"[-2.35, -19.55, 0.05006477439999581]"
+estimated,0,2,0,393,393,0,0,True,True,invalid,mesh_body_collision,[],[],"[-2.35, -19.55, 0.05006477439999581]"
+estimated,0,2,1,201,201,0,0,True,True,invalid,mesh_body_collision,[],[],"[-2.35, -19.55, 0.05006477439999581]"
+estimated,1,0,0,883,883,0,0,True,True,invalid,mesh_body_collision,[],[],"[-2.35, -19.450000000000003, 0.05006476694941521]"
+estimated,1,0,1,451,451,0,0,True,True,invalid,mesh_body_collision,[],[],"[-2.35, -19.450000000000003, 0.05006476694941521]"
+estimated,1,1,0,638,638,0,0,True,True,invalid,mesh_body_collision,[],[],"[-2.35, -19.450000000000003, 0.05006476694941521]"
+estimated,1,1,1,326,326,0,0,True,True,invalid,mesh_body_collision,[],[],"[-2.35, -19.450000000000003, 0.05006476694941521]"
+estimated,1,2,0,393,393,0,0,True,True,invalid,mesh_body_collision,[],[],"[-2.35, -19.450000000000003, 0.05006476694941521]"
+estimated,1,2,1,201,201,0,0,True,True,invalid,mesh_body_collision,[],[],"[-2.35, -19.450000000000003, 0.05006476694941521]"
+estimated,2,0,0,883,883,0,0,True,True,invalid,mesh_body_collision,[],[],"[-2.35, -19.35, 0.05006476322412491]"
+estimated,2,0,1,451,451,0,0,True,True,invalid,mesh_body_collision,[],[],"[-2.35, -19.35, 0.05006476322412491]"
+estimated,2,1,0,638,638,0,0,True,True,invalid,mesh_body_collision,[],[],"[-2.35, -19.35, 0.05006476322412491]"
+estimated,2,1,1,326,326,0,0,True,True,invalid,mesh_body_collision,[],[],"[-2.35, -19.35, 0.05006476322412491]"
+estimated,2,2,0,393,393,0,0,True,True,invalid,mesh_body_collision,[],[],"[-2.35, -19.35, 0.05006476322412491]"
+estimated,2,2,1,201,201,0,0,True,True,invalid,mesh_body_collision,[],[],"[-2.35, -19.35, 0.05006476322412491]"
+estimated,3,0,0,883,883,0,0,True,True,invalid,mesh_body_collision,[],[],"[-2.35, -19.25, 0.050064778125286105]"
+estimated,3,0,1,451,451,0,0,True,True,invalid,mesh_body_collision,[],[],"[-2.35, -19.25, 0.050064778125286105]"
+estimated,3,1,0,638,638,0,0,True,True,invalid,mesh_body_collision,[],[],"[-2.35, -19.25, 0.050064778125286105]"
+estimated,3,1,1,326,326,0,0,True,True,invalid,mesh_body_collision,[],[],"[-2.35, -19.25, 0.050064778125286105]"
+estimated,3,2,0,393,393,0,0,True,True,invalid,mesh_body_collision,[],[],"[-2.35, -19.25, 0.050064778125286105]"
+estimated,3,2,1,201,201,0,0,True,True,invalid,mesh_body_collision,[],[],"[-2.35, -19.25, 0.050064778125286105]"

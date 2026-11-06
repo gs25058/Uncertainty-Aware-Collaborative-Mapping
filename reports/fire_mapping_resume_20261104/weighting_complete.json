@@ -1,0 +1,15 @@
+{
+  "complete": true,
+  "depth_only_labels_exact_against_archive": true,
+  "arms": [
+    "uniform",
+    "depth_only",
+    "pose_depth"
+  ],
+  "conditions": [
+    "clean",
+    "heterogeneous_weak"
+  ],
+  "domain": "all fixed reference-known voxels; no method-dependent visibility mask",
+  "goal_path_validation": "not repeated for volume-weight component; separate representation and policy experiments validate paths"
+}

@@ -1,0 +1,5 @@
+scene,seed,condition,entry_minus_unknown_valid,entry_minus_unknown_correct_blocked,entry_minus_unknown_invalid,entry_minus_unknown_false_blocked,entry_minus_unknown_distance,entry_minus_unknown_failed_drones
+11,0,clean,0,0,0,0,0.0,0
+11,1,clean,0,0,0,0,0.0,0
+29,0,clean,0,0,0,0,0.0,0
+29,1,clean,0,0,0,0,-2.1963660828996225,0

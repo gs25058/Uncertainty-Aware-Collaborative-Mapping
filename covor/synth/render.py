@@ -39,9 +39,9 @@ from covor.occupancy import load_stereo_calib, StereoDepth, DepthCfg
 
 
 class DepthRenderer:
-    def __init__(self, scene, robot, depth_cfg=None, textures=None):
+    def __init__(self, scene, robot, depth_cfg=None, textures=None, calib=None):
         self.scene = scene
-        self.calib = load_stereo_calib(robot)
+        self.calib = calib if calib is not None else load_stereo_calib(robot)
         self.sd = StereoDepth(self.calib, depth_cfg or DepthCfg())
         self.textures = textures            # for the sgbm mode
         w, h = self.calib.size
