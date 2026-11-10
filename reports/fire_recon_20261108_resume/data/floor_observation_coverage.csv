@@ -1,0 +1,101 @@
+run,scene,condition,policy,floor,first_active_inside_time,visiting_drones,captures,captures_with_valid_depth,active_drone_seconds,valid_goal_routes,reference_reachable,valid_paths_in_run_touching_upper_floor
+scene0_seed0_clean_entry,0,clean,entry,1,3.25,"[0, 1, 2, 3]",1886,1660,471.0,1,2,0
+scene0_seed0_clean_entry,0,clean,entry,2,96.0,[0],226,226,56.25,0,0,0
+scene0_seed0_clean_unknown,0,clean,unknown,1,3.25,"[0, 1, 2, 3]",1886,1660,471.0,1,2,0
+scene0_seed0_clean_unknown,0,clean,unknown,2,96.0,[0],226,226,56.25,0,0,0
+scene0_seed0_strong_entry,0,strong,entry,1,3.25,"[0, 1, 2, 3]",1893,1663,472.5,1,2,0
+scene0_seed0_strong_entry,0,strong,entry,2,96.25,[0],219,219,54.75,0,0,0
+scene0_seed0_strong_unknown,0,strong,unknown,1,3.25,"[0, 1, 2, 3]",1893,1663,472.5,1,2,0
+scene0_seed0_strong_unknown,0,strong,unknown,2,96.25,[0],219,219,54.75,0,0,0
+scene1_seed0_clean_entry,1,clean,entry,1,8.0,"[0, 1, 2, 3]",2706,2510,675.5,2,7,0
+scene1_seed0_clean_entry,1,clean,entry,2,,[],0,0,0.0,0,7,0
+scene1_seed0_clean_entry,1,clean,entry,3,,[],0,0,0.0,0,6,0
+scene1_seed0_clean_unknown,1,clean,unknown,1,8.0,"[0, 1, 2, 3]",2706,2554,675.5,1,7,0
+scene1_seed0_clean_unknown,1,clean,unknown,2,,[],0,0,0.0,0,7,0
+scene1_seed0_clean_unknown,1,clean,unknown,3,,[],0,0,0.0,0,6,0
+scene1_seed0_strong_entry,1,strong,entry,1,8.0,"[0, 1, 2, 3]",2396,2358,598.25,1,7,0
+scene1_seed0_strong_entry,1,strong,entry,2,,[],0,0,0.0,0,7,0
+scene1_seed0_strong_entry,1,strong,entry,3,,[],0,0,0.0,0,6,0
+scene1_seed0_strong_unknown,1,strong,unknown,1,8.0,"[0, 1, 2, 3]",2353,2182,587.5,1,7,0
+scene1_seed0_strong_unknown,1,strong,unknown,2,,[],0,0,0.0,0,7,0
+scene1_seed0_strong_unknown,1,strong,unknown,3,,[],0,0,0.0,0,6,0
+scene2_seed0_clean_entry,2,clean,entry,1,7.75,"[0, 1, 2, 3]",1595,1460,398.25,2,8,0
+scene2_seed0_clean_entry,2,clean,entry,2,,[],0,0,0.0,0,9,0
+scene2_seed0_clean_entry,2,clean,entry,3,,[],0,0,0.0,0,8,0
+scene2_seed0_clean_unknown,2,clean,unknown,1,7.75,"[0, 1, 2, 3]",1595,1442,398.25,2,8,0
+scene2_seed0_clean_unknown,2,clean,unknown,2,,[],0,0,0.0,0,9,0
+scene2_seed0_clean_unknown,2,clean,unknown,3,,[],0,0,0.0,0,8,0
+scene2_seed0_strong_entry,2,strong,entry,1,7.75,"[0, 1, 2, 3]",1479,1430,369.5,2,8,0
+scene2_seed0_strong_entry,2,strong,entry,2,,[],0,0,0.0,0,9,0
+scene2_seed0_strong_entry,2,strong,entry,3,,[],0,0,0.0,0,8,0
+scene2_seed0_strong_unknown,2,strong,unknown,1,7.75,"[0, 1, 2, 3]",1687,1631,421.0,4,8,0
+scene2_seed0_strong_unknown,2,strong,unknown,2,,[],0,0,0.0,0,9,0
+scene2_seed0_strong_unknown,2,strong,unknown,3,,[],0,0,0.0,0,8,0
+scene3_seed0_clean_entry,3,clean,entry,1,8.25,"[0, 1, 2, 3]",2412,2370,602.0,2,2,0
+scene3_seed0_clean_entry,3,clean,entry,2,,[],0,0,0.0,0,0,0
+scene3_seed0_clean_entry,3,clean,entry,3,,[],0,0,0.0,0,0,0
+scene3_seed0_clean_unknown,3,clean,unknown,1,8.25,"[0, 1, 2, 3]",2412,2370,602.0,2,2,0
+scene3_seed0_clean_unknown,3,clean,unknown,2,,[],0,0,0.0,0,0,0
+scene3_seed0_clean_unknown,3,clean,unknown,3,,[],0,0,0.0,0,0,0
+scene3_seed0_strong_entry,3,strong,entry,1,8.25,"[0, 1, 2, 3]",2412,2370,602.0,2,2,0
+scene3_seed0_strong_entry,3,strong,entry,2,,[],0,0,0.0,0,0,0
+scene3_seed0_strong_entry,3,strong,entry,3,,[],0,0,0.0,0,0,0
+scene3_seed0_strong_unknown,3,strong,unknown,1,8.25,"[0, 1, 2, 3]",2412,2370,602.0,2,2,0
+scene3_seed0_strong_unknown,3,strong,unknown,2,,[],0,0,0.0,0,0,0
+scene3_seed0_strong_unknown,3,strong,unknown,3,,[],0,0,0.0,0,0,0
+scene4_seed0_clean_entry,4,clean,entry,1,7.0,"[0, 1, 2, 3]",1563,1526,390.25,1,7,0
+scene4_seed0_clean_entry,4,clean,entry,2,,[],0,0,0.0,0,5,0
+scene4_seed0_clean_unknown,4,clean,unknown,1,7.0,"[0, 1, 2, 3]",2016,1995,503.25,1,7,0
+scene4_seed0_clean_unknown,4,clean,unknown,2,,[],0,0,0.0,0,5,0
+scene4_seed0_strong_entry,4,strong,entry,1,7.0,"[0, 1, 2, 3]",1563,1501,390.25,1,7,0
+scene4_seed0_strong_entry,4,strong,entry,2,,[],0,0,0.0,0,5,0
+scene4_seed0_strong_unknown,4,strong,unknown,1,7.0,"[0, 1, 2, 3]",1833,1781,457.75,5,7,0
+scene4_seed0_strong_unknown,4,strong,unknown,2,,[],0,0,0.0,0,5,0
+scene5_seed0_clean_entry,5,clean,entry,1,3.25,"[0, 1, 2, 3]",2382,2312,594.75,4,8,0
+scene5_seed0_clean_entry,5,clean,entry,2,,[],0,0,0.0,0,8,0
+scene5_seed0_clean_unknown,5,clean,unknown,1,3.25,"[0, 1, 2, 3]",2373,2303,592.75,4,8,0
+scene5_seed0_clean_unknown,5,clean,unknown,2,109.5,"[0, 1]",182,162,45.25,0,8,0
+scene5_seed0_strong_entry,5,strong,entry,1,3.25,"[0, 1, 2, 3]",2382,2312,594.75,2,8,0
+scene5_seed0_strong_entry,5,strong,entry,2,,[],0,0,0.0,0,8,0
+scene5_seed0_strong_unknown,5,strong,unknown,1,3.25,"[0, 1, 2, 3]",2513,2444,627.75,3,8,0
+scene5_seed0_strong_unknown,5,strong,unknown,2,109.5,[1],83,64,20.75,0,8,0
+scene6_seed0_clean_entry,6,clean,entry,1,4.0,"[0, 1, 2, 3]",1918,1908,479.25,1,8,0
+scene6_seed0_clean_entry,6,clean,entry,2,39.0,[2],40,22,10.0,0,6,0
+scene6_seed0_clean_unknown,6,clean,unknown,1,4.0,"[0, 1, 2, 3]",1918,1908,479.25,1,8,0
+scene6_seed0_clean_unknown,6,clean,unknown,2,39.0,[2],40,22,10.0,0,6,0
+scene6_seed0_strong_entry,6,strong,entry,1,4.0,"[0, 1, 2, 3]",1918,1908,479.25,1,8,0
+scene6_seed0_strong_entry,6,strong,entry,2,39.0,[2],40,22,10.0,0,6,0
+scene6_seed0_strong_unknown,6,strong,unknown,1,4.0,"[0, 1, 2, 3]",1918,1908,479.25,1,8,0
+scene6_seed0_strong_unknown,6,strong,unknown,2,39.0,[2],40,22,10.0,0,6,0
+scene7_seed0_clean_entry,7,clean,entry,1,7.25,"[0, 1, 2, 3]",1990,1942,497.0,2,9,0
+scene7_seed0_clean_entry,7,clean,entry,2,42.25,"[0, 3]",680,654,169.75,0,9,0
+scene7_seed0_clean_entry,7,clean,entry,3,,[],0,0,0.0,0,7,0
+scene7_seed0_clean_unknown,7,clean,unknown,1,7.25,"[0, 1, 2, 3]",1990,1942,497.0,2,9,0
+scene7_seed0_clean_unknown,7,clean,unknown,2,42.25,"[0, 3]",680,654,169.75,0,9,0
+scene7_seed0_clean_unknown,7,clean,unknown,3,,[],0,0,0.0,0,7,0
+scene7_seed0_strong_entry,7,strong,entry,1,7.25,"[0, 1, 2, 3]",2060,1884,514.5,2,9,0
+scene7_seed0_strong_entry,7,strong,entry,2,42.25,"[0, 2, 3]",651,574,162.25,0,9,0
+scene7_seed0_strong_entry,7,strong,entry,3,,[],0,0,0.0,0,7,0
+scene7_seed0_strong_unknown,7,strong,unknown,1,7.25,"[0, 1, 2, 3]",2060,1884,514.5,2,9,0
+scene7_seed0_strong_unknown,7,strong,unknown,2,42.25,"[0, 2, 3]",651,574,162.25,0,9,0
+scene7_seed0_strong_unknown,7,strong,unknown,3,,[],0,0,0.0,0,7,0
+scene8_seed0_clean_entry,8,clean,entry,1,7.0,"[0, 1, 2, 3]",2171,2145,542.0,1,1,0
+scene8_seed0_clean_entry,8,clean,entry,2,114.75,[0],48,48,12.0,0,0,0
+scene8_seed0_clean_unknown,8,clean,unknown,1,7.0,"[0, 1, 2, 3]",2333,2272,582.75,1,1,0
+scene8_seed0_clean_unknown,8,clean,unknown,2,119.75,"[0, 3]",390,390,97.0,0,0,0
+scene8_seed0_strong_entry,8,strong,entry,1,7.0,"[0, 1, 2, 3]",2646,2604,660.75,1,1,0
+scene8_seed0_strong_entry,8,strong,entry,2,,[],0,0,0.0,0,0,0
+scene8_seed0_strong_unknown,8,strong,unknown,1,7.0,"[0, 1, 2, 3]",2331,2275,582.25,1,1,0
+scene8_seed0_strong_unknown,8,strong,unknown,2,119.75,"[0, 3]",392,387,97.5,0,0,0
+scene9_seed0_clean_entry,9,clean,entry,1,3.25,"[0, 1, 2, 3]",2195,2176,548.25,4,8,0
+scene9_seed0_clean_entry,9,clean,entry,2,,[],0,0,0.0,0,8,0
+scene9_seed0_clean_entry,9,clean,entry,3,,[],0,0,0.0,0,8,0
+scene9_seed0_clean_unknown,9,clean,unknown,1,3.25,"[0, 1, 2, 3]",2539,2502,634.0,4,8,0
+scene9_seed0_clean_unknown,9,clean,unknown,2,,[],0,0,0.0,0,8,0
+scene9_seed0_clean_unknown,9,clean,unknown,3,,[],0,0,0.0,0,8,0
+scene9_seed0_strong_entry,9,strong,entry,1,3.25,"[0, 1, 2, 3]",2195,2176,548.25,4,8,0
+scene9_seed0_strong_entry,9,strong,entry,2,,[],0,0,0.0,0,8,0
+scene9_seed0_strong_entry,9,strong,entry,3,,[],0,0,0.0,0,8,0
+scene9_seed0_strong_unknown,9,strong,unknown,1,3.25,"[0, 1, 2, 3]",2445,2393,610.5,2,8,0
+scene9_seed0_strong_unknown,9,strong,unknown,2,101.25,[1],253,253,63.0,0,8,0
+scene9_seed0_strong_unknown,9,strong,unknown,3,128.25,[1],63,63,15.75,0,8,0

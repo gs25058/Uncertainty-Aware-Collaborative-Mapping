@@ -1,0 +1,7 @@
+variant,scene,seed,condition,valid_delta,blocked_delta,invalid_delta,false_blocked_delta,unknown_delta
+contact_v3,1,0,clean,0.0,0.0,0.0,0.0,0.0
+contact_v3,4,0,clean,0.0,0.0,0.0,0.0,0.0
+closure_v3,1,0,clean,0.0,0.0,0.0,0.0,0.0
+closure_v3,4,0,clean,0.0,0.0,0.0,0.0,0.0
+joint_v3,1,0,clean,0.0,0.0,0.0,0.0,0.0
+joint_v3,4,0,clean,0.0,0.0,0.0,0.0,0.0

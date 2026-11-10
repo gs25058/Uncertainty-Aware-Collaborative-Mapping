@@ -1,0 +1,35 @@
+{
+  "all_declared_trials_complete": true,
+  "actual": 48,
+  "expected": 48,
+  "ranked": [
+    {
+      "variant": "balanced_v2",
+      "balanced_score": 0.0777992277992278,
+      "valid": 9,
+      "correct_blocked": 2,
+      "invalid": 0,
+      "failed_drones": 6,
+      "improves_unknown": false
+    },
+    {
+      "variant": "bridge_v2",
+      "balanced_score": 0.0777992277992278,
+      "valid": 9,
+      "correct_blocked": 2,
+      "invalid": 1,
+      "failed_drones": 2,
+      "improves_unknown": false
+    },
+    {
+      "variant": "mission_v2",
+      "balanced_score": 0.07741312741312742,
+      "valid": 8,
+      "correct_blocked": 3,
+      "invalid": 0,
+      "failed_drones": 4,
+      "improves_unknown": false
+    }
+  ],
+  "winner": "balanced_v2"
+}

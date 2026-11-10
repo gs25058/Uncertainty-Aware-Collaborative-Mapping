@@ -132,8 +132,8 @@ class Building:
         assert any(r['reachable'] for r in result) and any(not r['reachable'] for r in result),'degenerate generated scene'
         return result,nodes,modes
 
-    def render_scene(self):
-        if self.scene is not None:return self.scene,self.textures
+    def render_scene(self,textured=True):
+        if self.scene is not None and (not textured or self.textures is not None):return self.scene,self.textures
         import open3d as o3d
         import trimesh
         self.scene=o3d.t.geometry.RaycastingScene();textures=[];meshes=[]
@@ -152,11 +152,12 @@ class Building:
             mesh=trimesh.Trimesh(verts,faces,process=False);meshes.append(mesh)
             legacy=o3d.geometry.TriangleMesh(o3d.utility.Vector3dVector(verts),o3d.utility.Vector3iVector(faces))
             self.scene.add_triangles(o3d.t.geometry.TriangleMesh.from_legacy(legacy))
-            rng=np.random.default_rng(self.seed*1000+n)
-            # Fixed fine texture, shared by both optical views, no pixel noise field.
-            image=rng.integers(25,230,(1024,1024),dtype=np.uint8)
-            textures.append((uv[faces],image))
-        self.textures=textures;self.mesh=trimesh.util.concatenate(meshes)
+            if textured:
+                rng=np.random.default_rng(self.seed*1000+n)
+                # Fixed fine texture, shared by both optical views.
+                image=rng.integers(25,230,(1024,1024),dtype=np.uint8)
+                textures.append((uv[faces],image))
+        self.textures=textures if textured else None;self.mesh=trimesh.util.concatenate(meshes)
         return self.scene,self.textures
 
     def save(self,directory):

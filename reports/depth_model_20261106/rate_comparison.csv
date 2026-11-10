@@ -1,0 +1,5 @@
+hz,policy,valid,correct_blocked,unknown,invalid,captures,distance,first_valid_s,all_four_valid_s,first_correct_blocked_s,balanced_time_average
+4,unknown,4,1,2,0,724,58.4968769555721,8.0,48.0,24.0,0.31944444444444436
+4,entry,4,1,2,0,724,58.4968769555721,8.0,48.0,24.0,0.31944444444444436
+1,unknown,4,1,2,0,184,52.5059766795106,12.0,40.0,28.0,0.31597222222222215
+1,entry,4,1,2,0,184,52.5059766795106,12.0,40.0,28.0,0.31597222222222215

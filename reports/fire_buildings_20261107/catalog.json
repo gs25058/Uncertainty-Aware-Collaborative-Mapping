@@ -1,0 +1,252 @@
+[
+  {
+    "id": "01_apartment",
+    "title": "01 · 공동주택",
+    "seed": 71100,
+    "levels": 2,
+    "footprint_m": [
+      22.0,
+      16.0
+    ],
+    "rooms": 16,
+    "windows": 27,
+    "locked_doors": 3,
+    "fires": 2,
+    "stairs": 2,
+    "floor_holes": 2,
+    "description": "거실 화재와 층간 바닥 붕괴",
+    "files": {
+      "scene.glb": "results/fire_buildings_20261107/01_apartment/scene.glb",
+      "scene.ply": "results/fire_buildings_20261107/01_apartment/scene.ply",
+      "scene.json": "results/fire_buildings_20261107/01_apartment/scene.json",
+      "gt_voxel.npz": "results/fire_buildings_20261107/01_apartment/gt_voxel.npz",
+      "collision_geometry.json": "results/fire_buildings_20261107/01_apartment/collision_geometry.json",
+      "validation.json": "results/fire_buildings_20261107/01_apartment/validation.json"
+    }
+  },
+  {
+    "id": "02_school",
+    "title": "02 · 학교 교사",
+    "seed": 71101,
+    "levels": 3,
+    "footprint_m": [
+      26.0,
+      18.0
+    ],
+    "rooms": 24,
+    "windows": 41,
+    "locked_doors": 4,
+    "fires": 3,
+    "stairs": 4,
+    "floor_holes": 3,
+    "description": "교실 화재·복도 벽 파손·천장 낙하",
+    "files": {
+      "scene.glb": "results/fire_buildings_20261107/02_school/scene.glb",
+      "scene.ply": "results/fire_buildings_20261107/02_school/scene.ply",
+      "scene.json": "results/fire_buildings_20261107/02_school/scene.json",
+      "gt_voxel.npz": "results/fire_buildings_20261107/02_school/gt_voxel.npz",
+      "collision_geometry.json": "results/fire_buildings_20261107/02_school/collision_geometry.json",
+      "validation.json": "results/fire_buildings_20261107/02_school/validation.json"
+    }
+  },
+  {
+    "id": "03_office",
+    "title": "03 · 사무동",
+    "seed": 71102,
+    "levels": 3,
+    "footprint_m": [
+      24.0,
+      18.0
+    ],
+    "rooms": 30,
+    "windows": 48,
+    "locked_doors": 4,
+    "fires": 3,
+    "stairs": 4,
+    "floor_holes": 3,
+    "description": "사무실 화재와 무너진 천장 패널",
+    "files": {
+      "scene.glb": "results/fire_buildings_20261107/03_office/scene.glb",
+      "scene.ply": "results/fire_buildings_20261107/03_office/scene.ply",
+      "scene.json": "results/fire_buildings_20261107/03_office/scene.json",
+      "gt_voxel.npz": "results/fire_buildings_20261107/03_office/gt_voxel.npz",
+      "collision_geometry.json": "results/fire_buildings_20261107/03_office/collision_geometry.json",
+      "validation.json": "results/fire_buildings_20261107/03_office/validation.json"
+    }
+  },
+  {
+    "id": "04_hotel",
+    "title": "04 · 소형 호텔",
+    "seed": 71103,
+    "levels": 3,
+    "footprint_m": [
+      23.0,
+      17.0
+    ],
+    "rooms": 30,
+    "windows": 48,
+    "locked_doors": 4,
+    "fires": 3,
+    "stairs": 4,
+    "floor_holes": 3,
+    "description": "잠긴 객실과 손상된 보조 계단",
+    "files": {
+      "scene.glb": "results/fire_buildings_20261107/04_hotel/scene.glb",
+      "scene.ply": "results/fire_buildings_20261107/04_hotel/scene.ply",
+      "scene.json": "results/fire_buildings_20261107/04_hotel/scene.json",
+      "gt_voxel.npz": "results/fire_buildings_20261107/04_hotel/gt_voxel.npz",
+      "collision_geometry.json": "results/fire_buildings_20261107/04_hotel/collision_geometry.json",
+      "validation.json": "results/fire_buildings_20261107/04_hotel/validation.json"
+    }
+  },
+  {
+    "id": "05_clinic",
+    "title": "05 · 의원 건물",
+    "seed": 71104,
+    "levels": 2,
+    "footprint_m": [
+      24.0,
+      17.0
+    ],
+    "rooms": 16,
+    "windows": 27,
+    "locked_doors": 3,
+    "fires": 2,
+    "stairs": 2,
+    "floor_holes": 2,
+    "description": "진료실 화재·잔해가 쌓인 대기 공간",
+    "files": {
+      "scene.glb": "results/fire_buildings_20261107/05_clinic/scene.glb",
+      "scene.ply": "results/fire_buildings_20261107/05_clinic/scene.ply",
+      "scene.json": "results/fire_buildings_20261107/05_clinic/scene.json",
+      "gt_voxel.npz": "results/fire_buildings_20261107/05_clinic/gt_voxel.npz",
+      "collision_geometry.json": "results/fire_buildings_20261107/05_clinic/collision_geometry.json",
+      "validation.json": "results/fire_buildings_20261107/05_clinic/validation.json"
+    }
+  },
+  {
+    "id": "06_retail",
+    "title": "06 · 상가 건물",
+    "seed": 71105,
+    "levels": 2,
+    "footprint_m": [
+      26.0,
+      19.0
+    ],
+    "rooms": 16,
+    "windows": 27,
+    "locked_doors": 3,
+    "fires": 2,
+    "stairs": 2,
+    "floor_holes": 2,
+    "description": "매장 화재·쇼윈도 파손·큰 바닥 구멍",
+    "files": {
+      "scene.glb": "results/fire_buildings_20261107/06_retail/scene.glb",
+      "scene.ply": "results/fire_buildings_20261107/06_retail/scene.ply",
+      "scene.json": "results/fire_buildings_20261107/06_retail/scene.json",
+      "gt_voxel.npz": "results/fire_buildings_20261107/06_retail/gt_voxel.npz",
+      "collision_geometry.json": "results/fire_buildings_20261107/06_retail/collision_geometry.json",
+      "validation.json": "results/fire_buildings_20261107/06_retail/validation.json"
+    }
+  },
+  {
+    "id": "07_workshop",
+    "title": "07 · 작업장",
+    "seed": 71106,
+    "levels": 2,
+    "footprint_m": [
+      25.0,
+      18.0
+    ],
+    "rooms": 16,
+    "windows": 27,
+    "locked_doors": 3,
+    "fires": 2,
+    "stairs": 2,
+    "floor_holes": 2,
+    "description": "자재 화재·지붕 붕괴·작업대 잔해",
+    "files": {
+      "scene.glb": "results/fire_buildings_20261107/07_workshop/scene.glb",
+      "scene.ply": "results/fire_buildings_20261107/07_workshop/scene.ply",
+      "scene.json": "results/fire_buildings_20261107/07_workshop/scene.json",
+      "gt_voxel.npz": "results/fire_buildings_20261107/07_workshop/gt_voxel.npz",
+      "collision_geometry.json": "results/fire_buildings_20261107/07_workshop/collision_geometry.json",
+      "validation.json": "results/fire_buildings_20261107/07_workshop/validation.json"
+    }
+  },
+  {
+    "id": "08_dormitory",
+    "title": "08 · 기숙사",
+    "seed": 71107,
+    "levels": 3,
+    "footprint_m": [
+      25.0,
+      17.0
+    ],
+    "rooms": 30,
+    "windows": 48,
+    "locked_doors": 4,
+    "fires": 3,
+    "stairs": 4,
+    "floor_holes": 3,
+    "description": "객실 화재와 길게 이어지는 복도",
+    "files": {
+      "scene.glb": "results/fire_buildings_20261107/08_dormitory/scene.glb",
+      "scene.ply": "results/fire_buildings_20261107/08_dormitory/scene.ply",
+      "scene.json": "results/fire_buildings_20261107/08_dormitory/scene.json",
+      "gt_voxel.npz": "results/fire_buildings_20261107/08_dormitory/gt_voxel.npz",
+      "collision_geometry.json": "results/fire_buildings_20261107/08_dormitory/collision_geometry.json",
+      "validation.json": "results/fire_buildings_20261107/08_dormitory/validation.json"
+    }
+  },
+  {
+    "id": "09_duplex",
+    "title": "09 · 복층 주거동",
+    "seed": 71108,
+    "levels": 2,
+    "footprint_m": [
+      20.0,
+      16.0
+    ],
+    "rooms": 16,
+    "windows": 27,
+    "locked_doors": 3,
+    "fires": 2,
+    "stairs": 2,
+    "floor_holes": 2,
+    "description": "큰 벽 붕괴와 불탄 실내 가구",
+    "files": {
+      "scene.glb": "results/fire_buildings_20261107/09_duplex/scene.glb",
+      "scene.ply": "results/fire_buildings_20261107/09_duplex/scene.ply",
+      "scene.json": "results/fire_buildings_20261107/09_duplex/scene.json",
+      "gt_voxel.npz": "results/fire_buildings_20261107/09_duplex/gt_voxel.npz",
+      "collision_geometry.json": "results/fire_buildings_20261107/09_duplex/collision_geometry.json",
+      "validation.json": "results/fire_buildings_20261107/09_duplex/validation.json"
+    }
+  },
+  {
+    "id": "10_library",
+    "title": "10 · 도서관 별관",
+    "seed": 71109,
+    "levels": 3,
+    "footprint_m": [
+      26.0,
+      19.0
+    ],
+    "rooms": 24,
+    "windows": 41,
+    "locked_doors": 4,
+    "fires": 3,
+    "stairs": 4,
+    "floor_holes": 3,
+    "description": "서가 화재·개방형 열람 공간·층간 개구부",
+    "files": {
+      "scene.glb": "results/fire_buildings_20261107/10_library/scene.glb",
+      "scene.ply": "results/fire_buildings_20261107/10_library/scene.ply",
+      "scene.json": "results/fire_buildings_20261107/10_library/scene.json",
+      "gt_voxel.npz": "results/fire_buildings_20261107/10_library/gt_voxel.npz",
+      "collision_geometry.json": "results/fire_buildings_20261107/10_library/collision_geometry.json",
+      "validation.json": "results/fire_buildings_20261107/10_library/validation.json"
+    }
+  }
+]

@@ -1,0 +1,26 @@
+{
+  "all_declared_trials_complete": true,
+  "actual": 24,
+  "expected": 24,
+  "ranked": [
+    {
+      "variant": "contact_v3",
+      "balanced_score": 0.07818532818532818,
+      "valid": 10,
+      "correct_blocked": 1,
+      "invalid": 0,
+      "failed_drones": 7,
+      "improves_unknown": false
+    },
+    {
+      "variant": "joint_v3",
+      "balanced_score": 0.07104247104247104,
+      "valid": 9,
+      "correct_blocked": 1,
+      "invalid": 1,
+      "failed_drones": 8,
+      "improves_unknown": false
+    }
+  ],
+  "winner": "contact_v3"
+}

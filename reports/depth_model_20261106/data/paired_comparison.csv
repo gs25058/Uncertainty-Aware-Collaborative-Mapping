@@ -1,0 +1,17 @@
+scene,seed,condition,entry_minus_unknown_valid,entry_minus_unknown_correct_blocked,entry_minus_unknown_invalid,entry_minus_unknown_false_blocked,entry_minus_unknown_distance,entry_minus_unknown_failed_drones
+11,0,clean,0,0,0,0,0.0,0
+11,0,medium,-1,0,0,0,-6.1928642876635465,0
+11,0,strong,0,0,0,0,-10.817273781219306,0
+11,0,weak,0,0,0,0,0.0,0
+11,1,clean,0,0,0,0,0.49747094222756516,0
+11,1,medium,0,0,0,0,0.0,0
+11,1,strong,0,0,0,0,0.0,0
+11,1,weak,0,1,0,0,2.55819381663985,0
+29,0,clean,0,0,0,0,-6.564242767225522,0
+29,0,medium,0,0,0,0,2.402015624465527,0
+29,0,strong,0,0,0,0,-0.059050287948110736,0
+29,0,weak,0,0,0,0,-1.9009336265326553,0
+29,1,clean,0,0,0,0,0.0,0
+29,1,medium,0,0,0,0,0.0,0
+29,1,strong,0,-1,0,0,-1.7723369535694218,0
+29,1,weak,0,0,0,0,0.0,0

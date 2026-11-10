@@ -1,0 +1,255 @@
+{
+  "comparison_name": "\uacf5\ud1b5 \ub2e4\uc911 \ub4dc\ub860 \ud0d0\uc0c9 \ud30c\uc774\ud504\ub77c\uc778\uc5d0\uc11c \uad00\uce21 \uac00\uce58 \ud568\uc218 \ube44\uad50",
+  "scene_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "run_seeds": [
+    0
+  ],
+  "policies": [
+    "unknown",
+    "entry"
+  ],
+  "conditions": [
+    "clean",
+    "strong"
+  ],
+  "n_drones": 4,
+  "duration": 180.0,
+  "dt": 0.25,
+  "sensor_period": 0.25,
+  "assessment_period": 8.0,
+  "assignment_period": 4.0,
+  "snapshot_period": 20.0,
+  "entry_interval": 2.0,
+  "minimum_task_time": 3.0,
+  "capture_dwell": 6.0,
+  "pose_mode": "perfect_odometry",
+  "map_resolution": 0.1,
+  "sensor": {
+    "gimbal_scan": {
+      "period": 6.0,
+      "lower": -0.65,
+      "upper": 0.17,
+      "hold": 1.0,
+      "slew": 1.6,
+      "model": "common periodic lower/upper scan; physical pitch recorded each tick"
+    },
+    "teammate_exclusion_radius": 0.35,
+    "backend": "depth_error_model",
+    "profile": "d455_inspired_optimistic",
+    "width": 320,
+    "height": 180,
+    "baseline": 0.095,
+    "horizontal_fov_deg": 87.0,
+    "vertical_fov_deg": 58.0,
+    "min_depth": 0.6,
+    "range": 6.0,
+    "range_metric": "optical_z",
+    "error_model": {
+      "name": "d455_inspired_optimistic",
+      "description": "Optimistic virtual depth observations inspired by public D455-class specifications, not a device reproduction",
+      "nominal_sensor_resolution": [
+        1280,
+        720
+      ],
+      "nominal_sensor_mode_fps": 30,
+      "hardware_max_fps_other_modes": 90,
+      "hardware_high_speed_example_resolution": [
+        848,
+        480
+      ],
+      "sample_width": 320,
+      "sample_height": 180,
+      "baseline_m": 0.095,
+      "horizontal_fov_deg": 87.0,
+      "vertical_fov_deg": 58.0,
+      "z_min_m": 0.6,
+      "z_max_m": 6.0,
+      "integration_hz": 4,
+      "range_convention": "optical_Z; actual ray length is used for smoke integration and map ray caps",
+      "sigma_constant_m": 0.002,
+      "sigma_quadratic_per_m": 0.001,
+      "drone_bias_std_m": 0.001,
+      "drop_probability": 0.005,
+      "outlier_probability": 0.0005,
+      "outlier_min_m": 0.05,
+      "outlier_max_m": 0.2,
+      "edge_absolute_threshold_m": 0.1,
+      "edge_relative_threshold": 0.05,
+      "edge_dilation_pixels": 1,
+      "grazing_start_deg": 75.0,
+      "grazing_full_deg": 88.0,
+      "geometry_sigma_increase": 0.5,
+      "geometry_drop_increase": 0.02,
+      "correlation_spacing_m": 0.15,
+      "correlation_time_s": 0.75,
+      "noise_variance_weights": [
+        0.25,
+        0.55,
+        0.2
+      ],
+      "patch_variance_weights": [
+        0.35,
+        0.45,
+        0.2
+      ],
+      "binocular_visibility": true,
+      "right_visibility_tolerance_m": 0.0002,
+      "smoke_beta_per_m": 0.4,
+      "degradation": {
+        "clean": {
+          "k": 0.0,
+          "a": 0.0,
+          "q": 0.0
+        },
+        "weak": {
+          "k": 0.5,
+          "a": 0.02,
+          "q": 0.0005
+        },
+        "medium": {
+          "k": 1.5,
+          "a": 0.08,
+          "q": 0.002
+        },
+        "strong": {
+          "k": 3.0,
+          "a": 0.2,
+          "q": 0.005
+        }
+      },
+      "public_sigma": "observed-Z sigma with maximum geometry and configured degradation factors plus known outlier mixture variance and bias variance; no true error/T/normal/outlier flag",
+      "sources": [
+        "https://www.realsenseai.com/product-family/450-series/",
+        "https://support.realsenseai.com/hc/en-us/articles/360059129453-Depth-accuracy-for-Intel-RealSense-D400-Series-Cameras",
+        "https://dev.realsenseai.com/docs/tuning-depth-cameras-for-best-performance/",
+        "https://realsenseai.com/wp-content/uploads/2025/08/Intel-RealSense-D400-Series-Datasheet-August-2025.pdf"
+      ]
+    },
+    "actual_integration_hz": 4.0,
+    "fire_smoke": {
+      "enabled": true,
+      "resolution": 0.2,
+      "ray_samples": 16,
+      "iterations": 160,
+      "diffusion": 0.12,
+      "decay": 0.035,
+      "source_gain": 0.08,
+      "cache": "results/fire_recon_20261107/smoke_fields",
+      "model": "solid-masked dimensionless diffusion; fixed pre-existing smoke, shared temporal modulation"
+    }
+  },
+  "motion": {
+    "radius": 0.14,
+    "margin": 0.04,
+    "vmax": 1.0,
+    "amax": 1.5,
+    "yaw_rate": 1.5707963267948966,
+    "pitch_rate": 1.0471975511965976,
+    "reservation_dt": 0.1,
+    "max_wait": 8.0,
+    "grid_stride": 2,
+    "stop_rule": "stop at first originally planned rest point whose complete future hover is jointly reservation-safe"
+  },
+  "candidates": {
+    "max_total": 24,
+    "max_frontier": 14,
+    "max_reobserve": 10,
+    "heights": [
+      0.85,
+      1.25,
+      1.85
+    ],
+    "pitches": [
+      -0.65,
+      0.17
+    ],
+    "max_route_trials_per_drone": 24,
+    "max_impact_segments": 6,
+    "observation_samples": 24,
+    "route_prefilter": "none; test every candidate; observed-free connectivity rejection only",
+    "visibility_range_m": 6.0,
+    "height_mode": "observed_free",
+    "height_stride_rows": 4
+  },
+  "utility": {
+    "time_penalty": 0.008,
+    "unknown_normalizer": 1500.0,
+    "completion_weight": 0.8,
+    "progress_weight": 0.2,
+    "entry_objective": "task_progress_v3",
+    "task_progress": {
+      "coarse_rows": 4,
+      "route_slack_m": 2.0,
+      "unknown_travel_penalty": 1.0,
+      "vertical_cost": 2.0,
+      "query_samples": 24,
+      "max_boundary_patches": 8,
+      "unknown_occlusion_discount": 0.5,
+      "stability_weight": 0.0,
+      "completion_weight": 0.8,
+      "boundary_weight": 1.0,
+      "goal_weight": 0.35,
+      "exploration_weight": 0.35,
+      "channel_aggregation": "max",
+      "view_novelty_radius_m": 0.45,
+      "view_novelty_scale": 6.0,
+      "remaining_distance_scale_m": 2.0,
+      "deadline_discount": true,
+      "closure_weight": 0.6,
+      "joint_evidence": true,
+      "body_query_mode": "missing_footprint",
+      "bridge_extension_boost": true,
+      "partial_evidence_weight": 0.15
+    }
+  },
+  "smoke": {
+    "beta": 0.4,
+    "field": "heterogeneous",
+    "airlight": 0.8
+  },
+  "human": {
+    "foot_contact_offset": 0.025,
+    "exact_step_limit": 0.18,
+    "contact_epsilon_m": 0.001,
+    "resolve_low_surface_band": true,
+    "low_surface_band_rule": "only confirmed observed planar OCCUPIED cells in partial bottom torso row; measured height +3 empirical std +5mm <= foot height +18cm; unknown and higher body rows unchanged",
+    "use_surface_xy": true,
+    "crop_observed_graph": true,
+    "surface_representation": "observed representative XY + measured mean Z, empirical scatter, all occupied-hit height maxima; strict mixed-voxel leg/body checks"
+  },
+  "fault_policy": "freeze_at_last_safe_position_and_continue_other_drones",
+  "communication": "instantaneous shared observed map and planned trajectories",
+  "common_prior": "bounding volume, staging free volume, anonymous fixed target regions on all floors; no internal geometry or fire-source coordinates to planner",
+  "dynamics": "kinematic exact tracking of FUEL Polynomial quintics; no downwash or attitude/controller dynamics",
+  "timing": "synchronous simulation; component wall times logged separately; no real-time claim",
+  "protocol_version": "entry_objective_optimization_v1",
+  "entry_graph_update": "before every assignment, same current map version for both policies",
+  "pending_utility_update": "rescore active endpoints on the same current map, at most 4 additional predictions",
+  "sensor_change_only": "New fixed multistorey geometry, independent reference, observed-free candidate heights and source-local smoke; identical utility/assignment/motion/human dimensions across policies",
+  "scene": {
+    "type": "multistorey_fire",
+    "fire_scale": 3,
+    "reference_cache": "results/fire_recon_20261107/reference",
+    "repair_bottom_landings": true,
+    "revision": "bottom_landing_opt_in_v1"
+  },
+  "evaluation_regions": "whole interior floor region per room, inset5cm; actual1.85m entry opening centre region width1.2m; fixed before policy comparison",
+  "input_provenance": {
+    "actual_base_assets": "results/fire_buildings_large_fire_20261107",
+    "actual_base_viewer": "web/fire_buildings_3d.html",
+    "requested_duplicate_html": "fire_buildings_3d(1).htm (not found; identity unconfirmed)",
+    "assumption": "continue with the previously approved ten large-fire buildings and existing common settings; repair only missing bottom landings",
+    "new_request_received_through": "section2 common candidate generation and candidate limits"
+  }
+}

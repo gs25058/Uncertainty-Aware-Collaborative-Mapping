@@ -12,12 +12,16 @@ def predicted_unknown(lab,ijk,res,T,sd,max_range,interest=None):
     h,w=sd.calib.size[1],sd.calib.size[0]
     vv,uu=np.meshgrid(np.linspace(0,h-1,12),np.linspace(0,w-1,18),indexing='ij')
     d=np.c_[(uu.ravel()-sd.cx)/sd.fx,(vv.ravel()-sd.cy)/sd.fy,np.ones(uu.size)]@T[:3,:3].T
-    d/=np.linalg.norm(d,axis=1)[:,None]
+    z_range=getattr(sd,'range_metric',None)=='optical_z'
+    if not z_range:d/=np.linalg.norm(d,axis=1)[:,None]
     ray,vox=_dda_batch(T[:3,3],T[:3,3]+d*max_range,res);q=vox-ijk
     inside=((q>=0)&(q<np.array(lab.shape))).all(1);vals=np.full(len(q),255,np.uint8);vals[inside]=lab[tuple(q[inside].T)]
     distance=np.linalg.norm((vox+.5)*res-T[:3,3],axis=1)
     stop=np.full(len(d),np.inf);np.minimum.at(stop,ray[(vals==2)|(vals==255)],distance[(vals==2)|(vals==255)])
     keep=(vals==0)&(distance<stop[ray])&(distance>.3)
+    if z_range:
+        depth=(((vox+.5)*res-T[:3,3])@T[:3,:3])[:,2]
+        keep&=(depth>=sd.cfg.z_min)&(depth<=sd.cfg.z_max)
     if interest is not None:
         allowed=np.zeros(len(q),bool);allowed[inside]=interest[tuple(q[inside].T)];keep&=allowed
     pts=q[keep]
@@ -40,7 +44,11 @@ def candidates(lab,ijk,res,layer,flight,states,cfg,epoch,runseed,prior):
     frontier=reachable&(frontier_distance<=.8)
     # Air waypoints sampled in reachable observed-free volume, NEVER true rooms.
     points=[];stride=4
-    for h in cfg['candidates']['heights']:
+    heights=cfg['candidates']['heights']
+    if cfg['candidates'].get('height_mode')=='observed_free':
+        ks=np.flatnonzero(frontier.any(axis=(0,1)));stride_z=cfg['candidates']['height_stride_rows']
+        heights=(ks[ks%stride_z==0]+ijk[2]+.5)*res
+    for h in heights:
         k=int(np.floor(h/res))-ijk[2]
         if 0<=k<lab.shape[2]:
             for i,j in np.argwhere(frontier[::stride,::stride,k])*stride:
@@ -81,28 +89,36 @@ def candidates(lab,ijk,res,layer,flight,states,cfg,epoch,runseed,prior):
 
 def score_pool(pool,analysis,lab,layer,ijk,res,sd,cfg,prior):
     g=analysis['graph'];segments={};limit=cfg['candidates']['observation_samples']
+    interest=interest_mask(lab,ijk,res,prior)
     for sid,goals in sorted(analysis['impact'].items()):
         (feet,nf),(body,nb)=g.region_observation_cells(sid,max_cells=limit)
-        segments[sid]=(feet,body,goals)
+        foot_points=None
+        if g.xy_padding and len(feet):
+            nodes=g.ids[tuple(feet.T)];foot_points=np.c_[g.node_xy[nodes],g.foot_z[tuple(feet.T)]-g.foot_contact_offset]
+        offset=getattr(g,'map_offset',np.zeros(3,int));feet=feet+offset;body=body+offset
+        segments[sid]=(feet,body,goals,foot_points)
     scored=[]
     for c in pool:
         c['pitch_program']='common_6s_floor_upper_scan'
         c['pitch']=-.65
         T=camera_pose(np.array(c['position']),c['yaw'],c['pitch'],cfg['sensor']['baseline'])
         views=[camera_pose(np.array(c['position']),c['yaw'],pitch,cfg['sensor']['baseline']) for pitch in cfg['candidates']['pitches']]
-        unknown=set().union(*(predicted_unknown(lab,ijk,res,v,sd,cfg['sensor']['range'],interest_mask(lab,ijk,res,prior)) for v in views));targets={};contrib=[];evidence={}
-        for sid,(feet,body,goals) in segments.items():
-            f=max((visible_fraction(feet,lab,ijk,res,v,sd,True,max_range_m=cfg['sensor']['range']) for v in views),key=lambda x:x['fraction']);b=max((visible_fraction(body,lab,ijk,res,v,sd,max_range_m=cfg['sensor']['range']) for v in views),key=lambda x:x['fraction'])
+        unknown=set().union(*(predicted_unknown(lab,ijk,res,v,sd,cfg['sensor']['range'],interest) for v in views));targets={};contrib=[];evidence={}
+        for sid,(feet,body,goals,foot_points) in segments.items():
+            f=max((visible_fraction(feet,lab,ijk,res,v,sd,True,points_override=foot_points,max_range_m=cfg['sensor']['range']) for v in views),key=lambda x:x['fraction']);b=max((visible_fraction(body,lab,ijk,res,v,sd,max_range_m=cfg['sensor']['range']) for v in views),key=lambda x:x['fraction'])
             value=min(f['fraction'],b['fraction']);contrib.append(dict(segment=sid,goals=goals,foot=f,body=b,value=value))
             for goal in goals:targets[goal]=max(targets.get(goal,0),value)
             if value>0:
                 for cell in feet:
                     q=tuple(cell);needed=max(0,2-int(layer['votes'][q]));evidence[int(np.ravel_multi_index(q,lab.shape))]=(value,min(2,needed))
         scored.append(dict(candidate=c,unknown=unknown,targets=targets,evidence=evidence,contributions=contrib))
+    if cfg['utility'].get('entry_objective','legacy')!='legacy':
+        from .entry_objective import augment
+        scored=augment(scored,analysis,lab,layer,ijk,res,sd,cfg,prior)
     return scored
 
 
-def marginal(item,policy,allocated,cfg,entry_active=False):
+def marginal(item,policy,allocated,cfg,entry_active=False,*,remaining=None,cost=None):
     used=set().union(*(x['unknown'] for x in allocated)) if allocated else set()
     u=len(item['unknown']-used)/cfg['utility']['unknown_normalizer']
     fallback=not entry_active
@@ -110,6 +126,16 @@ def marginal(item,policy,allocated,cfg,entry_active=False):
     gain=0.
     for target,value in item['targets'].items():
         prev=max([x['targets'].get(target,0) for x in allocated]+[0.]);gain+=max(0.,value-prev)
+    if cfg['utility'].get('entry_objective','legacy')!='legacy':
+        opt=cfg['utility']['task_progress']
+        if opt.get('joint_evidence'):
+            from .entry_objective import joint_marginal
+            gain=joint_marginal(item,allocated,cfg)
+        gain*=opt.get('task_gain_scale',1.)
+        gain+=opt.get('exploration_weight',.1)*u*item.get('view_novelty',1.)
+        if opt.get('deadline_discount') and remaining is not None and cost is not None:
+            dwell=cfg['capture_dwell'];gain*=float(np.clip((remaining-cost+dwell)/dwell,0.,1.))
+        return gain,False
     # Complementary frame evidence is capped at the missing votes. Each action
     # contains two distinct sensor ticks; duplicate actions give no new support.
     extra=0.;den=max(1,len(item['evidence']))

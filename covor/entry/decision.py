@@ -44,7 +44,7 @@ def body_modes(lab, cfg, levels, allow_unknown):
     return p,w
 
 
-def surface_body_modes(lab,cfg,levels,foot_z,ijk_z,allow_unknown,head_margin=.02):
+def surface_body_modes(lab,cfg,levels,foot_z,ijk_z,allow_unknown,head_margin=.02,surface_layer=None,xy_padding=0.,ijk_xy=None,eligible=None):
     """Conservative body slabs at measured foot height, including the head cell.
 
     The mixed support cell itself is resolved by the surface observation; all
@@ -61,16 +61,58 @@ def surface_body_modes(lab,cfg,levels,foot_z,ijk_z,allow_unknown,head_margin=.02
             for lo,top in np.unique(np.stack((lows,tops),-1).reshape(-1,2),axis=0):
                 if top>lab.shape[2] or top<=k+1:continue
                 centre=~bad[:,:,k+1:top].any(2)
-                slab=bad[:,:,max(k+1,lo):top].any(2)
+                low=max(k+1,lo)
+                slab=bad[:,:,low:top].any(2)
                 group=(lows==lo)&(tops==top)
                 for mode,radius in ((TV.NORMAL,cfg.w/2),(TV.SIDEWAYS,cfg.w_side/2)):
+                    if ijk_xy is not None and surface_layer is not None and 'surface_x' in surface_layer:
+                        candidates=group&centre&(p[:,:,k]<0)
+                        if eligible is not None:candidates&=eligible[:,:,k]
+                        ii,jj=np.nonzero(candidates)
+                        if not len(ii):continue
+                        sx=surface_layer['surface_x'][ii,jj,k];sy=surface_layer['surface_y'][ii,jj,k]
+                        dx0=np.where(np.isfinite(sx),sx-(ii+ijk_xy[0]+.5)*cfg.res,0)
+                        dy0=np.where(np.isfinite(sy),sy-(jj+ijk_xy[1]+.5)*cfg.res,0)
+                        full_bad=bad[:,:,low+1:top].any(2)
+                        upper=np.full(lab.shape[:2],np.inf);upper[~bad[:,:,low]]=-np.inf
+                        measured=surface_layer['support'][:,:,low]&(lab[:,:,low]==OCCUPIED)
+                        if 'height_std' in surface_layer:
+                            bound=surface_layer['height'][:,:,low]+3*surface_layer['height_std'][:,:,low]+.005
+                            if 'hit_z_max' in surface_layer:bound=np.maximum(bound,surface_layer['hit_z_max'][:,:,low]+.005)
+                            upper[measured]=bound[measured]
+                        alive=np.ones(len(ii),bool);r=int(np.ceil(radius/cfg.res+1))
+                        for di in range(-r,r+1):
+                            for dj in range(-r,r+1):
+                                distance=np.hypot(np.maximum(abs(di*cfg.res-dx0)-cfg.res*.5,0),np.maximum(abs(dj*cfg.res-dy0)-cfg.res*.5,0))
+                                ids=np.flatnonzero(alive&(distance<=radius+1e-9))
+                                if not len(ids):continue
+                                x,y=ii[ids]+di,jj[ids]+dj;inside=(x>=0)&(x<lab.shape[0])&(y>=0)&(y<lab.shape[1]);alive[ids[~inside]]=False
+                                ids=ids[inside];x=x[inside];y=y[inside]
+                                alive[ids]&=~full_bad[x,y]&(upper[x,y]<=z[ii[ids],jj[ids]]+cfg.step+1e-9)
+                        p[ii[alive],jj[alive],k]=posture;w[ii[alive],jj[alive],k]=mode
+                        continue
+                    radius+=xy_padding
                     r=int(np.ceil(radius/cfg.res+.5));di,dj=np.mgrid[-r:r+1,-r:r+1]
                     # Exact disc-vs-square footprint; outside the map is not
                     # observed free. EDT's half-cell shortcut misses corners.
                     distance=np.hypot(np.maximum(abs(di)*cfg.res-cfg.res*.5,0),
                                       np.maximum(abs(dj)*cfg.res-cfg.res*.5,0))
                     footprint=distance<=radius+1e-9
-                    clear=~ndimage.binary_dilation(slab,structure=footprint,border_value=1)
+                    if surface_layer is not None and 'height_std' in surface_layer and low<top:
+                        # Resolve only the partial bottom torso row from measured
+                        # low horizontal surfaces. UNKNOWN remains bad in the
+                        # confirmed graph. Higher rows and centre legs keep the
+                        # original measured-free requirements.
+                        full_bad=bad[:,:,low+1:top].any(2)
+                        upper=np.full(lab.shape[:2],np.inf)
+                        upper[~bad[:,:,low]]=-np.inf
+                        measured=surface_layer['support'][:,:,low]&(lab[:,:,low]==OCCUPIED)
+                        bound=surface_layer['height'][:,:,low]+3*surface_layer['height_std'][:,:,low]+.005
+                        if 'hit_z_max' in surface_layer:bound=np.maximum(bound,surface_layer['hit_z_max'][:,:,low]+.005)
+                        upper[measured]=bound[measured]
+                        band_top=ndimage.maximum_filter(upper,footprint=footprint,mode='constant',cval=np.inf)
+                        clear=~ndimage.binary_dilation(full_bad,structure=footprint,border_value=1)&(band_top<=z+cfg.step+1e-9)
+                    else:clear=~ndimage.binary_dilation(slab,structure=footprint,border_value=1)
                     ok=group&centre&clear&(p[:,:,k]<0)
                     p[:,:,k][ok]=posture;w[:,:,k][ok]=mode
     return p,w
@@ -110,13 +152,15 @@ def local_segments(uncertain, ijk, res, cfg):
 
 
 class DecisionGraph:
-    def __init__(self,labels,ijk_min,res=.1,cfg=None,body=None,*,support_layer=None,surface_geometry=False,foot_contact_offset=.005):
+    def __init__(self,labels,ijk_min,res=.1,cfg=None,body=None,*,support_layer=None,surface_geometry=False,foot_contact_offset=.005,resolve_low_surface_band=False,use_surface_xy=False):
         self.lab=np.asarray(labels,np.uint8)
         self.ijk=np.asarray(ijk_min,int);self.res=res
         self.cfg=cfg or DecisionCfg();self.body=body or TV.TravCfg(res=res)
         self.support_layer=support_layer
         self.surface_geometry=surface_geometry
         self.foot_contact_offset=foot_contact_offset
+        body_layer=support_layer if resolve_low_surface_band else None
+        self.xy_padding=res/np.sqrt(2) if use_surface_xy else 0.
         self.foot_z=np.broadcast_to((np.arange(self.lab.shape[2])+self.ijk[2]+1)*res,self.lab.shape).copy()
         self.surface_candidates=np.zeros(self.lab.shape,bool)
         if surface_geometry:
@@ -130,10 +174,17 @@ class DecisionGraph:
         else:
             self.support=np.asarray(support_layer['support'],bool)
             if self.support.shape!=self.lab.shape:raise ValueError('support/map shape mismatch')
-            self.cp,self.cw=body_modes(self.lab,self.body,np.unique(np.nonzero(self.support)[2]),False)
             if surface_geometry:
-                self.cp,self.cw=surface_body_modes(self.lab,self.body,np.unique(np.nonzero(self.support)[2]),self.foot_z,self.ijk[2],False)
+                self.cp,self.cw=surface_body_modes(self.lab,self.body,np.unique(np.nonzero(self.support)[2]),self.foot_z,self.ijk[2],False,surface_layer=body_layer,ijk_xy=self.ijk[:2] if use_surface_xy else None,eligible=self.support)
+            else:self.cp,self.cw=body_modes(self.lab,self.body,np.unique(np.nonzero(self.support)[2]),False)
             self.cp[~self.support]=-1;self.cw[~self.support]=-1
+        if use_surface_xy and support_layer is not None and 'hit_z_max' in support_layer:
+            # The mixed foot voxel may also contain a protruding rail/riser.
+            # A low planar patch alone cannot erase those observed endpoints.
+            hit_upper=np.where(self.lab==FREE,-np.inf,support_layer['hit_z_max']+.005)
+            upper=np.maximum(support_layer['height']+3*support_layer['height_std']+.005,hit_upper)
+            contact_clear=np.isfinite(upper)&(upper<=self.foot_z+1e-9)
+            self.cp[~contact_clear]=-1;self.cw[~contact_clear]=-1
         self.confirmed=self.cp>=0
         anchors3=self.support|self.surface_candidates
         levels=np.unique(np.nonzero(anchors3)[2])
@@ -163,16 +214,24 @@ class DecisionGraph:
                     near[:,:,k]&=belongs|anchors3[:,:,k]
                     infer=near[:,:,k]&~anchors3[:,:,k]
                     self.foot_z[:,:,k][infer]=z[infer]
-        self.pp,self.pw=body_modes(self.lab,self.body,levels,True)
-        if surface_geometry:self.pp,self.pw=surface_body_modes(self.lab,self.body,levels,self.foot_z,self.ijk[2],True)
+        if surface_geometry:self.pp,self.pw=surface_body_modes(self.lab,self.body,levels,self.foot_z,self.ijk[2],True,surface_layer=body_layer,ijk_xy=self.ijk[:2] if use_surface_xy else None,eligible=near|self.confirmed)
+        else:self.pp,self.pw=body_modes(self.lab,self.body,levels,True)
         self.possible=(self.pp>=0)&near&((self.lab!=FREE)|self.support|self.surface_candidates)
         self.possible|=self.confirmed
         self.pp[self.confirmed]=self.cp[self.confirmed]
         self.pw[self.confirmed]=self.cw[self.confirmed]
         self.region,self.segments=local_segments(self.possible&~self.confirmed,self.ijk,res,self.cfg)
         self.xyz=np.argwhere(self.possible)
+        self.node_xy=(self.xyz[:,:2]+self.ijk[:2]+.5)*res
+        if use_surface_xy and 'surface_x' in support_layer:
+            observed=np.c_[support_layer['surface_x'][tuple(self.xyz.T)],support_layer['surface_y'][tuple(self.xyz.T)]]
+            valid=np.isfinite(observed).all(1);self.node_xy[valid]=observed[valid]
         self.ids=np.full(self.lab.shape,-1,np.int32)
         self.ids[tuple(self.xyz.T)]=np.arange(len(self.xyz))
+        self.node_height=self.foot_z[tuple(self.xyz.T)]
+        self.node_region=self.region[tuple(self.xyz.T)]
+        self.node_known=self.confirmed[tuple(self.xyz.T)]
+        self.node_factor=np.array([TV._factor(p,w,self.body) for p,w in zip(self.pp[tuple(self.xyz.T)],self.pw[tuple(self.xyz.T)])])
         self._neighbors={}
         self._reach_transitions=None
         self._proof=None
@@ -181,6 +240,7 @@ class DecisionGraph:
         x0,y0,x1,y1=region["xy_bounds"]
         h0,h1=region["floor_z_bounds"]
         p=(self.xyz+self.ijk+.5)*self.res
+        p[:,:2]=self.node_xy
         feet=self.foot_z[tuple(self.xyz.T)]
         mask=(p[:,0]>=x0)&(p[:,0]<=x1)&(p[:,1]>=y0)&(p[:,1]<=y1)&(feet>=h0)&(feet<=h1)
         if confirmed and len(p):mask&=self.confirmed[tuple(self.xyz.T)]
@@ -188,7 +248,7 @@ class DecisionGraph:
 
     def _raw_neighbors(self,u):
         if u in self._neighbors:return self._neighbors[u]
-        i,j,k=self.xyz[u];st=self.body.step_rows
+        i,j,k=self.xyz[u];st=int(np.ceil(self.body.step/self.res)) if self.surface_geometry else self.body.step_rows
         out=[]
         for di,dj in itertools.product((-1,0,1),repeat=2):
             if di==dj==0:continue
@@ -197,18 +257,21 @@ class DecisionGraph:
             for kk in range(max(0,k-st),min(self.lab.shape[2]-1,k+st)+1):
                 v=int(self.ids[a,b,kk])
                 if v<0:continue
-                if self.surface_geometry and abs(self.foot_z[i,j,k]-self.foot_z[a,b,kk])>self.body.step+1e-9:continue
+                if self.surface_geometry and abs(self.node_height[u]-self.node_height[v])>self.body.step+1e-9:continue
                 corners=[]
                 if di and dj:
                     for x,y in ((i,b),(a,j)):
                         lo,hi=max(kk-st,0),min(kk+st+1,self.lab.shape[2])
                         ids=self.ids[x,y,lo:hi];ids=ids[ids>=0]
                         if self.surface_geometry:
-                            ids=np.array([n for n in ids if abs(self.foot_z[tuple(self.xyz[n])]-self.foot_z[i,j,k])<=self.body.step+1e-9
-                                 and abs(self.foot_z[tuple(self.xyz[n])]-self.foot_z[a,b,kk])<=self.body.step+1e-9],int)
+                            ids=np.array([n for n in ids if abs(self.node_height[n]-self.node_height[u])<=self.body.step+1e-9
+                                 and abs(self.node_height[n]-self.node_height[v])<=self.body.step+1e-9],int)
+                        if self.xy_padding:
+                            ids=np.array([n for n in ids if self.node_height[n]<=max(self.node_height[u],self.node_height[v])+1e-9],int)
                         corners.append(ids.tolist())
                     if not all(corners):continue
                 length=self.res*(2**.5 if di and dj else 1.)
+                if self.xy_padding:length=max(1e-6,float(np.linalg.norm(self.node_xy[u]-self.node_xy[v])))
                 out.append((v,length,corners))
         self._neighbors[u]=out
         return out
@@ -218,15 +281,15 @@ class DecisionGraph:
         for v,length,corners in self._raw_neighbors(u):
             deps=set()
             for node in (u,v):
-                sid=int(self.region[tuple(self.xyz[node])])
+                sid=int(self.node_region[node])
                 if sid:deps.add(sid)
             if closed in deps:continue
             ok=True
             for choices in corners:
-                known=[n for n in choices if self.confirmed[tuple(self.xyz[n])]]
-                available=known or [n for n in choices if self.region[tuple(self.xyz[n])]!=closed]
+                known=[n for n in choices if self.node_known[n]]
+                available=known or [n for n in choices if self.node_region[n]!=closed]
                 if not available:ok=False;break
-                sid=int(self.region[tuple(self.xyz[available[0]])])
+                sid=int(self.node_region[available[0]])
                 if sid:deps.add(sid)
             if not ok or (confirmed_only and deps):continue
             yield v,length,tuple(sorted(deps))
@@ -258,10 +321,8 @@ class DecisionGraph:
                 nr=(run+step) if (run or uncertain) else 0
                 if nr>limit:continue
                 if self.confirmed[tuple(self.xyz[v])]:nr=0
-                vp,vw=self.pp[tuple(self.xyz[v])],self.pw[tuple(self.xyz[v])]
-                up,uw=self.pp[tuple(self.xyz[u])],self.pw[tuple(self.xyz[u])]
-                cost=length*max(TV._factor(vp,vw,self.body),TV._factor(up,uw,self.body))
-                rise=(abs(self.foot_z[tuple(self.xyz[v])]-self.foot_z[tuple(self.xyz[u])])
+                cost=length*max(self.node_factor[v],self.node_factor[u])
+                rise=(abs(self.node_height[v]-self.node_height[u])
                       if self.surface_geometry else abs(self.xyz[v,2]-self.xyz[u,2])*self.res)
                 cost+=self.body.c_rise*rise
                 ns=(v,nr);nd=d+cost
@@ -283,7 +344,7 @@ class DecisionGraph:
         for u in chain:
             i,j,k=self.xyz[u];p=(self.xyz[u]+self.ijk+.5)*self.res
             out.append(dict(node=int(u),ijk=(self.xyz[u]+self.ijk).tolist(),
-                xyz=[float(p[0]),float(p[1]),float(self.foot_z[i,j,k])],
+                xyz=[float(self.node_xy[u,0]),float(self.node_xy[u,1]),float(self.foot_z[i,j,k])],
                 posture=int(self.pp[i,j,k]),width=int(self.pw[i,j,k]),
                 observed_support=bool(self.support[i,j,k]),confirmed=bool(self.confirmed[i,j,k]),
                 segment=int(self.region[i,j,k])))
@@ -298,18 +359,7 @@ class DecisionGraph:
         Normal route selection still uses the original cost-optimal search.
         """
         if self._reach_transitions is None:
-            regions=self.region[tuple(self.xyz.T)];known=self.confirmed[tuple(self.xyz.T)]
-            transitions=[]
-            for u in range(len(self.xyz)):
-                edges=[];ru=int(regions[u])
-                for v,length,corners in self._raw_neighbors(u):
-                    options=[]
-                    for choices in corners:
-                        if any(known[n] for n in choices):continue
-                        options.append(tuple(sorted({int(regions[n]) for n in choices})))
-                    rv=int(regions[v]);forced=tuple(x[0] for x in options if len(x)==1)
-                    edges.append((v,int(round(length/self.res*1000)),rv,forced,options,bool(ru or rv or options)))
-                transitions.append((ru,edges))
+            known=self.node_known;transitions=[None]*len(self.xyz)
             self._reach_transitions=(transitions,known)
         transitions,known=self._reach_transitions
         run_at=[2**31-1]*len(self.xyz)
@@ -323,6 +373,16 @@ class DecisionGraph:
             state,run=queue.popleft();u=state[0]
             if run>run_at[u]:continue
             best[u]=state
+            if transitions[u] is None:
+                edges=[];ru=int(self.node_region[u])
+                for v,length,corners in self._raw_neighbors(u):
+                    options=[]
+                    for choices in corners:
+                        if any(known[n] for n in choices):continue
+                        options.append(tuple(sorted({int(self.node_region[n]) for n in choices})))
+                    rv=int(self.node_region[v]);forced=tuple(x[0] for x in options if len(x)==1)
+                    edges.append((v,int(round(length/self.res*1000)),rv,forced,options,bool(ru or rv or options)))
+                transitions[u]=(ru,edges)
             ru,edges=transitions[u]
             for v,step,rv,forced,options,uncertain in edges:
                 if closed is not None and (rv==closed or closed in forced):continue
@@ -426,7 +486,7 @@ class DecisionGraph:
             support.append((i,j,k))
             posture,width=int(self.pp[i,j,k]),int(self.pw[i,j,k])
             height=(self.body.h_stand,self.body.h_stoop,self.body.h_crawl)[posture]
-            rad=(self.body.w if width==TV.NORMAL else self.body.w_side)/2
+            rad=(self.body.w if width==TV.NORMAL else self.body.w_side)/2+self.xy_padding
             r=int(np.ceil(rad/self.res+.5))
             top=k+1+self.body.rows(height);torso_low=k+1+self.body.step_rows
             if self.surface_geometry:

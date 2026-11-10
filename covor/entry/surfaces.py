@@ -23,6 +23,8 @@ class SurfaceCfg:
     contradiction_margin_m: float = .05
     depth_beta: float = .5
     dyn_radius_m: float = .35
+    return_height_std: bool = False
+    return_surface_xy: bool = False
 
 
 class SupportSurfaces:
@@ -66,9 +68,18 @@ class SupportSurfaces:
             seconds=np.bincount(inv,weights=weights*points[:,2]**2)/np.maximum(sums,1e-12)
             # One correlated image patch is one vote, never thousands of beams.
             strength=np.zeros(len(unique));np.maximum.at(strength,inv,weights)
-            for key,z_,z2_,w_ in zip(map(tuple,unique),means,seconds,strength):
-                a=self.cells.setdefault(key,np.zeros(5))
+            representatives=None
+            if c.return_surface_xy:
+                d=((points[:,:2]-(unique[inv,:2]+.5)*c.resolution)**2).sum(1)
+                order=np.lexsort((np.arange(len(points)),d,inv));pick=order[np.r_[True,inv[order][1:]!=inv[order][:-1]]]
+                representatives=points[pick,:2];distances=d[pick]
+            for num,(key,z_,z2_,w_) in enumerate(zip(map(tuple,unique),means,seconds,strength)):
+                if key not in self.cells:
+                    self.cells[key]=np.zeros(8 if c.return_surface_xy else 5)
+                    if c.return_surface_xy:self.cells[key][7]=np.inf
+                a=self.cells[key]
                 a[:4]+=[w_,w_*z_,w_*z2_,1]
+                if representatives is not None and distances[num]<a[7]:a[5:7]=representatives[num];a[7]=distances[num]
         self.n_frames+=1
         return len(points)
 
@@ -76,12 +87,13 @@ class SupportSurfaces:
         if not self.cells:return
         keys=np.array(list(self.cells));a=np.array(list(self.cells.values()))
         p=(keys+.5)*self.cfg.resolution;p[:,2]=a[:,1]/np.maximum(a[:,0],1e-12)
+        if self.cfg.return_surface_xy:p[:,:2]=a[:,5:7]
         rect=((p-T[:3,3])@T[:3,:3])@sd.R1.T
         with np.errstate(divide='ignore',invalid='ignore'):
             u=np.rint(sd.fx*rect[:,0]/rect[:,2]+sd.cx)
             v=np.rint(sd.fy*rect[:,1]/rect[:,2]+sd.cy)
         h,w=Z.shape
-        inside=np.isfinite(u)&np.isfinite(v)&(rect[:,2]>.3)&(u>=0)&(u<w)&(v>=0)&(v<h)
+        inside=np.isfinite(u)&np.isfinite(v)&(rect[:,2]>getattr(getattr(sd,'cfg',None),'z_min',.3))&(u>=0)&(u<w)&(v>=0)&(v<h)
         ids=np.flatnonzero(inside)
         if not len(ids):return
         uu=u[ids].astype(int);vv=v[ids].astype(int);z=Z[vv,uu];sz=sigma_Z[vv,uu]
@@ -96,6 +108,9 @@ class SupportSurfaces:
     def dense(self,ijk,shape):
         support=np.zeros(shape,bool);height=np.full(shape,np.nan,np.float32)
         evidence=np.zeros(shape,np.float32);votes=np.zeros(shape,np.uint16)
+        std=np.full(shape,np.nan,np.float32) if self.cfg.return_height_std else None
+        px=np.full(shape,np.nan,np.float32) if self.cfg.return_surface_xy else None
+        py=np.full(shape,np.nan,np.float32) if self.cfg.return_surface_xy else None
         c=self.cfg
         for key,a in self.cells.items():
             index=np.array(key)-ijk
@@ -103,12 +118,17 @@ class SupportSurfaces:
             i=tuple(index);mean=a[1]/max(a[0],1e-12)
             var=max(0.,a[2]/max(a[0],1e-12)-mean**2)
             evidence[i]=a[0]-a[4];votes[i]=min(int(a[3]),65535);height[i]=mean
+            if std is not None:std[i]=np.sqrt(var)
+            if px is not None:px[i],py[i]=a[5:7]
             support[i]=(a[3]>=c.min_frames and a[0]-a[4]>=c.min_evidence and var<=c.max_height_std_m**2)
-        return dict(support=support,height=height,evidence=evidence,votes=votes)
+        result=dict(support=support,height=height,evidence=evidence,votes=votes)
+        if std is not None:result['height_std']=std
+        if px is not None:result.update(surface_x=px,surface_y=py)
+        return result
 
     def save(self,path):
         np.savez_compressed(path,keys=np.array(list(self.cells),int).reshape(-1,3),
-                            values=np.array(list(self.cells.values())).reshape(-1,5),
+                            values=np.array(list(self.cells.values())).reshape(-1,8 if self.cfg.return_surface_xy else 5),
                             cfg=json.dumps(asdict(self.cfg)),n_frames=self.n_frames)
 
     @classmethod

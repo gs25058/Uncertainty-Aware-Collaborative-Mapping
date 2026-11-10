@@ -1,0 +1,69 @@
+{
+  "source_sha256": {
+    "covor/explore/fire_buildings.py": "dfc5fd369c416f4785a17f2ba9bfb4035801f5ca6d1fb5e6472993f4c5269faa",
+    "/src/gs25058/cr_RNE/covor_slam/scripts/explore/build_fire_suite.py": "aaac4d99aa626fdaa40626608541cbc7067671b176822b045a176634e5e5c04e",
+    "web/fire_buildings_3d.template.html": "371587756f05d350866aaaa959601311893980860d2bae0c6aea0a3080a3b860"
+  },
+  "validation": [
+    {
+      "id": "01_apartment",
+      "passed": true,
+      "triangles": 24596,
+      "components": 2069
+    },
+    {
+      "id": "02_school",
+      "passed": true,
+      "triangles": 44700,
+      "components": 3750
+    },
+    {
+      "id": "03_office",
+      "passed": true,
+      "triangles": 42868,
+      "components": 3602
+    },
+    {
+      "id": "04_hotel",
+      "passed": true,
+      "triangles": 40228,
+      "components": 3382
+    },
+    {
+      "id": "05_clinic",
+      "passed": true,
+      "triangles": 23648,
+      "components": 1990
+    },
+    {
+      "id": "06_retail",
+      "passed": true,
+      "triangles": 28052,
+      "components": 2362
+    },
+    {
+      "id": "07_workshop",
+      "passed": true,
+      "triangles": 22892,
+      "components": 1932
+    },
+    {
+      "id": "08_dormitory",
+      "passed": true,
+      "triangles": 40288,
+      "components": 3387
+    },
+    {
+      "id": "09_duplex",
+      "passed": true,
+      "triangles": 24488,
+      "components": 2060
+    },
+    {
+      "id": "10_library",
+      "passed": true,
+      "triangles": 41724,
+      "components": 3507
+    }
+  ]
+}

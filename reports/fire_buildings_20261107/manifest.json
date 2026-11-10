@@ -1,0 +1,71 @@
+{
+  "source_sha256": {
+    "covor/explore/fire_buildings.py": "16fd3ca2ffbdae21fd8cb5b6846efa829fb8c916d0f118600ff5b472817db82d",
+    "/src/gs25058/cr_RNE/covor_slam/scripts/explore/build_fire_suite.py": "f08d088257632d9d241d402cd5449d38f71b8e4dc6463f2a6b82facb1a61cc07",
+    "web/fire_buildings_3d.template.html": "8a448281cfaddae167fe5d91a1cb5a87e0d41366da7c163b4b30e70873acc78e"
+  },
+  "validation": [
+    {
+      "id": "01_apartment",
+      "passed": true,
+      "triangles": 24596,
+      "components": 2011
+    },
+    {
+      "id": "02_school",
+      "passed": true,
+      "triangles": 44700,
+      "components": 3663
+    },
+    {
+      "id": "03_office",
+      "passed": true,
+      "triangles": 42868,
+      "components": 3515
+    },
+    {
+      "id": "04_hotel",
+      "passed": true,
+      "triangles": 40228,
+      "components": 3295
+    },
+    {
+      "id": "05_clinic",
+      "passed": true,
+      "triangles": 23648,
+      "components": 1932
+    },
+    {
+      "id": "06_retail",
+      "passed": true,
+      "triangles": 28052,
+      "components": 2304
+    },
+    {
+      "id": "07_workshop",
+      "passed": true,
+      "triangles": 22892,
+      "components": 1874
+    },
+    {
+      "id": "08_dormitory",
+      "passed": true,
+      "triangles": 40288,
+      "components": 3300
+    },
+    {
+      "id": "09_duplex",
+      "passed": true,
+      "triangles": 24488,
+      "components": 2002
+    },
+    {
+      "id": "10_library",
+      "passed": true,
+      "triangles": 41724,
+      "components": 3420
+    }
+  ],
+  "editorial_note": "Library description corrected to describe open reading bays; all collision geometry unchanged.",
+  "viewer_note": "Bookmark hash navigation refreshed without changing scene geometry."
+}

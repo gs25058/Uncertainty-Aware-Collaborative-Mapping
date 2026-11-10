@@ -1,0 +1,10 @@
+test_checkpoint_restore_materializes_before_advancing_tick (__main__.ExactNativeControls) ... ok
+test_distinct_float_bit_patterns_and_mutated_inputs_do_not_alias (__main__.ExactNativeControls) ... ok
+test_guard_and_off_sensor_consumers_get_latest_sensor_map (__main__.ExactNativeControls) ... ok
+test_native_results_bitwise_exact_and_outputs_independent (__main__.ExactNativeControls) ... ok
+test_unused_dense_reads_keep_native_updates_and_all_consumers_fresh (__main__.ExactNativeControls) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.013s
+
+OK

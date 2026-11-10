@@ -1,0 +1,13 @@
+test_depth_arrays_integrate_with_xy_and_hit_height_and_roundtrip (__main__.StairEvidence) ... ok
+test_high_surface_scatter_requires_more_evidence (__main__.StairEvidence) ... ok
+test_measured_165mm_steps_cross_two_voxel_rows (__main__.StairEvidence) ... ok
+test_observed_graph_crop_preserves_nodes_paths_and_impacts (__main__.StairEvidence) ... ok
+test_observed_xy_is_exported_and_intruding_hits_are_not_erased (__main__.StairEvidence) ... ok
+test_tall_observed_wall_is_not_resolved_as_a_floor (__main__.StairEvidence) ... ok
+test_unconfirmed_surfaces_never_clear_body (__main__.StairEvidence) ... ok
+test_unknown_band_still_blocks (__main__.StairEvidence) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 2.195s
+
+OK

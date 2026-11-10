@@ -1,0 +1,10 @@
+{
+  "scenes": 10,
+  "old_sources": 25,
+  "new_sources": 75,
+  "old_projected_source_area_m2": 38.699999999999996,
+  "new_projected_source_area_m2": 311.65250000000003,
+  "all_geometry_and_targets_unchanged": true,
+  "observation_error_profile_changed": false,
+  "sensor_fire_coupling_implemented": false
+}

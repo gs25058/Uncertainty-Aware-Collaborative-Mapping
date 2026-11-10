@@ -1,0 +1,21 @@
+{
+  "deterministic_replay": true,
+  "normal_core_conditional_valid": 0.9960091865716603,
+  "generated_normal_standardized_std": 0.9991314826438115,
+  "behind_wall_excluded": true,
+  "binocular_occlusion_excluded": true,
+  "invalid_carves_no_free": true,
+  "no_SGBM_created": true,
+  "no_PNG_created": true,
+  "public_keys": [
+    "T",
+    "Z",
+    "drone_id",
+    "sigma",
+    "teammates",
+    "time",
+    "valid"
+  ],
+  "far_range_boundary_note": "z=6m positive Gaussian errors become invalid; no clipping to boundary",
+  "normal_core_definition": "geometric, incidence<75deg, non-edge, .8<Z<5.8"
+}

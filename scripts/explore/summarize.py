@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """Final goal-level denominators, paired deltas and deterministic replay lists."""
 import sys,csv,json,argparse
+csv.field_size_limit(sys.maxsize)
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
 import numpy as np

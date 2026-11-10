@@ -1,0 +1,3 @@
+run,travel_distance,captures,entry_wait_drone_seconds,reservation_wait_planned,reservation_wait_executed,failed_drones,geometry_collisions,teammate_collision_drone_events,planning_failures,safe_hover_events,completed_replan_stops,joint_stop_requests,no_joint_safe_stop,fallback_seconds,wall_seconds,render_wall,smoke_wall,sgbm_wall,mapping_wall
+scene1_seed0_clean_entry,19.203533118768114,212,12.0,1.5,1.5,0,0,0,7,0,1,1,0,16.0,198.43736319197342,58.876290349755436,0.0,0.0,33.10542929545045
+scene1_seed0_clean_unknown,19.203533118768114,212,12.0,1.5,1.5,0,0,0,7,0,1,1,0,0.0,194.63558254321106,54.86338982800953,0.0,0.0,30.82440903619863

@@ -1,0 +1,20 @@
+{
+  "time": "2026-11-09T23:39:38.011916+09:00",
+  "checks": [
+    {
+      "test": "test_depth_observation.py",
+      "returncode": 0,
+      "source_sha256": "7f291c4d30bd7b9e10976e46eca4401ee84213ffc2dd9de22fe12d5b0114ec3b"
+    },
+    {
+      "test": "test_fire_multistorey.py",
+      "returncode": 0,
+      "source_sha256": "c2e9f1ccf1ee5de1844229b3bdf7e6d85ebbe4fad80fac997e903d0302cfe3ed"
+    },
+    {
+      "test": "test_fire_recon_scene.py",
+      "returncode": 0,
+      "source_sha256": "0f9fc18d73c4892660a2dc1d172c44c3dfb3f535bc19b7f332a90cdebfaea469"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "runs": 6,
+  "trajectory_rows_checked": 1176,
+  "camera_rate_limits": true,
+  "per_run": [
+    {
+      "variant": "guarded_rate",
+      "trajectory_position_checks": 196,
+      "continuous_brakes": 0,
+      "persistent_failed_drones": 0,
+      "guard_stop_events": 0,
+      "guard_failures": 0
+    },
+    {
+      "variant": "guarded_unknown",
+      "trajectory_position_checks": 196,
+      "continuous_brakes": 0,
+      "persistent_failed_drones": 0,
+      "guard_stop_events": 0,
+      "guard_failures": 0
+    },
+    {
+      "variant": "heading_rate",
+      "trajectory_position_checks": 196,
+      "continuous_brakes": 0,
+      "persistent_failed_drones": 0,
+      "guard_stop_events": 0,
+      "guard_failures": 0
+    },
+    {
+      "variant": "heading_unknown",
+      "trajectory_position_checks": 196,
+      "continuous_brakes": 0,
+      "persistent_failed_drones": 0,
+      "guard_stop_events": 0,
+      "guard_failures": 0
+    },
+    {
+      "variant": "look_step_rate",
+      "trajectory_position_checks": 196,
+      "continuous_brakes": 0,
+      "persistent_failed_drones": 0,
+      "guard_stop_events": 0,
+      "guard_failures": 0
+    },
+    {
+      "variant": "look_step_unknown",
+      "trajectory_position_checks": 196,
+      "continuous_brakes": 0,
+      "persistent_failed_drones": 0,
+      "guard_stop_events": 1,
+      "guard_failures": 0
+    }
+  ]
+}

@@ -8,7 +8,7 @@ from covor.explore.runner import run,validate_building,csv_write,write_json
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--config',default='configs/closed_loop_v4_20261106.json');p.add_argument('--out',required=True)
-    p.add_argument('--stage',choices=['truth','single','pair','run','matrix'],default='run');p.add_argument('--scene',type=int,default=11);p.add_argument('--seed',type=int,default=0);p.add_argument('--policy',choices=['unknown','entry'],default='unknown');p.add_argument('--condition',choices=['clean','smoke'],default='clean');p.add_argument('--duration',type=float);p.add_argument('--ideal-depth',action='store_true')
+    p.add_argument('--stage',choices=['truth','single','pair','run','matrix'],default='run');p.add_argument('--scene',type=int,default=11);p.add_argument('--seed',type=int,default=0);p.add_argument('--policy',choices=['unknown','entry'],default='unknown');p.add_argument('--condition',choices=['clean','smoke','weak','medium','strong'],default='clean');p.add_argument('--duration',type=float);p.add_argument('--ideal-depth',action='store_true')
     a=p.parse_args();cfg=json.load(open(a.config));out=Path(a.out)
     if a.stage=='truth':
         for seed in cfg['scene_seeds']:print(seed,validate_building(cfg,seed,out/f'scene{seed}'),flush=True)

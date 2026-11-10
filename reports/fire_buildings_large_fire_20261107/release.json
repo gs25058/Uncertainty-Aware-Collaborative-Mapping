@@ -1,0 +1,15 @@
+{
+  "source_sha256": {
+    "covor/explore/fire_buildings.py": "dfc5fd369c416f4785a17f2ba9bfb4035801f5ca6d1fb5e6472993f4c5269faa",
+    "/src/gs25058/cr_RNE/covor_slam/scripts/explore/build_fire_suite.py": "aaac4d99aa626fdaa40626608541cbc7067671b176822b045a176634e5e5c04e",
+    "web/fire_buildings_3d.template.html": "371587756f05d350866aaaa959601311893980860d2bae0c6aea0a3080a3b860",
+    "scripts/explore/check_fire_viewer.py": "a52aa6f8c65d1176d2113ffa19cfc958ac0242b9c9e4efb0e1a1b126dddbbac9",
+    "scripts/explore/package_fire_suite.py": "1b712964943fd3fc6404bedfdd85458569671c1800b7b66500e10d1955fca8ab",
+    "scripts/explore/verify_fire_scale.py": "007f3530eb3362ea54dacd339c6bddde4580a77636bf3946d6abb1eb571fe38f"
+  },
+  "viewer_sha256": "ef2e2c5216e763add7151cfac8e9c59a6febff9eafd9678c46c293da0c2e0c24",
+  "archive_sha256": "5c4f36d37226a2eb8c75e980f1c7b460dc68a175536d528b9864292bce6f557e",
+  "scenes": 10,
+  "mesh_validation": "10/10 passed",
+  "browser_validation": "10/10; all floors and controls passed"
+}

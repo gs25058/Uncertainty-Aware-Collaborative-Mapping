@@ -1,0 +1,4 @@
+variant,scene,seed,condition,valid_delta,blocked_delta,invalid_delta,false_blocked_delta,unknown_delta
+bridge,1,0,clean,0.0,0.0,0.0,0.0,0.0
+mission,1,0,clean,0.0,0.0,0.0,0.0,0.0
+balanced,1,0,clean,0.0,0.0,0.0,0.0,0.0

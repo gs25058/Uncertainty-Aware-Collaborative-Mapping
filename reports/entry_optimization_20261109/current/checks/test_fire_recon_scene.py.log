@@ -1,0 +1,11 @@
+/src/gs25058/cr_RNE/covor_slam/tests/test_fire_recon_scene.py:11: ResourceWarning: unclosed file <_io.TextIOWrapper name='configs/fire_recon_20261107.preflight.json' mode='r' encoding='UTF-8'>
+  cls.cfg=json.load(open('configs/fire_recon_20261107.preflight.json'));cls.original=FireWorld(1,cls.cfg);cls.repaired=ReconFireWorld(1,cls.cfg)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+test_landings_bridge_the_actual_hole_and_first_tread (__main__.RepairTests) ... ok
+test_original_geometry_and_fire_sources_are_preserved (__main__.RepairTests) ... ok
+test_repair_is_opt_in_and_reference_key_changes (__main__.RepairTests) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 30.609s
+
+OK

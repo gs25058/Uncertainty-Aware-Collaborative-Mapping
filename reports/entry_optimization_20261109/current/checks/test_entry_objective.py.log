@@ -1,0 +1,19 @@
+test_anchored_planning_relaxes_unknown_length_without_confirming_serial_gaps (__main__.EntryObjectiveControls) ... ok
+test_complementary_foot_body_views_and_duplicate_queries (__main__.EntryObjectiveControls) ... ok
+test_contact_readiness_matches_the_actual_height_bound_not_votes_alone (__main__.EntryObjectiveControls) ... ok
+test_deadline_discount_applies_to_entry_value_only (__main__.EntryObjectiveControls) ... ok
+test_foot_quality_uses_public_sigma_and_sampling_not_true_error (__main__.EntryObjectiveControls) ... ok
+test_full_body_query_finds_unknown_side_cell_missed_by_centreline (__main__.EntryObjectiveControls) ... ok
+test_known_support_does_not_require_observing_it_again (__main__.EntryObjectiveControls) ... ok
+test_new_task_scores_and_unknown_union_do_not_duplicate (__main__.EntryObjectiveControls) ... ok
+test_observed_wall_occludes_even_important_enquiry (__main__.EntryObjectiveControls) ... ok
+test_only_foot_view_cannot_complete_both_missing_requirements (__main__.EntryObjectiveControls) ... ok
+test_past_repeated_views_reduce_entry_value_without_changing_unknown (__main__.EntryObjectiveControls) ... ok
+test_same_observation_repeated_is_deterministic_and_no_truth_api (__main__.EntryObjectiveControls) ... ok
+test_serial_sections_have_a_single_goal_progress_budget (__main__.EntryObjectiveControls) ... ok
+test_useful_progress_exists_without_a_complete_possible_goal_route (__main__.EntryObjectiveControls) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.702s
+
+OK

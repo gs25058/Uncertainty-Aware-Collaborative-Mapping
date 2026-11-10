@@ -17,6 +17,8 @@ def visible_fraction(cells,labels,ijk,res,T,sd,support_surface=False,points_over
     distance=np.linalg.norm(points-T[:3,3],axis=1)
     w,h=sd.calib.size
     seen=(z>.3)&(distance<=max_range_m)&(u>=0)&(u<w)&(v>=0)&(v<h)
+    if getattr(sd,'range_metric',None)=='optical_z':
+        seen=(z>=sd.cfg.z_min)&(z<=sd.cfg.z_max)&(u>=0)&(u<w)&(v>=0)&(v<h)
     uncertain=np.zeros(len(cells),bool)
     # Exact voxel DDA excludes the endpoint: an occupied support can be seen,
     # while any observed occupied voxel before it occludes it.

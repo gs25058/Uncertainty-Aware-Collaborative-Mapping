@@ -1,0 +1,14 @@
+{
+  "all_exact": true,
+  "fields": {
+    "support": true,
+    "height": true,
+    "evidence": true,
+    "votes": true,
+    "height_std": true,
+    "surface_x": true,
+    "surface_y": true
+  },
+  "actual_frames": 2836,
+  "no_geometry_read_during_fusion": true
+}

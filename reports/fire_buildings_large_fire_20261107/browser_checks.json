@@ -1,0 +1,67 @@
+{
+  "scenes": 10,
+  "runtime_errors": [],
+  "checks": [
+    {
+      "scene": "01_apartment",
+      "floors_tested": 2,
+      "webgl_error": 0,
+      "controls_tested": true
+    },
+    {
+      "scene": "02_school",
+      "floors_tested": 3,
+      "webgl_error": 0,
+      "controls_tested": true
+    },
+    {
+      "scene": "03_office",
+      "floors_tested": 3,
+      "webgl_error": 0,
+      "controls_tested": true
+    },
+    {
+      "scene": "04_hotel",
+      "floors_tested": 3,
+      "webgl_error": 0,
+      "controls_tested": true
+    },
+    {
+      "scene": "05_clinic",
+      "floors_tested": 2,
+      "webgl_error": 0,
+      "controls_tested": true
+    },
+    {
+      "scene": "06_retail",
+      "floors_tested": 2,
+      "webgl_error": 0,
+      "controls_tested": true
+    },
+    {
+      "scene": "07_workshop",
+      "floors_tested": 2,
+      "webgl_error": 0,
+      "controls_tested": true
+    },
+    {
+      "scene": "08_dormitory",
+      "floors_tested": 3,
+      "webgl_error": 0,
+      "controls_tested": true
+    },
+    {
+      "scene": "09_duplex",
+      "floors_tested": 2,
+      "webgl_error": 0,
+      "controls_tested": true
+    },
+    {
+      "scene": "10_library",
+      "floors_tested": 3,
+      "webgl_error": 0,
+      "controls_tested": true
+    }
+  ],
+  "hash_navigation_after_refresh": true
+}

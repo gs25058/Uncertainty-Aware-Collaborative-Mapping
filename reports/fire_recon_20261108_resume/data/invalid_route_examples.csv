@@ -1,0 +1,4 @@
+run,goal,reference_reachable,verdict,path_status,path_reason,first_failure
+scene4_seed0_clean_unknown,L1_0_1,True,passable,invalid,mesh_body_collision,"[12.548266410827637, 7.324999786376953, 0.20775312418341635]"
+scene5_seed0_clean_unknown,L1_1_2,True,passable,invalid,mesh_body_collision,"[12.520000492686506, 11.205586601257325, 0.20268559130132197]"
+scene5_seed0_strong_unknown,L1_0_3,True,passable,invalid,mesh_body_collision,"[17.848245025634764, 8.604639793395997, 1.3669858262896537]"

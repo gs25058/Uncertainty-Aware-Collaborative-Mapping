@@ -1,0 +1,18 @@
+[
+  {
+    "case": "scene4_seed0_clean_unknown",
+    "trajectory_position_checks": 2190,
+    "continuous_brakes": 0,
+    "persistent_failed_drones": 1,
+    "guard_stop_events": 0,
+    "guard_failures": 0
+  },
+  {
+    "case": "scene1_seed0_clean_entry",
+    "trajectory_position_checks": 2820,
+    "continuous_brakes": 0,
+    "persistent_failed_drones": 0,
+    "guard_stop_events": 0,
+    "guard_failures": 0
+  }
+]

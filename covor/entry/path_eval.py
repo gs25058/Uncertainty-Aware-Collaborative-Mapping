@@ -59,6 +59,15 @@ class ReferenceValidator:
         tol=self.cfg.support_tolerance_m
         start=np.asarray(p)+[0,0,tol]
         hit=self._cast(start[None,:],np.array([[0.,0.,-1.]]))[0]
+        # A float32 ray exactly on a stair triangle edge can miss both faces.
+        # Resolve only within the already declared numerical contact tolerance;
+        # this does not snap a foot across a geometric gap or to another stair.
+        eps=self.cfg.contact_epsilon_m
+        if eps>0 and (not np.isfinite(hit) or hit>2*tol+1e-6):
+            origins=start+np.array([[eps,0,0],[-eps,0,0],[0,eps,0],[0,-eps,0]])
+            alternatives=self._cast(origins,np.tile([0.,0.,-1.],(4,1)))
+            valid=alternatives[np.isfinite(alternatives)&(alternatives<=2*tol+1e-6)]
+            if len(valid):hit=valid[np.argmin(abs(valid-tol))]
         ind=np.floor((np.asarray(p)-[0,0,self.res*.5])/self.res).astype(int)-self.ijk
         inside=((ind>=0)&(ind<np.array(self.lab.shape))).all()
         value=int(self.lab[tuple(ind)]) if inside else 0

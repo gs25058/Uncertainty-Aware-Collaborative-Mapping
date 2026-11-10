@@ -19,6 +19,9 @@ def camera_pose(position,yaw,pitch,baseline=.08):
 
 class Sensor:
     def __init__(self,building,cfg,seed,condition):
+        from .depth_observation import backend_name,RayDepthSensor
+        if backend_name(cfg)!='legacy_sgbm':
+            self.impl=RayDepthSensor(building,cfg,seed,condition);self.sd=self.impl.sd;return
         c=cfg['sensor'];K=np.array([[c['fx'],0,c['width']/2],[0,c['fx'],c['height']/2],[0,0,1.]])
         cal=StereoCalib(K,np.zeros(4),K.copy(),np.zeros(4),np.eye(3),np.array([-c['baseline'],0.,0.]),(c['width'],c['height']))
         scene,textures=building.render_scene()
@@ -26,7 +29,8 @@ class Sensor:
         self.sd=self.renderer.sd;self.radius=cfg['motion']['radius'];self.condition=condition
         self.smoke=SmokeCfg(**cfg['smoke'],seed=int(seed));self.cfg=c
 
-    def capture(self,position,yaw,pitch,t,teammates,directory,frame_id,ideal=False):
+    def capture(self,position,yaw,pitch,t,teammates,directory,frame_id,ideal=False,drone_id=0):
+        if hasattr(self,'impl'):return self.impl.capture(position,yaw,pitch,t,teammates,directory,frame_id,ideal,drone_id)
         start=perf_counter();T=camera_pose(position,yaw,pitch,self.cfg['baseline']);images=[];depths=[]
         for dx in (0.,self.cfg['baseline']):
             z,extra=self.renderer._cast(T,dx,True)
@@ -60,13 +64,24 @@ class SharedMap:
     def __init__(self,prior,cfg):
         self.res=cfg['map_resolution'];bounds=np.asarray(prior['bounds']);self.ijk=np.floor(bounds[0]/self.res).astype(int)
         self.shape=tuple(np.ceil(bounds[1]/self.res).astype(int)-self.ijk)
-        self.builder=OccupancyBuilder(OccCfg(resolution=self.res,weighted=False,max_ray=cfg['sensor']['range'],dyn_radius=cfg['sensor']['teammate_exclusion_radius']))
-        self.surfaces=SupportSurfaces(SurfaceCfg(resolution=self.res,max_range_m=cfg['sensor']['range'],dyn_radius_m=cfg['sensor']['teammate_exclusion_radius']))
+        from .depth_observation import ray_limit
+        max_ray=ray_limit(cfg)
+        self.builder=OccupancyBuilder(OccCfg(resolution=self.res,weighted=False,max_ray=max_ray,dyn_radius=cfg['sensor']['teammate_exclusion_radius']))
+        self.surfaces=SupportSurfaces(SurfaceCfg(resolution=self.res,max_range_m=max_ray,dyn_radius_m=cfg['sensor']['teammate_exclusion_radius'],return_height_std=cfg['human'].get('resolve_low_surface_band',False),return_surface_xy=cfg['human'].get('use_surface_xy',False)))
         self.prior=prior;self.version=0
+        self.hit_height={} if cfg['human'].get('use_surface_xy') else None
 
     def integrate(self,sd,T,z,sz,valid,teammates):
         P,s=sd.backproject(z,sz,valid,downsample=2)
         self.builder.integrate_frame(T,0.,P,s,teammates=teammates)
+        if self.hit_height is not None and len(P):
+            world=P@T[:3,:3].T+T[:3,3];distance=np.linalg.norm(world-T[:3,3],axis=1)
+            keep=(distance>self.res)&(distance<=self.builder.cfg.max_ray)
+            for mate in (() if teammates is None else teammates):keep&=np.linalg.norm(world-mate,axis=1)>=self.builder.cfg.dyn_radius
+            world=world[keep]
+            if len(world):
+                keys,inv=np.unique(np.floor(world/self.res).astype(int),axis=0,return_inverse=True);high=np.full(len(keys),-np.inf);np.maximum.at(high,inv,world[:,2])
+                for key,height_max in zip(map(tuple,keys),high):self.hit_height[key]=max(self.hit_height.get(key,-np.inf),float(height_max))
         n=self.surfaces.integrate(sd,z,sz,valid,T,teammates=teammates);self.version+=1
         return n
 
@@ -80,7 +95,13 @@ class SharedMap:
         lo,hi=np.array(self.prior['launch_free_box'])
         a=np.ceil(lo/self.res-.5).astype(int)-self.ijk;b=np.floor(hi/self.res-.5).astype(int)-self.ijk+1
         sl=tuple(slice(x,y) for x,y in zip(a,b));part=lab[sl];part[part==0]=1
-        return lab,self.surfaces.dense(self.ijk,self.shape)
+        layer=self.surfaces.dense(self.ijk,self.shape)
+        if self.hit_height is not None:
+            upper=np.full(self.shape,np.nan,np.float32)
+            if self.hit_height:
+                keys=np.array(list(self.hit_height))-self.ijk;values=np.array(list(self.hit_height.values()));inside=((keys>=0)&(keys<self.shape)).all(1);upper[tuple(keys[inside].T)]=values[inside]
+            layer['hit_z_max']=upper
+        return lab,layer
 
     def save(self,path,lab=None,layer=None):
         if lab is None:lab,layer=self.dense()

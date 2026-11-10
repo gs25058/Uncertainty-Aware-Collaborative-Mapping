@@ -1,0 +1,14 @@
+test_camera_visibility_respects_effective_range (__main__.ClosedLoopControls) ... ok
+test_duplicate_goal_count_and_complementary_votes (__main__.ClosedLoopControls) ... ok
+test_entry_graph_refreshes_on_map_version_before_assignment (__main__.ClosedLoopControls) ... ok
+test_independent_geometry_has_all_fixed_cases (__main__.ClosedLoopControls) ... ok
+test_map_only_policy_interface (__main__.ClosedLoopControls) ... ok
+test_native_fuel_limits_and_endpoints (__main__.ClosedLoopControls) ... ok
+test_stopping_midroute_cannot_break_an_existing_reservation (__main__.ClosedLoopControls) ... ok
+test_swap_between_samples_is_reserved (__main__.ClosedLoopControls) ... ok
+test_unknown_not_flight_free_and_wall_no_shortcut (__main__.ClosedLoopControls) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 10.260s
+
+OK
