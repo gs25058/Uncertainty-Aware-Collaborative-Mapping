@@ -250,6 +250,21 @@ def run(cfg,scene_seed,run_seed,condition,policy,out,n_drones=None,duration=None
                         value=gain/max(cost,cfg['sensor_period'])
                     assignment.append(dict(time=t,drone=i,candidate=c['id'],policy=policy,gain=gain,cost_seconds=cost,score=value,fallback=fallback,path_length=float(np.linalg.norm(np.diff(np.asarray(path),axis=0),axis=1).sum()),reservation_wait=tr.wait))
                     offers.append((value,-cost,c['id'],it,tr,fallback))
+                if offers and policy=='entry' and cfg['utility'].get('entry_objective')=='completion_opportunity_v1':
+                    # Do not activate a task mode because an UNREACHABLE view
+                    # had a score. Test only feasible, on-time offers for this
+                    # actual drone after reservations and pending assignments.
+                    gains=[marginal(o[3],'entry',allocated,cfg,True)[0] if -o[1]<=T-t else 0. for o in offers]
+                    intervene=any(g>0 for g in gains);updated=[]
+                    for row,o,gain in zip(assignment[-len(offers):],offers,gains):
+                        _,negative_cost,cid,item,tr,_=o;cost=-negative_cost
+                        if intervene:value=gain/max(cost,cfg['sensor_period']) if gain>0 else -1e9;fallback=False
+                        else:
+                            gain,_=marginal(item,'unknown',allocated,cfg,False);value=gain-cfg['utility']['time_penalty']*cost;fallback=True
+                        row.update(gain=gain,score=value,fallback=fallback)
+                        updated.append((value,negative_cost,cid,item,tr,fallback))
+                    offers=updated
+                    events.append(dict(time=t,drone=i,event='completion_opportunity_gate',feasible_completion_offers=sum(g>0 for g in gains),exploration_fallback=not intervene))
                 if offers:
                     value,_,cid,it,tr,fallback=sorted(offers,key=lambda x:(-x[0],-x[1],x[2]))[0]
                     s['traj']=tr;s['task_until']=max(t+cfg['minimum_task_time'],tr.end+cfg['capture_dwell']+cfg['motion'].get('camera_setup_seconds',0.));s['last_assignment']=t;s['item']=it;allocated.append(it)

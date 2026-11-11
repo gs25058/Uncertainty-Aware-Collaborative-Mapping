@@ -153,7 +153,7 @@ class TaskContext:
             ready=self.layer['support'][tuple(q[ok].T)].copy()
             if self.opt.get('contact_aware_foot_evidence'):
                 upper=h+3*self.layer['height_std'][tuple(q[ok].T)]+.005
-                hits=self.layer['hit_z_max'][tuple(q[ok].T)]+.005
+                hits=self.layer.get('contact_hit_z_max',self.layer['hit_z_max'])[tuple(q[ok].T)]+.005
                 upper=np.maximum(upper,np.where(self.lab[tuple(q[ok].T)]==1,-np.inf,hits))
                 ready&=upper<=feet[ok,2]+.023+1e-9
                 near&=abs(h-feet[ok,2])<.03
@@ -199,6 +199,9 @@ class TaskContext:
         relax the consecutive-unknown budget, and charge for missing evidence.
         No graph/map/decision hypotheses are committed to the actual system.
         """
+        if self.opt.get('route_local_repairs'):
+            from .route_tasks import build_route_tasks
+            return build_route_tasks(self,analysis)
         g=analysis['graph'];starts=g.mission_nodes(self.prior['entry'],True) or g.mission_nodes(self.prior['entry'])
         targets={goal['id']:set(g.mission_nodes(goal)) for goal in self.prior['goals'] if self.decisions[goal['id']]['verdict']=='unverified'}
         targets={key:value for key,value in targets.items() if value};lookup={}
@@ -351,6 +354,19 @@ def pooled_target_values(items,cfg):
             if pred['kind']=='anchored':anchored[goal]=anchored.get(goal,0.)+weight*min(1.,value)
             else:targets[goal]=max(targets.get(goal,0.),opt.get(pred['kind']+'_weight',0.)*weight*value)
     for goal,value in anchored.items():targets[goal]=max(targets.get(goal,0.),opt.get('anchored_weight',0.)*min(1.,value))
+    if opt.get('serial_repair_potential'):
+        from .route_tasks import serial_values
+        counts={g:n for item in items for g,n in item.get('serial_sections',{}).items()}
+        serial=serial_values(queries,counts,eta)
+        # Replace the old arithmetic progress budget, not add a second credit.
+        for goal,value in serial.items():
+            nonroute=max([opt.get('completion_weight',0.)*item.get('task_channels',{}).get('completion',{}).get(goal,0.)*item.get('view_novelty',1.) for item in items]+[0.])
+            for pred in queries.values():
+                if pred['kind']=='anchored' or goal not in pred['goals']:continue
+                f=float(np.mean(pred['foot']));b=float(np.mean(pred['body']))
+                gain=max(0.,min(f,b)-min(pred['foot_before'],pred['body_before']))+eta*max(0.,(f+b-pred['foot_before']-pred['body_before'])/2)
+                nonroute=max(nonroute,opt.get(pred['kind']+'_weight',0.)*pred['goals'][goal]*gain)
+            targets[goal]=max(nonroute,opt.get('anchored_weight',0.)*value)
     return targets
 
 
@@ -360,6 +376,9 @@ def joint_marginal(item,allocated,cfg):
 
 
 def augment(scored,analysis,lab,layer,ijk,res,sd,cfg,prior):
+    if cfg['utility'].get('entry_objective')=='completion_opportunity_v1':
+        from .completion_opportunity import augment as completion_augment
+        return completion_augment(scored,analysis,lab,layer,ijk,res,sd,cfg,prior)
     context=analysis.get('_task_context')
     if context is None:
         context=TaskContext(analysis,lab,layer,ijk,res,cfg,prior);analysis['_task_context']=context
@@ -391,6 +410,7 @@ def augment(scored,analysis,lab,layer,ijk,res,sd,cfg,prior):
         item['targets']={g:v*novelty for g,v in targets.items()};item['task_channels']=channels;item['view_novelty']=novelty
         item['objective_diagnostics']=dict(version=cfg['utility']['entry_objective'],queries=len(context.queries),hypothesis='coarse unknown-permitted task potential; not a confirmed human route',channels=channels,contributions=contributions,view_novelty=novelty,nearby_past_view_seconds=nearby,anchored_planning=getattr(context,'soft_route_stats',{}))
         if opt.get('joint_evidence'):
+            item['serial_sections']=getattr(context,'serial_sections',{})
             predictions={}
             for query in context.queries:
                 kind='boundary' if query.kind=='entry' else query.kind

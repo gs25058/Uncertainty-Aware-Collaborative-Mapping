@@ -181,7 +181,8 @@ class DecisionGraph:
         if use_surface_xy and support_layer is not None and 'hit_z_max' in support_layer:
             # The mixed foot voxel may also contain a protruding rail/riser.
             # A low planar patch alone cannot erase those observed endpoints.
-            hit_upper=np.where(self.lab==FREE,-np.inf,support_layer['hit_z_max']+.005)
+            contact_hits=support_layer.get('contact_hit_z_max',support_layer['hit_z_max'])
+            hit_upper=np.where(self.lab==FREE,-np.inf,contact_hits+.005)
             upper=np.maximum(support_layer['height']+3*support_layer['height_std']+.005,hit_upper)
             contact_clear=np.isfinite(upper)&(upper<=self.foot_z+1e-9)
             self.cp[~contact_clear]=-1;self.cw[~contact_clear]=-1
@@ -294,7 +295,7 @@ class DecisionGraph:
             if not ok or (confirmed_only and deps):continue
             yield v,length,tuple(sorted(deps))
 
-    def search(self,start_nodes,confirmed_only=False,closed=None,target_nodes=None):
+    def search(self,start_nodes,confirmed_only=False,closed=None,target_nodes=None,node_penalty=None):
         """Dijkstra; optional targets stop at the cheapest requested goal.
 
         Without targets the complete reached set is preserved for area/cut
@@ -322,6 +323,7 @@ class DecisionGraph:
                 if nr>limit:continue
                 if self.confirmed[tuple(self.xyz[v])]:nr=0
                 cost=length*max(self.node_factor[v],self.node_factor[u])
+                if node_penalty is not None:cost*=1+max(node_penalty[u],node_penalty[v])
                 rise=(abs(self.node_height[v]-self.node_height[u])
                       if self.surface_geometry else abs(self.xyz[v,2]-self.xyz[u,2])*self.res)
                 cost+=self.body.c_rise*rise

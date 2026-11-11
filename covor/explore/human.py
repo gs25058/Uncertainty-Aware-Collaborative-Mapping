@@ -8,7 +8,7 @@ from covor.entry.traverse import TravCfg
 from covor.entry.path_eval import motion_path
 
 
-def relaxed_certificate(lab,layer,ijk,res,entry,goal,body,graph=None,context=None):
+def relaxed_certificate(lab,layer,ijk,res,entry,goal,body,graph=None,context=None,complete_goal=False):
     """More permissive 3D graph: unlimited unknown runs, all unknown supports.
 
     Diagonal corner and minimum-width transitions are relaxed (never tightened).
@@ -20,8 +20,8 @@ def relaxed_certificate(lab,layer,ijk,res,entry,goal,body,graph=None,context=Non
         x=(np.arange(lab.shape[0])+ijk[0]+.5)*res;y=(np.arange(lab.shape[1])+ijk[1]+.5)*res
         z=layer['height']+.025
         return (x[:,None,None]>=x0)&(x[:,None,None]<=x1)&(y[None,:,None]>=y0)&(y[None,:,None]<=y1)&(z>=z0)&(z<=z1)&layer['support']
-    start=mask_region(entry);dest=mask_region(goal)
-    if not start.any() or not dest.any():return None
+    start=mask_region(entry);observed_dest=mask_region(goal)
+    if not start.any() or (not complete_goal and not observed_dest.any()):return None
     cached=context.get('possible') if context is not None else None
     levels=range(max(0,lab.shape[2]-body.rows(body.h_crawl)))
     certificate_body=replace(body,step=float(np.ceil(body.step/res)*res)) if graph is not None else body
@@ -35,6 +35,21 @@ def relaxed_certificate(lab,layer,ijk,res,entry,goal,body,graph=None,context=Non
         off=getattr(graph,'map_offset',np.zeros(3,int));sl=tuple(slice(int(a),int(a+n)) for a,n in zip(off,graph.lab.shape))
         possible[sl]|=graph.possible
     if context is not None:context['possible']=possible
+    dest=observed_dest
+    if complete_goal:
+        # An observed enclosing cut can establish non-reachability without
+        # first flying inside a sealed room. Conversely, an enclosed observed
+        # patch must NOT stand in for the whole target region. Include EVERY
+        # allowed unknown support hypothesis in the public arrival region.
+        x0,y0,x1,y1=goal['xy_bounds'];z0,z1=goal['floor_z_bounds']
+        bounds0=np.asarray(ijk)*res;bounds1=(np.asarray(ijk)+lab.shape)*res
+        if x0<bounds0[0] or y0<bounds0[1] or x1>bounds1[0] or y1>bounds1[1] or z0<bounds0[2] or z1>bounds1[2]:return None
+        x=(np.arange(lab.shape[0])+ijk[0]+.5)*res
+        y=(np.arange(lab.shape[1])+ijk[1]+.5)*res
+        z=(np.arange(lab.shape[2])+ijk[2])*res
+        region=(x[:,None,None]>=x0)&(x[:,None,None]<=x1)&(y[None,:,None]>=y0)&(y[None,:,None]<=y1)&(z[None,None,:]<=z1)&(z[None,None,:]+res>=z0)
+        dest=observed_dest|(region&possible)
+        if not dest.any():return None  # missing floor alone is not blockage
     step=int(np.floor(body.step/res+1e-9))
     # step=1 is too restrictive for quantised supports near a bin edge. Admit
     # 2 rows as a RELAXATION for the certificate; no false blocked from rounding.
@@ -44,10 +59,11 @@ def relaxed_certificate(lab,layer,ijk,res,entry,goal,body,graph=None,context=Non
     seen=ndimage.binary_propagation(dest&possible,structure=structure,mask=possible)
     if (seen&start).any():return None
     if seen[0].any() or seen[-1].any() or seen[:,0].any() or seen[:,-1].any():return None
+    if complete_goal and (seen[:,:,0].any() or seen[:,:,-body.rows(body.h_crawl)-1:].any()):return None
     if not seen.any():return None
     # Observed closed cut: every absent candidate neighbouring reached nodes
     # must have actual measured evidence, not just a missing support hypothesis.
-    return dict(reason='observed_3d_enclosure_even_with_unlimited_unknown_connections',relaxation='2-row step, diagonal corners relaxed',reachable_relaxed_nodes=int(seen.sum()))
+    return dict(reason='observed_3d_cut_over_all_goal_hypotheses' if complete_goal else 'observed_3d_enclosure_even_with_unlimited_unknown_connections',relaxation='2-row step, diagonal corners relaxed',reachable_relaxed_nodes=int(seen.sum()),**(dict(goal_hypothesis_nodes=int(dest.sum()),observed_goal_support_nodes=int(observed_dest.sum())) if complete_goal else {}))
 
 
 class Human:
@@ -66,14 +82,18 @@ class Human:
         g=DecisionGraph(graph_lab,graph_ijk,self.res,body=self.body,support_layer=graph_layer,surface_geometry=True,foot_contact_offset=self.cfg['human']['foot_contact_offset'],resolve_low_surface_band=self.cfg['human'].get('resolve_low_surface_band',False),use_surface_xy=self.cfg['human'].get('use_surface_xy',False))
         g.map_offset=offset
         starts=g.mission_nodes(self.prior['entry'],True);ps=g.mission_nodes(self.prior['entry'])
-        confirmed=g.search(starts,True);possible=g.reachability_search(ps) if len(g.xyz) else dict(best={},parent={},via={},dist={})
+        route_penalty=None
+        if self.cfg['human'].get('observed_route_quality_weight',0):
+            from .route_quality import observed_node_penalty
+            route_penalty=observed_node_penalty(g,self.cfg['human']['observed_route_quality_weight'])
+        confirmed=g.search(starts,True,node_penalty=route_penalty);possible=g.reachability_search(ps) if len(g.xyz) else dict(best={},parent={},via={},dist={})
         decisions=[];dependencies={};certificate_context={}
         for goal in self.prior['goals']:
             path,_=g.path(confirmed,g.mission_nodes(goal,True));hyp,deps=g.path(possible,g.mission_nodes(goal))
             proof=None
             if path:verdict='passable';reason='measured_support_and_body'
             else:
-                proof=relaxed_certificate(lab,layer,ijk,self.res,self.prior['entry'],goal,self.body,g if self.cfg['human'].get('resolve_low_surface_band') else None,certificate_context) if starts and not hyp else None
+                proof=relaxed_certificate(lab,layer,ijk,self.res,self.prior['entry'],goal,self.body,g if self.cfg['human'].get('resolve_low_surface_band') else None,certificate_context,complete_goal=self.cfg['human'].get('full_goal_cut_certificate',False)) if starts and not hyp else None
                 verdict='blocked' if proof else 'unverified'
                 reason=proof['reason'] if proof else ('entry_support_or_body_unconfirmed' if not starts else 'incomplete_support_body_or_connections')
             decisions.append(dict(goal=goal['id'],verdict=verdict,reason=reason,path=motion_path(path),possible_path=hyp,uncertain_segments=deps,certificate=proof))

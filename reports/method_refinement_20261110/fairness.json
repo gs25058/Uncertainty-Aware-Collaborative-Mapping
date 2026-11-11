@@ -1,0 +1,1840 @@
+{
+  "paired_cases": 8,
+  "identical_initial_map_and_states": true,
+  "identical_first_candidate_pools": true,
+  "cases": [
+    {
+      "variant": "unknown_common",
+      "scene": 0,
+      "condition": "clean",
+      "first_assignment_time": 180.25,
+      "candidate_pool_sha256": "ef84d13f6201a223604cafceb20978901055bbcd7b1e1cdac1d83c1326789118",
+      "initial_map_hashes": {
+        "labels": "62b4be750afec6355dbe7fbdf9e76ddc93f8f3014d18df032156608056d200a2",
+        "support": "7a712a722a15f226e050813e5708b01c4e2d73922931b2cda6cfebe9090beee8",
+        "height": "aa3540b628e1fcc8c59c4e14f9cf13fde8f864faad9c3c25544a24393c6b08e2",
+        "evidence": "cf46a8b62861d6bef313b1e0cfbbf8df89c274d7bef78632f5c41620c6cd21ed",
+        "votes": "c4224594788b1bdb00eba6fd90d5ccfc5fc75c390eafd0a531d077855655c780",
+        "height_std": "ca3c55e0ad98305adf4240f7a6c72016f9647384f2855ebc6d32621219465d8f",
+        "surface_x": "27ef52e59aebd3d634d139856765ba5b7d6881c791bfd3ce062b464e194ae815",
+        "surface_y": "4b62e563ad9bfe431190c7fc4cf5df2740470a0671cdabae33e006bc56b5f3d4",
+        "hit_z_max": "aa7b056f7f5b37ddc063b3cba6eb8f8ff68e9b42838a5c19be82cd832d72aa9b"
+      },
+      "initial_states": [
+        {
+          "drone": 0,
+          "position": [
+            12.45,
+            10.25,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 180.18465843842648,
+          "trajectory": null
+        },
+        {
+          "drone": 1,
+          "position": [
+            11.650000000000002,
+            -0.15,
+            0.45
+          ],
+          "failed": false,
+          "task_until": 184.25,
+          "trajectory": null
+        },
+        {
+          "drone": 2,
+          "position": [
+            8.945973453946072,
+            2.8513421820179765,
+            2.0500000000000003
+          ],
+          "failed": true,
+          "task_until": 37.390737823781265,
+          "trajectory": null
+        },
+        {
+          "drone": 3,
+          "position": [
+            16.05,
+            7.05,
+            2.45
+          ],
+          "failed": false,
+          "task_until": 184.12132034355963,
+          "trajectory": null
+        }
+      ]
+    },
+    {
+      "variant": "precision_common",
+      "scene": 0,
+      "condition": "clean",
+      "first_assignment_time": 180.25,
+      "candidate_pool_sha256": "ef84d13f6201a223604cafceb20978901055bbcd7b1e1cdac1d83c1326789118",
+      "initial_map_hashes": {
+        "labels": "62b4be750afec6355dbe7fbdf9e76ddc93f8f3014d18df032156608056d200a2",
+        "support": "7a712a722a15f226e050813e5708b01c4e2d73922931b2cda6cfebe9090beee8",
+        "height": "aa3540b628e1fcc8c59c4e14f9cf13fde8f864faad9c3c25544a24393c6b08e2",
+        "evidence": "cf46a8b62861d6bef313b1e0cfbbf8df89c274d7bef78632f5c41620c6cd21ed",
+        "votes": "c4224594788b1bdb00eba6fd90d5ccfc5fc75c390eafd0a531d077855655c780",
+        "height_std": "ca3c55e0ad98305adf4240f7a6c72016f9647384f2855ebc6d32621219465d8f",
+        "surface_x": "27ef52e59aebd3d634d139856765ba5b7d6881c791bfd3ce062b464e194ae815",
+        "surface_y": "4b62e563ad9bfe431190c7fc4cf5df2740470a0671cdabae33e006bc56b5f3d4",
+        "hit_z_max": "aa7b056f7f5b37ddc063b3cba6eb8f8ff68e9b42838a5c19be82cd832d72aa9b"
+      },
+      "initial_states": [
+        {
+          "drone": 0,
+          "position": [
+            12.45,
+            10.25,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 180.18465843842648,
+          "trajectory": null
+        },
+        {
+          "drone": 1,
+          "position": [
+            11.650000000000002,
+            -0.15,
+            0.45
+          ],
+          "failed": false,
+          "task_until": 184.25,
+          "trajectory": null
+        },
+        {
+          "drone": 2,
+          "position": [
+            8.945973453946072,
+            2.8513421820179765,
+            2.0500000000000003
+          ],
+          "failed": true,
+          "task_until": 37.390737823781265,
+          "trajectory": null
+        },
+        {
+          "drone": 3,
+          "position": [
+            16.05,
+            7.05,
+            2.45
+          ],
+          "failed": false,
+          "task_until": 184.12132034355963,
+          "trajectory": null
+        }
+      ]
+    },
+    {
+      "variant": "repair_common",
+      "scene": 0,
+      "condition": "clean",
+      "first_assignment_time": 180.25,
+      "candidate_pool_sha256": "ef84d13f6201a223604cafceb20978901055bbcd7b1e1cdac1d83c1326789118",
+      "initial_map_hashes": {
+        "labels": "62b4be750afec6355dbe7fbdf9e76ddc93f8f3014d18df032156608056d200a2",
+        "support": "7a712a722a15f226e050813e5708b01c4e2d73922931b2cda6cfebe9090beee8",
+        "height": "aa3540b628e1fcc8c59c4e14f9cf13fde8f864faad9c3c25544a24393c6b08e2",
+        "evidence": "cf46a8b62861d6bef313b1e0cfbbf8df89c274d7bef78632f5c41620c6cd21ed",
+        "votes": "c4224594788b1bdb00eba6fd90d5ccfc5fc75c390eafd0a531d077855655c780",
+        "height_std": "ca3c55e0ad98305adf4240f7a6c72016f9647384f2855ebc6d32621219465d8f",
+        "surface_x": "27ef52e59aebd3d634d139856765ba5b7d6881c791bfd3ce062b464e194ae815",
+        "surface_y": "4b62e563ad9bfe431190c7fc4cf5df2740470a0671cdabae33e006bc56b5f3d4",
+        "hit_z_max": "aa7b056f7f5b37ddc063b3cba6eb8f8ff68e9b42838a5c19be82cd832d72aa9b"
+      },
+      "initial_states": [
+        {
+          "drone": 0,
+          "position": [
+            12.45,
+            10.25,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 180.18465843842648,
+          "trajectory": null
+        },
+        {
+          "drone": 1,
+          "position": [
+            11.650000000000002,
+            -0.15,
+            0.45
+          ],
+          "failed": false,
+          "task_until": 184.25,
+          "trajectory": null
+        },
+        {
+          "drone": 2,
+          "position": [
+            8.945973453946072,
+            2.8513421820179765,
+            2.0500000000000003
+          ],
+          "failed": true,
+          "task_until": 37.390737823781265,
+          "trajectory": null
+        },
+        {
+          "drone": 3,
+          "position": [
+            16.05,
+            7.05,
+            2.45
+          ],
+          "failed": false,
+          "task_until": 184.12132034355963,
+          "trajectory": null
+        }
+      ]
+    },
+    {
+      "variant": "unknown_common",
+      "scene": 0,
+      "condition": "strong",
+      "first_assignment_time": 180.25,
+      "candidate_pool_sha256": "351a7c99b3bf3ef38ed6efa1d3e11806170eee6c26eefd5bb18bafdb760726aa",
+      "initial_map_hashes": {
+        "labels": "2bf002e9ecb3fb351243ee65b8a51aea44fc25fdc31ed2117e909f7b5efbd5cc",
+        "support": "4b7656030b5f8979993f1a4864e108232b12c1251dabb05560d6568465f5cd8e",
+        "height": "f9c6ec96ba65cacdf64c6e1f38c65ed9150694d305c01eec619859bf1d6ec0e5",
+        "evidence": "66f64b3af9f9adfeef1cb4e902bd999a347e3d0cac80e36e762bffc5382cabb4",
+        "votes": "479ef2d4684f65e27d6c0e2eea0de990bb56e0590033fa1cf5adada44cef6ed3",
+        "height_std": "3ae4d57b9f389eb3fec34c7401b2dab0c54d7b85982cc6cb81a8711a36d98fe0",
+        "surface_x": "0ed8710766101a55a88271b0b5ccfdd852eb74014d6996cc3f093376655be0f7",
+        "surface_y": "f77d20e595a892681d6b772d69039c17470fa39110cffe8ef4966308b899abca",
+        "hit_z_max": "9f062fc549323bb1f94ef450b50df717974f270f09549df4fae828d497654d1c"
+      },
+      "initial_states": [
+        {
+          "drone": 0,
+          "position": [
+            4.45,
+            8.65,
+            2.05
+          ],
+          "failed": false,
+          "task_until": 177.75,
+          "trajectory": null
+        },
+        {
+          "drone": 1,
+          "position": [
+            11.65,
+            -0.15,
+            0.45
+          ],
+          "failed": false,
+          "task_until": 176.601939910494,
+          "trajectory": null
+        },
+        {
+          "drone": 2,
+          "position": [
+            8.945973453946072,
+            2.8513421820179765,
+            2.0500000000000003
+          ],
+          "failed": true,
+          "task_until": 37.390737823781265,
+          "trajectory": null
+        },
+        {
+          "drone": 3,
+          "position": [
+            15.25,
+            0.25,
+            2.05
+          ],
+          "failed": false,
+          "task_until": 183.85551836438114,
+          "trajectory": null
+        }
+      ]
+    },
+    {
+      "variant": "precision_common",
+      "scene": 0,
+      "condition": "strong",
+      "first_assignment_time": 180.25,
+      "candidate_pool_sha256": "351a7c99b3bf3ef38ed6efa1d3e11806170eee6c26eefd5bb18bafdb760726aa",
+      "initial_map_hashes": {
+        "labels": "2bf002e9ecb3fb351243ee65b8a51aea44fc25fdc31ed2117e909f7b5efbd5cc",
+        "support": "4b7656030b5f8979993f1a4864e108232b12c1251dabb05560d6568465f5cd8e",
+        "height": "f9c6ec96ba65cacdf64c6e1f38c65ed9150694d305c01eec619859bf1d6ec0e5",
+        "evidence": "66f64b3af9f9adfeef1cb4e902bd999a347e3d0cac80e36e762bffc5382cabb4",
+        "votes": "479ef2d4684f65e27d6c0e2eea0de990bb56e0590033fa1cf5adada44cef6ed3",
+        "height_std": "3ae4d57b9f389eb3fec34c7401b2dab0c54d7b85982cc6cb81a8711a36d98fe0",
+        "surface_x": "0ed8710766101a55a88271b0b5ccfdd852eb74014d6996cc3f093376655be0f7",
+        "surface_y": "f77d20e595a892681d6b772d69039c17470fa39110cffe8ef4966308b899abca",
+        "hit_z_max": "9f062fc549323bb1f94ef450b50df717974f270f09549df4fae828d497654d1c"
+      },
+      "initial_states": [
+        {
+          "drone": 0,
+          "position": [
+            4.45,
+            8.65,
+            2.05
+          ],
+          "failed": false,
+          "task_until": 177.75,
+          "trajectory": null
+        },
+        {
+          "drone": 1,
+          "position": [
+            11.65,
+            -0.15,
+            0.45
+          ],
+          "failed": false,
+          "task_until": 176.601939910494,
+          "trajectory": null
+        },
+        {
+          "drone": 2,
+          "position": [
+            8.945973453946072,
+            2.8513421820179765,
+            2.0500000000000003
+          ],
+          "failed": true,
+          "task_until": 37.390737823781265,
+          "trajectory": null
+        },
+        {
+          "drone": 3,
+          "position": [
+            15.25,
+            0.25,
+            2.05
+          ],
+          "failed": false,
+          "task_until": 183.85551836438114,
+          "trajectory": null
+        }
+      ]
+    },
+    {
+      "variant": "repair_common",
+      "scene": 0,
+      "condition": "strong",
+      "first_assignment_time": 180.25,
+      "candidate_pool_sha256": "351a7c99b3bf3ef38ed6efa1d3e11806170eee6c26eefd5bb18bafdb760726aa",
+      "initial_map_hashes": {
+        "labels": "2bf002e9ecb3fb351243ee65b8a51aea44fc25fdc31ed2117e909f7b5efbd5cc",
+        "support": "4b7656030b5f8979993f1a4864e108232b12c1251dabb05560d6568465f5cd8e",
+        "height": "f9c6ec96ba65cacdf64c6e1f38c65ed9150694d305c01eec619859bf1d6ec0e5",
+        "evidence": "66f64b3af9f9adfeef1cb4e902bd999a347e3d0cac80e36e762bffc5382cabb4",
+        "votes": "479ef2d4684f65e27d6c0e2eea0de990bb56e0590033fa1cf5adada44cef6ed3",
+        "height_std": "3ae4d57b9f389eb3fec34c7401b2dab0c54d7b85982cc6cb81a8711a36d98fe0",
+        "surface_x": "0ed8710766101a55a88271b0b5ccfdd852eb74014d6996cc3f093376655be0f7",
+        "surface_y": "f77d20e595a892681d6b772d69039c17470fa39110cffe8ef4966308b899abca",
+        "hit_z_max": "9f062fc549323bb1f94ef450b50df717974f270f09549df4fae828d497654d1c"
+      },
+      "initial_states": [
+        {
+          "drone": 0,
+          "position": [
+            4.45,
+            8.65,
+            2.05
+          ],
+          "failed": false,
+          "task_until": 177.75,
+          "trajectory": null
+        },
+        {
+          "drone": 1,
+          "position": [
+            11.65,
+            -0.15,
+            0.45
+          ],
+          "failed": false,
+          "task_until": 176.601939910494,
+          "trajectory": null
+        },
+        {
+          "drone": 2,
+          "position": [
+            8.945973453946072,
+            2.8513421820179765,
+            2.0500000000000003
+          ],
+          "failed": true,
+          "task_until": 37.390737823781265,
+          "trajectory": null
+        },
+        {
+          "drone": 3,
+          "position": [
+            15.25,
+            0.25,
+            2.05
+          ],
+          "failed": false,
+          "task_until": 183.85551836438114,
+          "trajectory": null
+        }
+      ]
+    },
+    {
+      "variant": "unknown_common",
+      "scene": 1,
+      "condition": "clean",
+      "first_assignment_time": 180.25,
+      "candidate_pool_sha256": "ddd480ccb2dea5c9580db22ea0cf450fbeb3e4fd2d028a602a429c5ade7ae208",
+      "initial_map_hashes": {
+        "labels": "406c11a5f51cfde859fe08e95c8df1e294e19a6fd975b4e4b2c960d0705737bd",
+        "support": "64e56f8f432c00c99c2ac2362f8ce1111503a61cc4f3dec95aa839e732012772",
+        "height": "ba26809636f009c121e9307573fb14c99adcf7051d98028b8e9d9713706e03c8",
+        "evidence": "1f79b40b4b77dd8e38f0f7471ac508fa59e88ad56a2bc1b46953999831dad0db",
+        "votes": "89ec85e15d9178b51ff5da8c2688361a6280e427f46b600fbbe169e4edc335ee",
+        "height_std": "bc6813f83743b94f82ff078f27a26bca4f6a78d59a250a5a7b6c6ab715e0f077",
+        "surface_x": "a2c618734e7b115b56ca2678a86b37c83a498f028e935bc6ce8815b78a561cc9",
+        "surface_y": "6f6f2f8fb231ce96d5820e5de1ccdb1829575c4e81e277c4c7a5ddc832ab3257",
+        "hit_z_max": "9676947a37342359b189cc70f09e8bc85baa122c538c485223abfdf0ac65e61b"
+      },
+      "initial_states": [
+        {
+          "drone": 0,
+          "position": [
+            10.85,
+            5.05,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 177.9338117853212,
+          "trajectory": null
+        },
+        {
+          "drone": 1,
+          "position": [
+            9.25,
+            9.85,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 176.04669331122392,
+          "trajectory": null
+        },
+        {
+          "drone": 2,
+          "position": [
+            13.25,
+            1.45,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 181.3541019662497,
+          "trajectory": null
+        },
+        {
+          "drone": 3,
+          "position": [
+            11.65,
+            4.25,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 180.704163456598,
+          "trajectory": null
+        }
+      ]
+    },
+    {
+      "variant": "precision_common",
+      "scene": 1,
+      "condition": "clean",
+      "first_assignment_time": 180.25,
+      "candidate_pool_sha256": "ddd480ccb2dea5c9580db22ea0cf450fbeb3e4fd2d028a602a429c5ade7ae208",
+      "initial_map_hashes": {
+        "labels": "406c11a5f51cfde859fe08e95c8df1e294e19a6fd975b4e4b2c960d0705737bd",
+        "support": "64e56f8f432c00c99c2ac2362f8ce1111503a61cc4f3dec95aa839e732012772",
+        "height": "ba26809636f009c121e9307573fb14c99adcf7051d98028b8e9d9713706e03c8",
+        "evidence": "1f79b40b4b77dd8e38f0f7471ac508fa59e88ad56a2bc1b46953999831dad0db",
+        "votes": "89ec85e15d9178b51ff5da8c2688361a6280e427f46b600fbbe169e4edc335ee",
+        "height_std": "bc6813f83743b94f82ff078f27a26bca4f6a78d59a250a5a7b6c6ab715e0f077",
+        "surface_x": "a2c618734e7b115b56ca2678a86b37c83a498f028e935bc6ce8815b78a561cc9",
+        "surface_y": "6f6f2f8fb231ce96d5820e5de1ccdb1829575c4e81e277c4c7a5ddc832ab3257",
+        "hit_z_max": "9676947a37342359b189cc70f09e8bc85baa122c538c485223abfdf0ac65e61b"
+      },
+      "initial_states": [
+        {
+          "drone": 0,
+          "position": [
+            10.85,
+            5.05,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 177.9338117853212,
+          "trajectory": null
+        },
+        {
+          "drone": 1,
+          "position": [
+            9.25,
+            9.85,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 176.04669331122392,
+          "trajectory": null
+        },
+        {
+          "drone": 2,
+          "position": [
+            13.25,
+            1.45,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 181.3541019662497,
+          "trajectory": null
+        },
+        {
+          "drone": 3,
+          "position": [
+            11.65,
+            4.25,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 180.704163456598,
+          "trajectory": null
+        }
+      ]
+    },
+    {
+      "variant": "repair_common",
+      "scene": 1,
+      "condition": "clean",
+      "first_assignment_time": 180.25,
+      "candidate_pool_sha256": "ddd480ccb2dea5c9580db22ea0cf450fbeb3e4fd2d028a602a429c5ade7ae208",
+      "initial_map_hashes": {
+        "labels": "406c11a5f51cfde859fe08e95c8df1e294e19a6fd975b4e4b2c960d0705737bd",
+        "support": "64e56f8f432c00c99c2ac2362f8ce1111503a61cc4f3dec95aa839e732012772",
+        "height": "ba26809636f009c121e9307573fb14c99adcf7051d98028b8e9d9713706e03c8",
+        "evidence": "1f79b40b4b77dd8e38f0f7471ac508fa59e88ad56a2bc1b46953999831dad0db",
+        "votes": "89ec85e15d9178b51ff5da8c2688361a6280e427f46b600fbbe169e4edc335ee",
+        "height_std": "bc6813f83743b94f82ff078f27a26bca4f6a78d59a250a5a7b6c6ab715e0f077",
+        "surface_x": "a2c618734e7b115b56ca2678a86b37c83a498f028e935bc6ce8815b78a561cc9",
+        "surface_y": "6f6f2f8fb231ce96d5820e5de1ccdb1829575c4e81e277c4c7a5ddc832ab3257",
+        "hit_z_max": "9676947a37342359b189cc70f09e8bc85baa122c538c485223abfdf0ac65e61b"
+      },
+      "initial_states": [
+        {
+          "drone": 0,
+          "position": [
+            10.85,
+            5.05,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 177.9338117853212,
+          "trajectory": null
+        },
+        {
+          "drone": 1,
+          "position": [
+            9.25,
+            9.85,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 176.04669331122392,
+          "trajectory": null
+        },
+        {
+          "drone": 2,
+          "position": [
+            13.25,
+            1.45,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 181.3541019662497,
+          "trajectory": null
+        },
+        {
+          "drone": 3,
+          "position": [
+            11.65,
+            4.25,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 180.704163456598,
+          "trajectory": null
+        }
+      ]
+    },
+    {
+      "variant": "unknown_common",
+      "scene": 1,
+      "condition": "strong",
+      "first_assignment_time": 180.25,
+      "candidate_pool_sha256": "d85a7e54f352cbdd37de4da190ca3eda96068d3634893ff29134fe78d9f314a3",
+      "initial_map_hashes": {
+        "labels": "10fdbb666cb5b6cebd98561e209c7f2e75cf4307de39c44e54e18664973e636d",
+        "support": "785ff6823abf2612c647fbb83939b2359efd89fbfcaa640e4a8ce1d3d8fc3fdf",
+        "height": "96d135f4bc9e400c86618c18e8473090c5b4bcbf9d316c05570ce81782c46fdf",
+        "evidence": "93406fed91c9d968c3f9fc935edead2fafb9702ad7962ca5b525c4560cf55b5d",
+        "votes": "3b70c523aa6830aca0655d028569729640f399820defefeb6836f756196e9825",
+        "height_std": "28410f21035e7b3cb4e53655a525387eef64503802eb946637d973d58680bc6c",
+        "surface_x": "98b53c1b3569d1cd643cfb986810b4d5ecb80cd8cac99b880f9e71aa270a733a",
+        "surface_y": "1a7ac8523d87084bbaea7cd052e8c5c8b848a0d8f23b9993dbcedaa8b2f0ec21",
+        "hit_z_max": "3bd120a0ad3adda15a823c2c9b33b6333170f8e40232aebcbb1c4c3ba6ccff48"
+      },
+      "initial_states": [
+        {
+          "drone": 0,
+          "position": [
+            1.158997015428243,
+            10.756064617109882,
+            0.85
+          ],
+          "failed": true,
+          "task_until": 162.80477706395905,
+          "trajectory": null
+        },
+        {
+          "drone": 1,
+          "position": [
+            8.45,
+            2.25,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 176.96425485464647,
+          "trajectory": null
+        },
+        {
+          "drone": 2,
+          "position": [
+            15.25,
+            13.85,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 179.23997278397704,
+          "trajectory": null
+        },
+        {
+          "drone": 3,
+          "position": [
+            12.85,
+            3.05,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 168.75,
+          "trajectory": null
+        }
+      ]
+    },
+    {
+      "variant": "precision_common",
+      "scene": 1,
+      "condition": "strong",
+      "first_assignment_time": 180.25,
+      "candidate_pool_sha256": "d85a7e54f352cbdd37de4da190ca3eda96068d3634893ff29134fe78d9f314a3",
+      "initial_map_hashes": {
+        "labels": "10fdbb666cb5b6cebd98561e209c7f2e75cf4307de39c44e54e18664973e636d",
+        "support": "785ff6823abf2612c647fbb83939b2359efd89fbfcaa640e4a8ce1d3d8fc3fdf",
+        "height": "96d135f4bc9e400c86618c18e8473090c5b4bcbf9d316c05570ce81782c46fdf",
+        "evidence": "93406fed91c9d968c3f9fc935edead2fafb9702ad7962ca5b525c4560cf55b5d",
+        "votes": "3b70c523aa6830aca0655d028569729640f399820defefeb6836f756196e9825",
+        "height_std": "28410f21035e7b3cb4e53655a525387eef64503802eb946637d973d58680bc6c",
+        "surface_x": "98b53c1b3569d1cd643cfb986810b4d5ecb80cd8cac99b880f9e71aa270a733a",
+        "surface_y": "1a7ac8523d87084bbaea7cd052e8c5c8b848a0d8f23b9993dbcedaa8b2f0ec21",
+        "hit_z_max": "3bd120a0ad3adda15a823c2c9b33b6333170f8e40232aebcbb1c4c3ba6ccff48"
+      },
+      "initial_states": [
+        {
+          "drone": 0,
+          "position": [
+            1.158997015428243,
+            10.756064617109882,
+            0.85
+          ],
+          "failed": true,
+          "task_until": 162.80477706395905,
+          "trajectory": null
+        },
+        {
+          "drone": 1,
+          "position": [
+            8.45,
+            2.25,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 176.96425485464647,
+          "trajectory": null
+        },
+        {
+          "drone": 2,
+          "position": [
+            15.25,
+            13.85,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 179.23997278397704,
+          "trajectory": null
+        },
+        {
+          "drone": 3,
+          "position": [
+            12.85,
+            3.05,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 168.75,
+          "trajectory": null
+        }
+      ]
+    },
+    {
+      "variant": "repair_common",
+      "scene": 1,
+      "condition": "strong",
+      "first_assignment_time": 180.25,
+      "candidate_pool_sha256": "d85a7e54f352cbdd37de4da190ca3eda96068d3634893ff29134fe78d9f314a3",
+      "initial_map_hashes": {
+        "labels": "10fdbb666cb5b6cebd98561e209c7f2e75cf4307de39c44e54e18664973e636d",
+        "support": "785ff6823abf2612c647fbb83939b2359efd89fbfcaa640e4a8ce1d3d8fc3fdf",
+        "height": "96d135f4bc9e400c86618c18e8473090c5b4bcbf9d316c05570ce81782c46fdf",
+        "evidence": "93406fed91c9d968c3f9fc935edead2fafb9702ad7962ca5b525c4560cf55b5d",
+        "votes": "3b70c523aa6830aca0655d028569729640f399820defefeb6836f756196e9825",
+        "height_std": "28410f21035e7b3cb4e53655a525387eef64503802eb946637d973d58680bc6c",
+        "surface_x": "98b53c1b3569d1cd643cfb986810b4d5ecb80cd8cac99b880f9e71aa270a733a",
+        "surface_y": "1a7ac8523d87084bbaea7cd052e8c5c8b848a0d8f23b9993dbcedaa8b2f0ec21",
+        "hit_z_max": "3bd120a0ad3adda15a823c2c9b33b6333170f8e40232aebcbb1c4c3ba6ccff48"
+      },
+      "initial_states": [
+        {
+          "drone": 0,
+          "position": [
+            1.158997015428243,
+            10.756064617109882,
+            0.85
+          ],
+          "failed": true,
+          "task_until": 162.80477706395905,
+          "trajectory": null
+        },
+        {
+          "drone": 1,
+          "position": [
+            8.45,
+            2.25,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 176.96425485464647,
+          "trajectory": null
+        },
+        {
+          "drone": 2,
+          "position": [
+            15.25,
+            13.85,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 179.23997278397704,
+          "trajectory": null
+        },
+        {
+          "drone": 3,
+          "position": [
+            12.85,
+            3.05,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 168.75,
+          "trajectory": null
+        }
+      ]
+    },
+    {
+      "variant": "unknown_common",
+      "scene": 4,
+      "condition": "clean",
+      "first_assignment_time": 180.25,
+      "candidate_pool_sha256": "91025d690cd9d381c0659d0d0a29de10c6320412c155f13dcffc0707e451b7a5",
+      "initial_map_hashes": {
+        "labels": "27bfc013ad4c6b4a0918b10c743811ae29e75169f82852ef5058248953a1fa6b",
+        "support": "175b66f9e7441b7487641c098d8ab10956deb9984e583c40163f7ce153f8b02a",
+        "height": "f5157ac7fe332957ed894486dc24ca0bc2c9a49eede13745f72ded4326c4ca7c",
+        "evidence": "ecac0a3cafd0baf13f51fc1b755138a7ba251607042a38e4e4b49e1d96e4dd40",
+        "votes": "8d363f4a73a99995fa7ca0ac8108157c0f79f970907c1882a8fd74e663fe99ac",
+        "height_std": "ec8375a12136f34c55c17e01b81e0b8326936d6c9449d52194fb927545dfbf83",
+        "surface_x": "ca1a87565f2d791bd3db6486e16e6741b5ce405f15e63c2ff9b63f16a2860ab2",
+        "surface_y": "976db228a5f49d0adc533a161838e7b83b365e82784ede44fbc5485695f25b7c",
+        "hit_z_max": "5c91f31ea4f5eb7d771b474b92c2cc3598c1db535f1aa0c032ed103436ea40f8"
+      },
+      "initial_states": [
+        {
+          "drone": 0,
+          "position": [
+            16.45,
+            -0.55,
+            0.45
+          ],
+          "failed": false,
+          "task_until": 179.10115326251704,
+          "trajectory": null
+        },
+        {
+          "drone": 1,
+          "position": [
+            5.649999999999999,
+            7.850000000000001,
+            0.8500000000000014
+          ],
+          "failed": false,
+          "task_until": 184.25,
+          "trajectory": null
+        },
+        {
+          "drone": 2,
+          "position": [
+            10.05,
+            13.05,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 177.71823991997317,
+          "trajectory": null
+        },
+        {
+          "drone": 3,
+          "position": [
+            6.150039904796525,
+            9.450000000000001,
+            2.350001477955427
+          ],
+          "failed": false,
+          "task_until": 191.00793279009523,
+          "trajectory": {
+            "points": [
+              [
+                5.25,
+                9.45,
+                0.45
+              ],
+              [
+                6.15,
+                9.450000000000001,
+                2.35
+              ],
+              [
+                8.85,
+                9.45,
+                2.45
+              ]
+            ],
+            "durations": [
+              3.9419617578053705,
+              5.065971032289859
+            ],
+            "start": 176.0,
+            "wait": 0.0,
+            "end": 185.00793279009523,
+            "yaw": 7.853981633974483,
+            "pitch": -0.13750000000000007,
+            "dy": -1.0303768265243116,
+            "dp": -0.5125
+          }
+        }
+      ]
+    },
+    {
+      "variant": "precision_common",
+      "scene": 4,
+      "condition": "clean",
+      "first_assignment_time": 180.25,
+      "candidate_pool_sha256": "91025d690cd9d381c0659d0d0a29de10c6320412c155f13dcffc0707e451b7a5",
+      "initial_map_hashes": {
+        "labels": "27bfc013ad4c6b4a0918b10c743811ae29e75169f82852ef5058248953a1fa6b",
+        "support": "175b66f9e7441b7487641c098d8ab10956deb9984e583c40163f7ce153f8b02a",
+        "height": "f5157ac7fe332957ed894486dc24ca0bc2c9a49eede13745f72ded4326c4ca7c",
+        "evidence": "ecac0a3cafd0baf13f51fc1b755138a7ba251607042a38e4e4b49e1d96e4dd40",
+        "votes": "8d363f4a73a99995fa7ca0ac8108157c0f79f970907c1882a8fd74e663fe99ac",
+        "height_std": "ec8375a12136f34c55c17e01b81e0b8326936d6c9449d52194fb927545dfbf83",
+        "surface_x": "ca1a87565f2d791bd3db6486e16e6741b5ce405f15e63c2ff9b63f16a2860ab2",
+        "surface_y": "976db228a5f49d0adc533a161838e7b83b365e82784ede44fbc5485695f25b7c",
+        "hit_z_max": "5c91f31ea4f5eb7d771b474b92c2cc3598c1db535f1aa0c032ed103436ea40f8"
+      },
+      "initial_states": [
+        {
+          "drone": 0,
+          "position": [
+            16.45,
+            -0.55,
+            0.45
+          ],
+          "failed": false,
+          "task_until": 179.10115326251704,
+          "trajectory": null
+        },
+        {
+          "drone": 1,
+          "position": [
+            5.649999999999999,
+            7.850000000000001,
+            0.8500000000000014
+          ],
+          "failed": false,
+          "task_until": 184.25,
+          "trajectory": null
+        },
+        {
+          "drone": 2,
+          "position": [
+            10.05,
+            13.05,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 177.71823991997317,
+          "trajectory": null
+        },
+        {
+          "drone": 3,
+          "position": [
+            6.150039904796525,
+            9.450000000000001,
+            2.350001477955427
+          ],
+          "failed": false,
+          "task_until": 191.00793279009523,
+          "trajectory": {
+            "points": [
+              [
+                5.25,
+                9.45,
+                0.45
+              ],
+              [
+                6.15,
+                9.450000000000001,
+                2.35
+              ],
+              [
+                8.85,
+                9.45,
+                2.45
+              ]
+            ],
+            "durations": [
+              3.9419617578053705,
+              5.065971032289859
+            ],
+            "start": 176.0,
+            "wait": 0.0,
+            "end": 185.00793279009523,
+            "yaw": 7.853981633974483,
+            "pitch": -0.13750000000000007,
+            "dy": -1.0303768265243116,
+            "dp": -0.5125
+          }
+        }
+      ]
+    },
+    {
+      "variant": "repair_common",
+      "scene": 4,
+      "condition": "clean",
+      "first_assignment_time": 180.25,
+      "candidate_pool_sha256": "91025d690cd9d381c0659d0d0a29de10c6320412c155f13dcffc0707e451b7a5",
+      "initial_map_hashes": {
+        "labels": "27bfc013ad4c6b4a0918b10c743811ae29e75169f82852ef5058248953a1fa6b",
+        "support": "175b66f9e7441b7487641c098d8ab10956deb9984e583c40163f7ce153f8b02a",
+        "height": "f5157ac7fe332957ed894486dc24ca0bc2c9a49eede13745f72ded4326c4ca7c",
+        "evidence": "ecac0a3cafd0baf13f51fc1b755138a7ba251607042a38e4e4b49e1d96e4dd40",
+        "votes": "8d363f4a73a99995fa7ca0ac8108157c0f79f970907c1882a8fd74e663fe99ac",
+        "height_std": "ec8375a12136f34c55c17e01b81e0b8326936d6c9449d52194fb927545dfbf83",
+        "surface_x": "ca1a87565f2d791bd3db6486e16e6741b5ce405f15e63c2ff9b63f16a2860ab2",
+        "surface_y": "976db228a5f49d0adc533a161838e7b83b365e82784ede44fbc5485695f25b7c",
+        "hit_z_max": "5c91f31ea4f5eb7d771b474b92c2cc3598c1db535f1aa0c032ed103436ea40f8"
+      },
+      "initial_states": [
+        {
+          "drone": 0,
+          "position": [
+            16.45,
+            -0.55,
+            0.45
+          ],
+          "failed": false,
+          "task_until": 179.10115326251704,
+          "trajectory": null
+        },
+        {
+          "drone": 1,
+          "position": [
+            5.649999999999999,
+            7.850000000000001,
+            0.8500000000000014
+          ],
+          "failed": false,
+          "task_until": 184.25,
+          "trajectory": null
+        },
+        {
+          "drone": 2,
+          "position": [
+            10.05,
+            13.05,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 177.71823991997317,
+          "trajectory": null
+        },
+        {
+          "drone": 3,
+          "position": [
+            6.150039904796525,
+            9.450000000000001,
+            2.350001477955427
+          ],
+          "failed": false,
+          "task_until": 191.00793279009523,
+          "trajectory": {
+            "points": [
+              [
+                5.25,
+                9.45,
+                0.45
+              ],
+              [
+                6.15,
+                9.450000000000001,
+                2.35
+              ],
+              [
+                8.85,
+                9.45,
+                2.45
+              ]
+            ],
+            "durations": [
+              3.9419617578053705,
+              5.065971032289859
+            ],
+            "start": 176.0,
+            "wait": 0.0,
+            "end": 185.00793279009523,
+            "yaw": 7.853981633974483,
+            "pitch": -0.13750000000000007,
+            "dy": -1.0303768265243116,
+            "dp": -0.5125
+          }
+        }
+      ]
+    },
+    {
+      "variant": "unknown_common",
+      "scene": 4,
+      "condition": "strong",
+      "first_assignment_time": 180.25,
+      "candidate_pool_sha256": "ffc956718d656258a2feb2b285e8e20da269051108d5891666c6eab3181bfff5",
+      "initial_map_hashes": {
+        "labels": "5de5e968b3c9de316e266e639727740638f301d52d2944d5f849c70a9ba51672",
+        "support": "bdafd583fa8ad0317e4bdedf133f8c419438539677b57ccd019089a3042b4991",
+        "height": "4ad897f96409b375c341bfe78fe250dd70212d295c76ade64e39357b611564bd",
+        "evidence": "696f614b6de87086413f6dea955914e2a8664812ac3996070c98e6a83498e932",
+        "votes": "44246afa9fa07b4a8c0dc472e0223eea97c2f7b97973b0b474b0496d2f2f316b",
+        "height_std": "2edf40ce7ade13cac3f4832177533c3c6cf20e9b101397f61793bb8479551fa9",
+        "surface_x": "999722b59bca6b3968910ff6dc4ba7fe2e1791a835851f6f8bae7932ffc99629",
+        "surface_y": "d32ee9ee675682c0309488012af8ce1a678553c22b654e019d30e37be968afc0",
+        "hit_z_max": "56e867d65d41032cd5eab70eee82a04196f0c7c7d1c7a1fc58fe90698d508726"
+      },
+      "initial_states": [
+        {
+          "drone": 0,
+          "position": [
+            10.85,
+            1.45,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 183.37861505824887,
+          "trajectory": null
+        },
+        {
+          "drone": 1,
+          "position": [
+            11.65,
+            16.25,
+            2.45
+          ],
+          "failed": false,
+          "task_until": 177.75,
+          "trajectory": null
+        },
+        {
+          "drone": 2,
+          "position": [
+            0.45824348128558157,
+            10.280226098047132,
+            0.45
+          ],
+          "failed": false,
+          "task_until": 186.32443588262788,
+          "trajectory": {
+            "points": [
+              [
+                1.7500000000000036,
+                11.950000000000003,
+                0.45
+              ],
+              [
+                0.75,
+                11.350000000000001,
+                0.45
+              ],
+              [
+                0.45,
+                10.25,
+                0.45
+              ]
+            ],
+            "durations": [
+              2.1866069605669947,
+              2.137828922060886
+            ],
+            "start": 176.0,
+            "wait": 0.0,
+            "end": 180.32443588262788,
+            "yaw": -3.141592653589793,
+            "pitch": -0.13750000000000007,
+            "dy": -3.141592653589793,
+            "dp": -0.5125
+          }
+        },
+        {
+          "drone": 3,
+          "position": [
+            8.85,
+            5.85,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 183.364763854982,
+          "trajectory": null
+        }
+      ]
+    },
+    {
+      "variant": "precision_common",
+      "scene": 4,
+      "condition": "strong",
+      "first_assignment_time": 180.25,
+      "candidate_pool_sha256": "ffc956718d656258a2feb2b285e8e20da269051108d5891666c6eab3181bfff5",
+      "initial_map_hashes": {
+        "labels": "5de5e968b3c9de316e266e639727740638f301d52d2944d5f849c70a9ba51672",
+        "support": "bdafd583fa8ad0317e4bdedf133f8c419438539677b57ccd019089a3042b4991",
+        "height": "4ad897f96409b375c341bfe78fe250dd70212d295c76ade64e39357b611564bd",
+        "evidence": "696f614b6de87086413f6dea955914e2a8664812ac3996070c98e6a83498e932",
+        "votes": "44246afa9fa07b4a8c0dc472e0223eea97c2f7b97973b0b474b0496d2f2f316b",
+        "height_std": "2edf40ce7ade13cac3f4832177533c3c6cf20e9b101397f61793bb8479551fa9",
+        "surface_x": "999722b59bca6b3968910ff6dc4ba7fe2e1791a835851f6f8bae7932ffc99629",
+        "surface_y": "d32ee9ee675682c0309488012af8ce1a678553c22b654e019d30e37be968afc0",
+        "hit_z_max": "56e867d65d41032cd5eab70eee82a04196f0c7c7d1c7a1fc58fe90698d508726"
+      },
+      "initial_states": [
+        {
+          "drone": 0,
+          "position": [
+            10.85,
+            1.45,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 183.37861505824887,
+          "trajectory": null
+        },
+        {
+          "drone": 1,
+          "position": [
+            11.65,
+            16.25,
+            2.45
+          ],
+          "failed": false,
+          "task_until": 177.75,
+          "trajectory": null
+        },
+        {
+          "drone": 2,
+          "position": [
+            0.45824348128558157,
+            10.280226098047132,
+            0.45
+          ],
+          "failed": false,
+          "task_until": 186.32443588262788,
+          "trajectory": {
+            "points": [
+              [
+                1.7500000000000036,
+                11.950000000000003,
+                0.45
+              ],
+              [
+                0.75,
+                11.350000000000001,
+                0.45
+              ],
+              [
+                0.45,
+                10.25,
+                0.45
+              ]
+            ],
+            "durations": [
+              2.1866069605669947,
+              2.137828922060886
+            ],
+            "start": 176.0,
+            "wait": 0.0,
+            "end": 180.32443588262788,
+            "yaw": -3.141592653589793,
+            "pitch": -0.13750000000000007,
+            "dy": -3.141592653589793,
+            "dp": -0.5125
+          }
+        },
+        {
+          "drone": 3,
+          "position": [
+            8.85,
+            5.85,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 183.364763854982,
+          "trajectory": null
+        }
+      ]
+    },
+    {
+      "variant": "repair_common",
+      "scene": 4,
+      "condition": "strong",
+      "first_assignment_time": 180.25,
+      "candidate_pool_sha256": "ffc956718d656258a2feb2b285e8e20da269051108d5891666c6eab3181bfff5",
+      "initial_map_hashes": {
+        "labels": "5de5e968b3c9de316e266e639727740638f301d52d2944d5f849c70a9ba51672",
+        "support": "bdafd583fa8ad0317e4bdedf133f8c419438539677b57ccd019089a3042b4991",
+        "height": "4ad897f96409b375c341bfe78fe250dd70212d295c76ade64e39357b611564bd",
+        "evidence": "696f614b6de87086413f6dea955914e2a8664812ac3996070c98e6a83498e932",
+        "votes": "44246afa9fa07b4a8c0dc472e0223eea97c2f7b97973b0b474b0496d2f2f316b",
+        "height_std": "2edf40ce7ade13cac3f4832177533c3c6cf20e9b101397f61793bb8479551fa9",
+        "surface_x": "999722b59bca6b3968910ff6dc4ba7fe2e1791a835851f6f8bae7932ffc99629",
+        "surface_y": "d32ee9ee675682c0309488012af8ce1a678553c22b654e019d30e37be968afc0",
+        "hit_z_max": "56e867d65d41032cd5eab70eee82a04196f0c7c7d1c7a1fc58fe90698d508726"
+      },
+      "initial_states": [
+        {
+          "drone": 0,
+          "position": [
+            10.85,
+            1.45,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 183.37861505824887,
+          "trajectory": null
+        },
+        {
+          "drone": 1,
+          "position": [
+            11.65,
+            16.25,
+            2.45
+          ],
+          "failed": false,
+          "task_until": 177.75,
+          "trajectory": null
+        },
+        {
+          "drone": 2,
+          "position": [
+            0.45824348128558157,
+            10.280226098047132,
+            0.45
+          ],
+          "failed": false,
+          "task_until": 186.32443588262788,
+          "trajectory": {
+            "points": [
+              [
+                1.7500000000000036,
+                11.950000000000003,
+                0.45
+              ],
+              [
+                0.75,
+                11.350000000000001,
+                0.45
+              ],
+              [
+                0.45,
+                10.25,
+                0.45
+              ]
+            ],
+            "durations": [
+              2.1866069605669947,
+              2.137828922060886
+            ],
+            "start": 176.0,
+            "wait": 0.0,
+            "end": 180.32443588262788,
+            "yaw": -3.141592653589793,
+            "pitch": -0.13750000000000007,
+            "dy": -3.141592653589793,
+            "dp": -0.5125
+          }
+        },
+        {
+          "drone": 3,
+          "position": [
+            8.85,
+            5.85,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 183.364763854982,
+          "trajectory": null
+        }
+      ]
+    },
+    {
+      "variant": "unknown_common",
+      "scene": 8,
+      "condition": "clean",
+      "first_assignment_time": 180.25,
+      "candidate_pool_sha256": "f55b4da2db55bfdf3dd5bd15c19f8f53fa77da5a917ae7ad0d623e337a845552",
+      "initial_map_hashes": {
+        "labels": "ed86fb40f30c17757b13e26e0ea3c7933dce4ec927885613433d8d37798b336f",
+        "support": "a9c84919011f649a403f3fb8ba4693e64faca346257e6af23787bf096b062be7",
+        "height": "3dd6c9e9bbec83fb6de9d492bc7afe307cca2d8be39fbaa3b109c5188efdbd28",
+        "evidence": "f552917beae2711394edcc3d58c3677b4d4a229fca06f785f64b64a6bedbbb52",
+        "votes": "1c21ef9d2db8a3127340bbb32a1d403d3556f8c93ef641cf60524861b0513b52",
+        "height_std": "b58811ec2cdfdac6efb0299f68f5f0940867b1afc58542ab65ff309188c21403",
+        "surface_x": "a1d8bd78562e231ca4d50558e694dd365e31a20dd85f27f2c5c28a36ba3437b9",
+        "surface_y": "03a4acd3b8eb50cf45ef9e8d0fd18f65ace4de70f0f47c865498873e1ed05c39",
+        "hit_z_max": "c7cf441437924cbbaa4f8883fa1243eef4d8b6431d2c2b561c7e8fcf6f8718fa"
+      },
+      "initial_states": [
+        {
+          "drone": 0,
+          "position": [
+            7.65,
+            1.05,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 183.2408599168856,
+          "trajectory": null
+        },
+        {
+          "drone": 1,
+          "position": [
+            19.65,
+            11.85,
+            1.25
+          ],
+          "failed": false,
+          "task_until": 181.31264567055544,
+          "trajectory": null
+        },
+        {
+          "drone": 2,
+          "position": [
+            14.05,
+            7.85,
+            0.45
+          ],
+          "failed": false,
+          "task_until": 176.02593405285486,
+          "trajectory": null
+        },
+        {
+          "drone": 3,
+          "position": [
+            2.4499999999999957,
+            13.049999999999997,
+            2.8499999999999943
+          ],
+          "failed": false,
+          "task_until": 147.25,
+          "trajectory": null
+        }
+      ]
+    },
+    {
+      "variant": "precision_common",
+      "scene": 8,
+      "condition": "clean",
+      "first_assignment_time": 180.25,
+      "candidate_pool_sha256": "f55b4da2db55bfdf3dd5bd15c19f8f53fa77da5a917ae7ad0d623e337a845552",
+      "initial_map_hashes": {
+        "labels": "ed86fb40f30c17757b13e26e0ea3c7933dce4ec927885613433d8d37798b336f",
+        "support": "a9c84919011f649a403f3fb8ba4693e64faca346257e6af23787bf096b062be7",
+        "height": "3dd6c9e9bbec83fb6de9d492bc7afe307cca2d8be39fbaa3b109c5188efdbd28",
+        "evidence": "f552917beae2711394edcc3d58c3677b4d4a229fca06f785f64b64a6bedbbb52",
+        "votes": "1c21ef9d2db8a3127340bbb32a1d403d3556f8c93ef641cf60524861b0513b52",
+        "height_std": "b58811ec2cdfdac6efb0299f68f5f0940867b1afc58542ab65ff309188c21403",
+        "surface_x": "a1d8bd78562e231ca4d50558e694dd365e31a20dd85f27f2c5c28a36ba3437b9",
+        "surface_y": "03a4acd3b8eb50cf45ef9e8d0fd18f65ace4de70f0f47c865498873e1ed05c39",
+        "hit_z_max": "c7cf441437924cbbaa4f8883fa1243eef4d8b6431d2c2b561c7e8fcf6f8718fa"
+      },
+      "initial_states": [
+        {
+          "drone": 0,
+          "position": [
+            7.65,
+            1.05,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 183.2408599168856,
+          "trajectory": null
+        },
+        {
+          "drone": 1,
+          "position": [
+            19.65,
+            11.85,
+            1.25
+          ],
+          "failed": false,
+          "task_until": 181.31264567055544,
+          "trajectory": null
+        },
+        {
+          "drone": 2,
+          "position": [
+            14.05,
+            7.85,
+            0.45
+          ],
+          "failed": false,
+          "task_until": 176.02593405285486,
+          "trajectory": null
+        },
+        {
+          "drone": 3,
+          "position": [
+            2.4499999999999957,
+            13.049999999999997,
+            2.8499999999999943
+          ],
+          "failed": false,
+          "task_until": 147.25,
+          "trajectory": null
+        }
+      ]
+    },
+    {
+      "variant": "repair_common",
+      "scene": 8,
+      "condition": "clean",
+      "first_assignment_time": 180.25,
+      "candidate_pool_sha256": "f55b4da2db55bfdf3dd5bd15c19f8f53fa77da5a917ae7ad0d623e337a845552",
+      "initial_map_hashes": {
+        "labels": "ed86fb40f30c17757b13e26e0ea3c7933dce4ec927885613433d8d37798b336f",
+        "support": "a9c84919011f649a403f3fb8ba4693e64faca346257e6af23787bf096b062be7",
+        "height": "3dd6c9e9bbec83fb6de9d492bc7afe307cca2d8be39fbaa3b109c5188efdbd28",
+        "evidence": "f552917beae2711394edcc3d58c3677b4d4a229fca06f785f64b64a6bedbbb52",
+        "votes": "1c21ef9d2db8a3127340bbb32a1d403d3556f8c93ef641cf60524861b0513b52",
+        "height_std": "b58811ec2cdfdac6efb0299f68f5f0940867b1afc58542ab65ff309188c21403",
+        "surface_x": "a1d8bd78562e231ca4d50558e694dd365e31a20dd85f27f2c5c28a36ba3437b9",
+        "surface_y": "03a4acd3b8eb50cf45ef9e8d0fd18f65ace4de70f0f47c865498873e1ed05c39",
+        "hit_z_max": "c7cf441437924cbbaa4f8883fa1243eef4d8b6431d2c2b561c7e8fcf6f8718fa"
+      },
+      "initial_states": [
+        {
+          "drone": 0,
+          "position": [
+            7.65,
+            1.05,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 183.2408599168856,
+          "trajectory": null
+        },
+        {
+          "drone": 1,
+          "position": [
+            19.65,
+            11.85,
+            1.25
+          ],
+          "failed": false,
+          "task_until": 181.31264567055544,
+          "trajectory": null
+        },
+        {
+          "drone": 2,
+          "position": [
+            14.05,
+            7.85,
+            0.45
+          ],
+          "failed": false,
+          "task_until": 176.02593405285486,
+          "trajectory": null
+        },
+        {
+          "drone": 3,
+          "position": [
+            2.4499999999999957,
+            13.049999999999997,
+            2.8499999999999943
+          ],
+          "failed": false,
+          "task_until": 147.25,
+          "trajectory": null
+        }
+      ]
+    },
+    {
+      "variant": "unknown_common",
+      "scene": 8,
+      "condition": "strong",
+      "first_assignment_time": 180.25,
+      "candidate_pool_sha256": "9aacc79dfbcb92155cc75d13c46ed3ce377d756e65376078d08dea1f59b26d9d",
+      "initial_map_hashes": {
+        "labels": "68c0d2694f79b49b49870d1f363c0783833ee24cceeea0291aeda4905fb278c2",
+        "support": "e16ec50cf00279ab611745ffca6c33e7ea865e80e5cc941c7d42c7576fbb4183",
+        "height": "58c4eee6df38962bb68d93426a8dba077729988f38db1353399729fc0321c80c",
+        "evidence": "4e1cdf9e9aab3e34d0fb5b31ab06e3c829ef9cb73b711b4edaa2fd71a4ad1129",
+        "votes": "4fb6d74753fe1e6b0a4c377ecee7f8144f555c3d404116b9fa8b622293e62258",
+        "height_std": "4f01f615fcb999ef024d907707eb52ea588776234dea261c8c00fd5129670477",
+        "surface_x": "51e5c17982c3b4750077b09a47e671d889cf9e305ffb2a117e42780d9e9e3df9",
+        "surface_y": "ecf95b74608ba89f9578844f0e59574099484395313e01fab6ea7bbe6489990a",
+        "hit_z_max": "986cfa6dccc3499762f1279fcc6a39cfec507e532978c857fa0f3f6ea2edfd4b"
+      },
+      "initial_states": [
+        {
+          "drone": 0,
+          "position": [
+            19.15985529601177,
+            7.45,
+            5.5598552960117695
+          ],
+          "failed": false,
+          "task_until": 186.5568812688904,
+          "trajectory": {
+            "points": [
+              [
+                16.45,
+                9.85,
+                4.85
+              ],
+              [
+                17.25,
+                9.35,
+                4.8500000000000005
+              ],
+              [
+                17.25,
+                9.05,
+                4.8500000000000005
+              ],
+              [
+                19.150000000000002,
+                7.45,
+                5.550000000000001
+              ],
+              [
+                19.25,
+                7.45,
+                5.65
+              ]
+            ],
+            "durations": [
+              1.905637374677125,
+              1.074616210560773,
+              4.838807962711481,
+              0.7378197209410146
+            ],
+            "start": 172.0,
+            "wait": 0.0,
+            "end": 180.5568812688904,
+            "yaw": 0.9827937232473287,
+            "pitch": -0.03499999999999995,
+            "dy": -2.5535900500422253,
+            "dp": -0.6150000000000001
+          }
+        },
+        {
+          "drone": 1,
+          "position": [
+            6.45,
+            9.05,
+            0.45
+          ],
+          "failed": false,
+          "task_until": 107.75,
+          "trajectory": null
+        },
+        {
+          "drone": 2,
+          "position": [
+            4.45,
+            7.85,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 96.75,
+          "trajectory": null
+        },
+        {
+          "drone": 3,
+          "position": [
+            16.45,
+            11.45,
+            5.25
+          ],
+          "failed": false,
+          "task_until": 183.62094857990942,
+          "trajectory": null
+        }
+      ]
+    },
+    {
+      "variant": "precision_common",
+      "scene": 8,
+      "condition": "strong",
+      "first_assignment_time": 180.25,
+      "candidate_pool_sha256": "9aacc79dfbcb92155cc75d13c46ed3ce377d756e65376078d08dea1f59b26d9d",
+      "initial_map_hashes": {
+        "labels": "68c0d2694f79b49b49870d1f363c0783833ee24cceeea0291aeda4905fb278c2",
+        "support": "e16ec50cf00279ab611745ffca6c33e7ea865e80e5cc941c7d42c7576fbb4183",
+        "height": "58c4eee6df38962bb68d93426a8dba077729988f38db1353399729fc0321c80c",
+        "evidence": "4e1cdf9e9aab3e34d0fb5b31ab06e3c829ef9cb73b711b4edaa2fd71a4ad1129",
+        "votes": "4fb6d74753fe1e6b0a4c377ecee7f8144f555c3d404116b9fa8b622293e62258",
+        "height_std": "4f01f615fcb999ef024d907707eb52ea588776234dea261c8c00fd5129670477",
+        "surface_x": "51e5c17982c3b4750077b09a47e671d889cf9e305ffb2a117e42780d9e9e3df9",
+        "surface_y": "ecf95b74608ba89f9578844f0e59574099484395313e01fab6ea7bbe6489990a",
+        "hit_z_max": "986cfa6dccc3499762f1279fcc6a39cfec507e532978c857fa0f3f6ea2edfd4b"
+      },
+      "initial_states": [
+        {
+          "drone": 0,
+          "position": [
+            19.15985529601177,
+            7.45,
+            5.5598552960117695
+          ],
+          "failed": false,
+          "task_until": 186.5568812688904,
+          "trajectory": {
+            "points": [
+              [
+                16.45,
+                9.85,
+                4.85
+              ],
+              [
+                17.25,
+                9.35,
+                4.8500000000000005
+              ],
+              [
+                17.25,
+                9.05,
+                4.8500000000000005
+              ],
+              [
+                19.150000000000002,
+                7.45,
+                5.550000000000001
+              ],
+              [
+                19.25,
+                7.45,
+                5.65
+              ]
+            ],
+            "durations": [
+              1.905637374677125,
+              1.074616210560773,
+              4.838807962711481,
+              0.7378197209410146
+            ],
+            "start": 172.0,
+            "wait": 0.0,
+            "end": 180.5568812688904,
+            "yaw": 0.9827937232473287,
+            "pitch": -0.03499999999999995,
+            "dy": -2.5535900500422253,
+            "dp": -0.6150000000000001
+          }
+        },
+        {
+          "drone": 1,
+          "position": [
+            6.45,
+            9.05,
+            0.45
+          ],
+          "failed": false,
+          "task_until": 107.75,
+          "trajectory": null
+        },
+        {
+          "drone": 2,
+          "position": [
+            4.45,
+            7.85,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 96.75,
+          "trajectory": null
+        },
+        {
+          "drone": 3,
+          "position": [
+            16.45,
+            11.45,
+            5.25
+          ],
+          "failed": false,
+          "task_until": 183.62094857990942,
+          "trajectory": null
+        }
+      ]
+    },
+    {
+      "variant": "repair_common",
+      "scene": 8,
+      "condition": "strong",
+      "first_assignment_time": 180.25,
+      "candidate_pool_sha256": "9aacc79dfbcb92155cc75d13c46ed3ce377d756e65376078d08dea1f59b26d9d",
+      "initial_map_hashes": {
+        "labels": "68c0d2694f79b49b49870d1f363c0783833ee24cceeea0291aeda4905fb278c2",
+        "support": "e16ec50cf00279ab611745ffca6c33e7ea865e80e5cc941c7d42c7576fbb4183",
+        "height": "58c4eee6df38962bb68d93426a8dba077729988f38db1353399729fc0321c80c",
+        "evidence": "4e1cdf9e9aab3e34d0fb5b31ab06e3c829ef9cb73b711b4edaa2fd71a4ad1129",
+        "votes": "4fb6d74753fe1e6b0a4c377ecee7f8144f555c3d404116b9fa8b622293e62258",
+        "height_std": "4f01f615fcb999ef024d907707eb52ea588776234dea261c8c00fd5129670477",
+        "surface_x": "51e5c17982c3b4750077b09a47e671d889cf9e305ffb2a117e42780d9e9e3df9",
+        "surface_y": "ecf95b74608ba89f9578844f0e59574099484395313e01fab6ea7bbe6489990a",
+        "hit_z_max": "986cfa6dccc3499762f1279fcc6a39cfec507e532978c857fa0f3f6ea2edfd4b"
+      },
+      "initial_states": [
+        {
+          "drone": 0,
+          "position": [
+            19.15985529601177,
+            7.45,
+            5.5598552960117695
+          ],
+          "failed": false,
+          "task_until": 186.5568812688904,
+          "trajectory": {
+            "points": [
+              [
+                16.45,
+                9.85,
+                4.85
+              ],
+              [
+                17.25,
+                9.35,
+                4.8500000000000005
+              ],
+              [
+                17.25,
+                9.05,
+                4.8500000000000005
+              ],
+              [
+                19.150000000000002,
+                7.45,
+                5.550000000000001
+              ],
+              [
+                19.25,
+                7.45,
+                5.65
+              ]
+            ],
+            "durations": [
+              1.905637374677125,
+              1.074616210560773,
+              4.838807962711481,
+              0.7378197209410146
+            ],
+            "start": 172.0,
+            "wait": 0.0,
+            "end": 180.5568812688904,
+            "yaw": 0.9827937232473287,
+            "pitch": -0.03499999999999995,
+            "dy": -2.5535900500422253,
+            "dp": -0.6150000000000001
+          }
+        },
+        {
+          "drone": 1,
+          "position": [
+            6.45,
+            9.05,
+            0.45
+          ],
+          "failed": false,
+          "task_until": 107.75,
+          "trajectory": null
+        },
+        {
+          "drone": 2,
+          "position": [
+            4.45,
+            7.85,
+            2.85
+          ],
+          "failed": false,
+          "task_until": 96.75,
+          "trajectory": null
+        },
+        {
+          "drone": 3,
+          "position": [
+            16.45,
+            11.45,
+            5.25
+          ],
+          "failed": false,
+          "task_until": 183.62094857990942,
+          "trajectory": null
+        }
+      ]
+    }
+  ]
+}

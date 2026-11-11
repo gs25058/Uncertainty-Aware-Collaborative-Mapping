@@ -75,6 +75,15 @@ class DurableExecution:
             p=Path(__file__).with_name(name);self.sources[str(p)]=hashlib.sha256(p.read_bytes()).hexdigest()
         if cfg.get('utility',{}).get('entry_objective','legacy')!='legacy' or cfg.get('candidates',{}).get('body_reobserve_views'):
             p=Path(__file__).with_name('entry_objective.py');self.sources[str(p)]=hashlib.sha256(p.read_bytes()).hexdigest()
+        if cfg.get('utility',{}).get('task_progress',{}).get('route_local_repairs') or cfg.get('candidates',{}).get('evidence_query_profile',{}).get('route_local_repairs'):
+            p=Path(__file__).with_name('route_tasks.py');self.sources[str(p)]=hashlib.sha256(p.read_bytes()).hexdigest()
+        if cfg.get('human',{}).get('observed_route_quality_weight',0):
+            p=Path(__file__).with_name('route_quality.py');self.sources[str(p)]=hashlib.sha256(p.read_bytes()).hexdigest()
+        if cfg.get('human',{}).get('contact_xy_resolution'):
+            p=Path(__file__).with_name('contact_geometry.py');self.sources[str(p)]=hashlib.sha256(p.read_bytes()).hexdigest()
+        if cfg.get('utility',{}).get('entry_objective')=='completion_opportunity_v1':
+            for name in ('completion_opportunity.py','route_tasks.py'):
+                p=Path(__file__).with_name(name);self.sources[str(p)]=hashlib.sha256(p.read_bytes()).hexdigest()
         if cfg.get('candidates',{}).get('body_reobserve_views'):
             p=Path(__file__).with_name('candidate_views.py');self.sources[str(p)]=hashlib.sha256(p.read_bytes()).hexdigest()
         if cfg.get('motion',{}).get('controller')=='guarded_v1' or cfg.get('motion',{}).get('travel_facing_camera'):

@@ -70,6 +70,11 @@ class SharedMap:
         self.surfaces=SupportSurfaces(SurfaceCfg(resolution=self.res,max_range_m=max_ray,dyn_radius_m=cfg['sensor']['teammate_exclusion_radius'],return_height_std=cfg['human'].get('resolve_low_surface_band',False),return_surface_xy=cfg['human'].get('use_surface_xy',False)))
         self.prior=prior;self.version=0
         self.hit_height={} if cfg['human'].get('use_surface_xy') else None
+        self.contact_geometry=None
+        if cfg['human'].get('contact_xy_resolution'):
+            if not cfg['human'].get('use_surface_xy'):raise ValueError('local contact geometry requires measured surface XY')
+            from .contact_geometry import ContactGeometry
+            self.contact_geometry=ContactGeometry(self.res,cfg['human']['contact_xy_resolution'],cfg['human'].get('contact_query_radius',.01))
 
     def integrate(self,sd,T,z,sz,valid,teammates):
         P,s=sd.backproject(z,sz,valid,downsample=2)
@@ -79,6 +84,7 @@ class SharedMap:
             keep=(distance>self.res)&(distance<=self.builder.cfg.max_ray)
             for mate in (() if teammates is None else teammates):keep&=np.linalg.norm(world-mate,axis=1)>=self.builder.cfg.dyn_radius
             world=world[keep]
+            if self.contact_geometry is not None:self.contact_geometry.integrate_world(world)
             if len(world):
                 keys,inv=np.unique(np.floor(world/self.res).astype(int),axis=0,return_inverse=True);high=np.full(len(keys),-np.inf);np.maximum.at(high,inv,world[:,2])
                 for key,height_max in zip(map(tuple,keys),high):self.hit_height[key]=max(self.hit_height.get(key,-np.inf),float(height_max))
@@ -101,6 +107,7 @@ class SharedMap:
             if self.hit_height:
                 keys=np.array(list(self.hit_height))-self.ijk;values=np.array(list(self.hit_height.values()));inside=((keys>=0)&(keys<self.shape)).all(1);upper[tuple(keys[inside].T)]=values[inside]
             layer['hit_z_max']=upper
+        if self.contact_geometry is not None:layer['contact_hit_z_max']=self.contact_geometry.dense(layer,self.ijk)
         return lab,layer
 
     def save(self,path,lab=None,layer=None):

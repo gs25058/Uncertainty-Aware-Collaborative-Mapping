@@ -42,9 +42,21 @@ def candidates(lab,ijk,res,layer,flight,states,cfg,epoch,runseed,prior):
     weak=(layer['votes']>0)&~layer['support']&(layer['evidence']>0)&interest
     frontier_distance=ndimage.distance_transform_edt(~((lab==0)&interest))*res
     frontier=reachable&(frontier_distance<=.8)
+    clearance=None
+    if cfg['candidates'].get('min_view_clearance_m',0):
+        # Viewpoint stand-off, not a larger vehicle: transit paths still use
+        # the unchanged physical flight map. Account for the camera blind range.
+        clearance=np.maximum(0.,ndimage.distance_transform_edt(lab==1)*res-res*np.sqrt(3)/2)
+        frontier&=clearance>=cfg['candidates']['min_view_clearance_m']
     # Air waypoints sampled in reachable observed-free volume, NEVER true rooms.
     points=[];stride=4
     heights=cfg['candidates']['heights']
+    if cfg['candidates'].get('height_mode')=='mission_floor_offsets':
+        # Public mission floor intervals only; no true floors/stairs/rooms.
+        # Lower viewing heights avoid repeatedly selecting ceiling-adjacent
+        # poses whose near surfaces fall inside the sensor's blind range.
+        floors=sorted({sum(goal['floor_z_bounds'])/2 for goal in prior['goals']})
+        heights=[floor+offset for floor in floors for offset in heights]
     if cfg['candidates'].get('height_mode')=='observed_free':
         ks=np.flatnonzero(frontier.any(axis=(0,1)));stride_z=cfg['candidates']['height_stride_rows']
         heights=(ks[ks%stride_z==0]+ijk[2]+.5)*res
@@ -53,7 +65,11 @@ def candidates(lab,ijk,res,layer,flight,states,cfg,epoch,runseed,prior):
         if 0<=k<lab.shape[2]:
             for i,j in np.argwhere(frontier[::stride,::stride,k])*stride:
                 points.append(flight.world((i,j,k)))
-    points.extend(np.asarray(s['p']) for s in states if flight.point_clear(s['p']))
+    for state in states:
+        if clearance is not None and state.get('failed'):continue
+        if not flight.point_clear(state['p']):continue
+        if clearance is not None and points and clearance[tuple(flight.index(state['p']))]<cfg['candidates']['min_view_clearance_m']:continue
+        points.append(np.asarray(state['p']))
     if not points:return []
     points=np.unique(np.round(points,4),axis=0)
     # Spatial coverage, deterministic seed controls first anchor, no utility or GT.
@@ -74,6 +90,7 @@ def candidates(lab,ijk,res,layer,flight,states,cfg,epoch,runseed,prior):
         else:yaw=np.pi/2
         pitch=cfg['candidates']['pitches'][(epoch+len(raw))%len(cfg['candidates']['pitches'])]
         raw.append(dict(position=p.tolist(),yaw=yaw,pitch=pitch,kind='frontier'))
+        if clearance is not None:raw[-1]['observed_view_clearance_m']=float(clearance[tuple(q)])
     # Re-observation candidates face weak support or current uncertain segments;
     # existing candidates may be repurposed but their air positions stay safe.
     surf=np.argwhere(weak)
@@ -123,6 +140,8 @@ def marginal(item,policy,allocated,cfg,entry_active=False,*,remaining=None,cost=
     u=len(item['unknown']-used)/cfg['utility']['unknown_normalizer']
     fallback=not entry_active
     if policy=='unknown' or fallback:return u,policy=='entry'
+    if cfg['utility'].get('entry_objective')=='completion_opportunity_v1':
+        return sum(max(0.,v-max([q['targets'].get(g,0.) for q in allocated]+[0.])) for g,v in item['targets'].items()),False
     gain=0.
     for target,value in item['targets'].items():
         prev=max([x['targets'].get(target,0) for x in allocated]+[0.]);gain+=max(0.,value-prev)
