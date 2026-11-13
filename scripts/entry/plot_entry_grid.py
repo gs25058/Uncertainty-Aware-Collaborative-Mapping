@@ -7,6 +7,7 @@ This is the judgement layer shown unretouched: one pixel per 0.10 m cell, the
 labels exactly as entry_grid.npz holds them. When render.py exists, anything it
 draws that disagrees with this picture is a bug in render.py.
 """
+import os
 import argparse
 import json
 
@@ -19,7 +20,7 @@ import numpy as np                                    # noqa: E402
 from matplotlib.colors import ListedColormap, BoundaryNorm   # noqa: E402
 from matplotlib.patches import Patch                  # noqa: E402
 
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 # Imported, never restated. An earlier version of this file redeclared them as
 # "UNKNOWN, OCCUPIED, FREE = 0, 1, 2" -- the right names in the wrong order --
 # and drew every occupied cell as free and every free cell as occupied. Nothing

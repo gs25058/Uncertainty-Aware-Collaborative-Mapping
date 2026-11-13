@@ -22,7 +22,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from covor.occupancy import (load_stereo_calib, StereoDepth, DepthCfg,
                              OccupancyBuilder, OccCfg)
 from build_occupancy import FrameIndex, Teammates, _fname_for, SEQ, DATA, VO, OUTDIR

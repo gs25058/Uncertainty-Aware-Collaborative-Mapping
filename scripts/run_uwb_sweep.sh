@@ -5,8 +5,8 @@
 #   bash scripts/run_uwb_sweep.sh [n_parallel]
 set -u
 N=${1:-20}
-PY=/src/gs25058/miniconda3/envs/covor/bin/python
-cd /src/gs25058/cr_RNE/covor_slam
+PY=${PYTHON:-python}
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
 export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
 $PY scripts/sweep_uwb_noise.py --plan \
   | $PY -c 'import json,sys; [print(json.dumps(c)) for c in json.load(sys.stdin)]' \

@@ -1,5 +1,0 @@
-condition,segment,n_foot_nodes,foot_hypothesis_z_min,foot_hypothesis_z_max,n_support_in_frustum,expected_support_visibility,expected_body_visibility,actual_foot_endpoint_hits,actual_endpoint_hits_within_one_z_voxel,foot_unknown_before,foot_occupied_before,foot_unknown_after,foot_occupied_after,newly_confirmed_nodes
-heterogeneous_weak,662,102,-0.19999,1.0000000000003062e-05,102,0.10784313725490197,0.974609375,7,39,97,5,88,11,9
-heterogeneous_weak,997,119,-0.19999,1.0000000000003062e-05,1,0.008403361344537815,0.3359375,0,0,117,2,117,2,0
-uniform_strong,638,101,-0.19999,1.0000000000003062e-05,101,0.0297029702970297,0.935546875,4,24,100,1,97,3,2
-uniform_weak,619,45,-0.19999,1.0000000000003062e-05,45,0.17777777777777778,0.98046875,2,18,41,4,41,4,3

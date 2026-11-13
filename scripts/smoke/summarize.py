@@ -296,7 +296,7 @@ MILUV 장 좌표에는 기존 융합 포즈, 복도 합성에는 참 카메라 �
 
 ```bash
 export MPLCONFIGDIR=/tmp/covor_mpl OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
-PY=/src/gs25058/miniconda3/envs/covor/bin/python
+PY=python
 O=results/smoke_20261103
 $PY scripts/smoke/run_miluv.py --out $O/miluv_baseline --frames 4 --stride 6 --levels clean --baseline-check
 $PY scripts/smoke/run_miluv.py --out $O/miluv --frames 48 --stride 16 --seed 0

@@ -70,7 +70,7 @@ def main():
                 cfg=re.sub(r'^output_path:.*',f'output_path: "{d}"',cfg,flags=re.M)
                 (d/"vins.yaml").write_text(cfg)
             log=open(d/"vins.log","w")
-            node=subprocess.Popen(["/src/gs25058/ws/vins_ws/devel/lib/vins/vins_node",str(d/"vins.yaml")],
+            node=subprocess.Popen([os.environ.get("VINS_NODE","vins_node"),str(d/"vins.yaml")],
                                   stdout=log,stderr=subprocess.STDOUT,env=env,start_new_session=True)
             for _ in range(100):
                 if node.poll() is not None:

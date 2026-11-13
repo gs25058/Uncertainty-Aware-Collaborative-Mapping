@@ -16,8 +16,8 @@ import time
 
 import numpy as np
 
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam")
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam/scripts/entry")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "scripts", "entry"))
 from covor.entry import clean3d, traverse as TV
 from covor.entry.config import EntryCfg
 from run_entry_metrics import load_map

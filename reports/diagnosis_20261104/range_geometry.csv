@@ -1,4 +1,0 @@
-pair,median_range_m,median_abs_vertical_fraction,scope
-ifo001_ifo002,8.390914938760737,0.016045326758780263,body-centre single-range vertical derivative magnitude; not a full observability/covariance test
-ifo001_ifo003,24.90949034653581,0.011856148059282524,body-centre single-range vertical derivative magnitude; not a full observability/covariance test
-ifo002_ifo003,16.24787908271023,0.009236298611831329,body-centre single-range vertical derivative magnitude; not a full observability/covariance test

@@ -22,7 +22,7 @@ import sys
 import numpy as np
 from scipy import ndimage
 
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from covor.entry import clean3d, project as PJ, inflate as IN, reach as RE
 from covor.entry.config import (EntryCfg, UNKNOWN, FREE, OCCUPIED,
                                 BLOCKED, NARROW, WALK, CLS_UNKNOWN, CLS_OCCUPIED,

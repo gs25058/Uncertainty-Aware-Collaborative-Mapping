@@ -1,5 +1,0 @@
-policy,selected_id,diagnosis,robot,index,move_cost,eligible,additional_observations,before,after,path_status,path_reason,valid_path_confirmed,correct_blocked,reference,target_votes,target_evidence,failure_stage,n_path_points,first_failure,selected_by
-nearest,23,selection_missed_feasible_one_view,ifo003,1194,0.20293951169759453,True,1,unverified,unverified,not_proposed,short_uncertain_connections,False,False,reachable,1.0,0.8364419937133789,threshold_support_not_confirmed,0,null,nearest
-unknown,4,selection_missed_feasible_one_view,ifo001,678,4.541075459039247,True,1,unverified,unverified,not_proposed,short_uncertain_connections,False,False,reachable,1.0,0.8364419937133789,threshold_support_not_confirmed,0,null,unknown
-decision_impact,3,succeeded,ifo001,510,3.776242885284025,True,1,unverified,passable,valid,mesh_support_and_swept_body_verified,True,False,reachable,2.0,1.1581620872020721,none,17,null,decision_impact
-decision_readiness,2,succeeded,ifo001,342,3.965768196021087,True,1,unverified,passable,valid,mesh_support_and_swept_body_verified,True,False,reachable,1.0,0.8364419937133789,none,24,null,decision_readiness

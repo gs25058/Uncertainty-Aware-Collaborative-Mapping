@@ -16,7 +16,7 @@ import json
 import os
 import sys
 
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 import gtsam  # noqa: F401  -- must precede open3d
 import numpy as np
 import open3d as o3d

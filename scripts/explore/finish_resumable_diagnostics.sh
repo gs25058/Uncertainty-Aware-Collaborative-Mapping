@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
-cd /src/gs25058/cr_RNE/covor_slam
+cd "$(dirname "${BASH_SOURCE[0]}")/../.."
 export OPENBLAS_NUM_THREADS=1
 export OMP_NUM_THREADS=1
-exec /src/gs25058/miniconda3/envs/covor/bin/python - <<'PY'
+exec ${PYTHON:-python} - <<'PY'
 import concurrent.futures,csv,fcntl,hashlib,json,subprocess,sys,time
 from collections import Counter
 from pathlib import Path

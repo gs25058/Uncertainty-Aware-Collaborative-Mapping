@@ -1,7 +1,0 @@
-{
-  "mesh": "/src/gs25058/cr_RNE/covor_slam/meshes/2026-09-15/2026. 9. 15.floorfix.obj",
-  "mesh_sha256": "77e41c3ec50ad0b820b1dab36c1c769dd9cc52beb7e3b80a1664b945b72a2604",
-  "gt_sha256": "b1f4d778892b9b9fdbcf9c74b82eb78578b7229c5c3f3c9d41e1d209531a0e00",
-  "reference_not_just_same_classifier": true,
-  "config_frozen_before_policy_execution": true
-}

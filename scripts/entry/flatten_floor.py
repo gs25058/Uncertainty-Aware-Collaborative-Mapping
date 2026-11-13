@@ -48,7 +48,7 @@ import sys
 import numpy as np
 from scipy import ndimage
 
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from covor.entry.config import UNKNOWN, FREE, OCCUPIED   # label space shared with mesh_gt
 
 

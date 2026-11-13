@@ -455,7 +455,7 @@ cleanup으로 늘어난 지지를 관측으로 확인된 발판으로 채택하�
 
 ```bash
 export MPLCONFIGDIR=/tmp/covor_mpl OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
-PY=/src/gs25058/miniconda3/envs/covor/bin/python
+PY=python
 O=results/diagnosis_20261104
 $PY scripts/reobserve/diagnose.py --out $O --stage graphs
 $PY scripts/reobserve/diagnose.py --out $O --stage poses

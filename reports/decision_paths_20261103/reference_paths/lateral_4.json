@@ -1,7 +1,0 @@
-{
-  "path": [],
-  "validation": {
-    "status": "not_proposed",
-    "reason": "insufficient_coverage_or_possible_scope_escape"
-  }
-}

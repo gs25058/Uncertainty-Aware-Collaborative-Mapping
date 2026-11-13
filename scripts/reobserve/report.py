@@ -225,7 +225,7 @@ predecessor를 저장하는 부분이다. 기본 탐색 순서·판정·면적 �
 
 ```bash
 export MPLCONFIGDIR=/tmp/covor_mpl OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
-PY=/src/gs25058/miniconda3/envs/covor/bin/python
+PY=python
 O=results/decision_paths_20261103
 $PY tests/test_decision_paths.py
 $PY tests/test_entry_traverse.py

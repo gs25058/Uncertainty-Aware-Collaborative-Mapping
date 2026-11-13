@@ -1,2 +1,0 @@
-batch,variant,run,status,reason,source_log
-control,guarded_unknown,scene0_seed0_strong_unknown,not_started_launcher_error,ProcessLookupError while globbing disappearing /proc/<pid>/cmdline before launch; no captured frame/checkpoint; not rerun after user stop,results/entry_control_20261109/development.log

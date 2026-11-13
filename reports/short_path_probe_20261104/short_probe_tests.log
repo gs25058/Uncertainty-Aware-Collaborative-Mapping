@@ -1,2 +1,0 @@
-PASS test_triangle_box_certificate_rejects_bounding_box_false_overlap
-PASS test_target_search_matches_complete_search_with_unknown_threshold_and_wall

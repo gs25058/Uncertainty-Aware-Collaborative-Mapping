@@ -13,7 +13,7 @@ Two rules govern this file:
 from dataclasses import dataclass, field
 import os
 
-ROOT = "/src/gs25058/cr_RNE/covor_slam"
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 ROBOTS = ("ifo001", "ifo002", "ifo003")
 # UWB tag ids per robot (MILUV config/uwb/tags.yaml). data.robot_of_tag maps
 # id // 10 -> robot, so these ids must keep that structure.

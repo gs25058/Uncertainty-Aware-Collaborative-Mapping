@@ -1,3 +1,0 @@
-condition,policy,n_runs,valid_paths,reachable_denominator,valid_path_confirmation_rate,correct_blocked,blocked_denominator,correct_blocked_rate,balanced_score,invalid_paths,checked_path_denominator,wrong_path_ratio,proposed_paths,unverifiable_paths,false_blocked,decided,total_goal_denominator,decision_rate,unknown,reference_undecidable,mean_travel_distance,actual_captures,failed_drones,entry_fallback_seconds,total_sim_seconds
-clean,unknown,4,0,16,0.0,0,12,0.0,0.0,0,0,N/A,0,0,3,3,28,0.10714285714285714,25,0,39.53180395909948,736,0,0.0,192.0
-clean,entry,4,0,16,0.0,0,12,0.0,0.0,0,0,N/A,0,0,3,3,28,0.10714285714285714,25,0,39.13367907634182,736,0,180.0,192.0

@@ -10,16 +10,20 @@ import numpy as np
 import pandas as pd
 import yaml
 
-DATA = "/src/gs25058/cr_RNE/miluv/data"
-UWB_CFG = "/src/gs25058/cr_RNE/miluv/config/uwb"
-HEIGHT_CFG = "/src/gs25058/cr_RNE/miluv/config/height"
-VO_DIR = "/src/gs25058/cr_RNE/covor_slam/vo_output"
+# Dataset location. Point MILUV_ROOT at a checkout of the MILUV dataset
+# (containing ``data/`` and ``config/``); the default is ``<repo>/data/miluv``.
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MILUV_ROOT = os.environ.get("MILUV_ROOT", os.path.join(REPO_ROOT, "data", "miluv"))
+DATA = os.path.join(MILUV_ROOT, "data")
+UWB_CFG = os.path.join(MILUV_ROOT, "config", "uwb")
+HEIGHT_CFG = os.path.join(MILUV_ROOT, "config", "height")
+VO_DIR = os.path.join(REPO_ROOT, "vo_output")
 
-# VINS-Fusion stereo+IMU front-end output (OUTSIDE this repo, git-untracked).
-VINS_DIR = "/src/gs25058/ws/vins_ws/run/out"
+# VINS-Fusion stereo+IMU front-end output (git-untracked). Override with VINS_OUT_DIR.
+VINS_DIR = os.environ.get("VINS_OUT_DIR", os.path.join(REPO_ROOT, "data", "vins_out"))
 # Camera/IMU extrinsics come from MILUV's tracked per-robot config (see
 # load_body_T_cam), not from the git-untracked per-sequence run copies.
-VINS_CFG = "/src/gs25058/cr_RNE/miluv/config/vins"
+VINS_CFG = os.path.join(MILUV_ROOT, "config", "vins")
 
 # Graph node density. VINS publishes at 14.98 Hz; we keep every VINS_STRIDE-th
 # pose -> 7.49 Hz. Chosen where two independent criteria meet (measured, not tuned):

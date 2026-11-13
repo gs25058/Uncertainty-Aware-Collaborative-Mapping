@@ -400,7 +400,7 @@ XY는 같은 열이며 층 대응 높이 범위 ±0.15 m를 고정했다. 전역
 
 ```bash
 export MPLCONFIGDIR=/tmp/covor_mpl OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
-PY=/src/gs25058/miniconda3/envs/covor/bin/python
+PY=python
 O=results/fire_mapping_resume_20261104_replay
 $PY scripts/reobserve/reviewed.py --out $O --stage prepare
 $PY scripts/reobserve/repair.py --out $O --stage surfaces

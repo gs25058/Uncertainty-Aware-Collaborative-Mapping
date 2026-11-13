@@ -8,12 +8,13 @@ independent C++ analytic implementation of the same residual.
 
 Run:  python scripts/test_jacobians.py
 """
+import os
 import sys
 import numpy as np
 import gtsam
 from gtsam import Pose3, Rot3
 
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from covor import factors as F
 
 EPS = 1e-6

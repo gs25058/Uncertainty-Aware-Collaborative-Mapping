@@ -22,13 +22,13 @@ import time
 import argparse
 import numpy as np
 
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from covor.fusion import CoVOR, Cfg, umeyama_yaw
 from covor import factors as F, data as D
 import gtsam
 
 SEQ = "default_3_zigzag_0"
-OUT = "/src/gs25058/cr_RNE/covor_slam/results/results_uwb_noise_sweep.csv"
+OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "results", "results_uwb_noise_sweep.csv")
 
 # Appendix B (corrected): the values every §4.9 / §8 experiment actually used.
 BASE = dict(use_moment_arm=True, bias_mode="off", use_height=False, prior_every=0,

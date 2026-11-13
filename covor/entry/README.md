@@ -61,7 +61,7 @@ clearance≥walk). 각 영역이 직전 것 안에 완전히 들어가므로(장
 ## 실행
 
 ```bash
-PY=/src/gs25058/miniconda3/envs/covor/bin/python
+PY=python
 
 # 1) 융합 3D 지도 덤프 (run_experiment는 스칼라만 남기므로 격자를 따로 만든다)
 $PY scripts/entry/dump_fused_map.py --cond C_3drone --coverage ii_all_cams \

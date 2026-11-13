@@ -20,8 +20,8 @@ import sys
 import gtsam                       # noqa: F401  -- must precede open3d
 import numpy as np
 
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam")
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam/scripts/synth")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "scripts", "synth"))
 from covor.occupancy import OccCfg
 from covor.synth import dataset as DS, mapping as MP, mesh_gt as MG, metrics as ME
 from covor.synth.config import SynthCfg, ROBOTS
@@ -60,7 +60,7 @@ def main():
               % (cond, st["n_inter_range"], st["n_gauge_prior"],
                  int(np.isfinite(L).sum())), flush=True)
 
-    p = args.out or os.path.join("/src/gs25058/cr_RNE/covor_slam", "tests", "data",
+    p = args.out or os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "tests", "data",
                                  "synth_gauge_golden.npz")
     os.makedirs(os.path.dirname(p), exist_ok=True)
     np.savez_compressed(p, map_stride=np.array([MAP_STRIDE]),

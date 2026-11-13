@@ -5,6 +5,7 @@ import csv
 import hashlib
 import importlib.metadata
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -53,7 +54,7 @@ def main():
         target = snapshot/path
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(path, target)
-    external = Path('/src/gs25058/cr_RNE/external_observation_20261105')
+    external = Path(os.environ.get('EXTERNAL_OBSERVATION_DIR','external_observation'))
     packages = {}
     for name in ('numpy', 'scipy', 'open3d', 'opencv-python', 'matplotlib'):
         try:

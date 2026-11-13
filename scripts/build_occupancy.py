@@ -22,18 +22,19 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from covor.occupancy import (load_stereo_calib, StereoDepth, DepthCfg,
                              OccupancyBuilder, OccCfg)
 
 SEQ = "default_3_zigzag_0"
-DATA = "/src/gs25058/cr_RNE/miluv/data"
-VO = "/src/gs25058/cr_RNE/covor_slam/vo_output"
+from covor.data import MILUV_ROOT
+DATA = os.path.join(MILUV_ROOT, "data")
+VO = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "vo_output")
 # Figures and .bt trees land in the repo's results/ so they survive the session.
 # This used to be a hard-coded per-session /tmp scratchpad, which meant the
 # ablation artefacts we cite disappeared with the session that made them.
 OUTDIR = os.environ.get(
-    "COVOR_OUTDIR", "/src/gs25058/cr_RNE/covor_slam/results")
+    "COVOR_OUTDIR", os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "results"))
 
 
 class FrameIndex:

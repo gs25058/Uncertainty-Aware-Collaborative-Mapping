@@ -27,7 +27,7 @@ import numpy as np
 import yaml
 import cv2
 
-MILUV = "/src/gs25058/cr_RNE/miluv"
+from .data import MILUV_ROOT as MILUV
 
 
 # ---------------------------------------------------------------------------

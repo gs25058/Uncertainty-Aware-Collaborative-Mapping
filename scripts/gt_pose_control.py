@@ -40,13 +40,13 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam")
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam/scripts")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "scripts"))
 from covor.occupancy import (load_stereo_calib, StereoDepth, DepthCfg,
                              OccupancyBuilder, OccCfg)
 from build_occupancy import FrameIndex, _fname_for, SEQ, DATA, VO, OUTDIR
 
-MILUV = "/src/gs25058/cr_RNE/miluv"
+from covor.data import MILUV_ROOT as MILUV
 ROBOTS = ["ifo001", "ifo002", "ifo003"]
 
 

@@ -4,6 +4,7 @@ optimize, and compare mono-VO-only vs fused trajectories against mocap.
 
 Usage: python run_covor.py [sequence]      (default: default_3_zigzag_0)
 """
+import os
 import sys
 import json
 import numpy as np
@@ -12,7 +13,7 @@ from covor import data as D
 from covor.fusion import CoVOR, Cfg
 from covor import evaluate as E
 
-RESULTS = "/src/gs25058/cr_RNE/covor_slam/results"
+RESULTS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results")
 
 
 def main(seq):

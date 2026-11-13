@@ -1,6 +1,0 @@
-kind,offset,correlation
-normal_branch_temporal,0.25,0.7271677335696063
-normal_branch_temporal,0.5,0.3947153162131992
-normal_branch_temporal,0.75,0.03191380394553387
-normal_branch_temporal,1.5,-0.00462094985850652
-cross_drone_same_surface,1,0.2296057846527632

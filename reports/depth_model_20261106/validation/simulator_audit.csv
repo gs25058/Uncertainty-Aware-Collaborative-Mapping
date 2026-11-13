@@ -1,2 +1,0 @@
-time,drone,frame_id,n_grid,n_left_geometry,n_geometry,n_valid,n_normal_geometry,n_normal_valid,n_outlier,n_random_drop,mean_error,rms_error
-0,0,d0_t00000,57600,11520,11373,11328,11213,11168,1,45,-0.001678653061389923,0.024380289018154144

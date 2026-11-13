@@ -472,7 +472,7 @@ def report(out,names):
 
 ```bash
 export MPLCONFIGDIR=/tmp/covor_mpl OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
-PY=/src/gs25058/miniconda3/envs/covor/bin/python
+PY=python
 O=results/repair_20261104_replay
 $PY scripts/reobserve/repair.py --out $O --stage surfaces
 $PY scripts/reobserve/repair.py --out $O --stage register

@@ -1,7 +1,0 @@
-valid_confirmed,correct_blocked,invalid_paths,false_blocked,unknown,decided,proposed_paths,unverifiable_paths,reachable_denominator,blocked_denominator,total_goals,captures,failed_drones,fallback_seconds,variant,condition,runs,expected_runs,valid_rate,blocked_rate,wrong_path_rate,decision_rate,balanced_score,unknown_valid,unknown_blocked,unknown_invalid,unknown_false_blocked,unknown_proposed,unknown_failed_drones,count_guardrail,unknown_balanced_score
-1,0,0,0,23,1,1,0,20,4,24,468,0,0.0,bridge,clean,1,1,0.05,0.0,0.0,0.041666666666666664,0.025,1.0,0.0,0.0,0.0,1.0,0,True,0.025
-1,0,0,0,23,1,1,0,20,4,24,468,0,0.0,bridge,pooled,1,1,0.05,0.0,0.0,0.041666666666666664,0.025,1.0,0.0,0.0,0.0,1.0,0,True,0.025
-1,0,0,0,23,1,1,0,20,4,24,468,0,0.0,mission,clean,1,1,0.05,0.0,0.0,0.041666666666666664,0.025,1.0,0.0,0.0,0.0,1.0,0,True,0.025
-1,0,0,0,23,1,1,0,20,4,24,468,0,0.0,mission,pooled,1,1,0.05,0.0,0.0,0.041666666666666664,0.025,1.0,0.0,0.0,0.0,1.0,0,True,0.025
-1,0,0,0,23,1,1,0,20,4,24,468,0,0.0,balanced,clean,1,1,0.05,0.0,0.0,0.041666666666666664,0.025,1.0,0.0,0.0,0.0,1.0,0,True,0.025
-1,0,0,0,23,1,1,0,20,4,24,468,0,0.0,balanced,pooled,1,1,0.05,0.0,0.0,0.041666666666666664,0.025,1.0,0.0,0.0,0.0,1.0,0,True,0.025

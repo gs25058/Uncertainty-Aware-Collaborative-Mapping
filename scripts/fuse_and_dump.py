@@ -21,18 +21,19 @@ ray in the wrong direction (silently -- the map just comes out wrong).
 
 Usage: python scripts/fuse_and_dump.py [--seq SEQ] [--drones ifo001,ifo002,ifo003]
 """
+import os
 import sys
 import time
 import argparse
 import numpy as np
 import gtsam
 
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from covor.fusion import CoVOR, Cfg
 from covor import factors as F
 from covor import data as D
 
-OUT = "/src/gs25058/cr_RNE/covor_slam/vo_output"
+OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "vo_output")
 
 # Faithful fusion config (matches the paper-faithful robust-ON run):
 # moment-arm antenna model, robust Huber kernel, inter + anchor ranges, no

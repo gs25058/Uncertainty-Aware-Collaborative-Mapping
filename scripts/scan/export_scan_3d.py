@@ -28,8 +28,8 @@ import sys
 import numpy as np
 import trimesh
 
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam")
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam/scripts/scan")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "scripts", "scan"))
 from covor.synth import mesh_gt as MG
 import mesh_payload as MP
 

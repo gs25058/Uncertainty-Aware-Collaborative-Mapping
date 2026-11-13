@@ -22,8 +22,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt                                     # noqa: E402
 import numpy as np                                                  # noqa: E402
 
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam")
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam/scripts/entry")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "scripts", "entry"))
 from covor.entry import clean3d, metrics as EM, render as RD, route as RT
 from covor.entry.config import EntryCfg
 from build_entry_map import build_entry_grid, band_table, BANDS

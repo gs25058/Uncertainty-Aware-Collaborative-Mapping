@@ -8,6 +8,7 @@ ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT))
 import cv2
 import numpy as np
+from covor.data import MILUV_ROOT
 from covor.occupancy import load_stereo_calib,StereoDepth
 from covor.synth.render import _depth_rectified
 from covor.smoke import SmokeCfg,stereo_smoke,clean_right_depth
@@ -23,7 +24,7 @@ def main():
     ap.add_argument("--robot",default="ifo001")
     args=ap.parse_args()
     out=Path(args.out).resolve();out.mkdir(parents=True,exist_ok=True)
-    data=Path("/src/gs25058/cr_RNE/miluv/data/default_3_zigzag_0")
+    data=Path(MILUV_ROOT)/"data"/"default_3_zigzag_0"
     source=data/args.robot
     calib=load_stereo_calib(args.robot);sd=StereoDepth(calib)
     cv2.setNumThreads(1)
@@ -43,7 +44,7 @@ def main():
     files=sorted(common,key=lambda f:float(f[:-5]))
     files=[f for f in files if float(f[:-5])<=args.duration][::args.image_stride]
     configs={"clean":SmokeCfg(),"uniform_strong":SmokeCfg(beta=args.beta)}
-    cfgsrc=Path("/src/gs25058/cr_RNE/miluv/config/vins")/args.robot
+    cfgsrc=Path(MILUV_ROOT)/"config"/"vins"/args.robot
     for name in configs:
         d=out/name;d.mkdir(exist_ok=True)
         (d/"image0").mkdir(exist_ok=True);(d/"image1").mkdir(exist_ok=True)

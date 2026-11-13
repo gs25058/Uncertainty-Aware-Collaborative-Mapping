@@ -20,12 +20,12 @@ import itertools
 import numpy as np
 import gtsam
 
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from covor.fusion import CoVOR, Cfg
 from covor import evaluate as E, factors as F, data as D
 
 SEQ = sys.argv[1] if len(sys.argv) > 1 else "default_3_zigzag_0"
-OUT = "/src/gs25058/cr_RNE/covor_slam/results/sweep_results.csv"
+OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "results", "sweep_results.csv")
 MAX_ITER = 30
 
 FIELDS = ["seq", "tag", "bias_mode", "range_sigma_floor", "huber_k", "prior_every",

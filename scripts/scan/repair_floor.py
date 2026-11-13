@@ -69,7 +69,7 @@ import sys
 import numpy as np
 from scipy import ndimage
 
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 NZ_MIN = 0.9          # |n_z| of a floor-like face
 BAND = (-0.6, 0.35)   # world z window of faces that may be SNAPPED to the floor

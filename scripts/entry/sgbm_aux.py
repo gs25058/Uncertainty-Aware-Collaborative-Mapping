@@ -30,8 +30,8 @@ import sys
 
 import numpy as np
 
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam")
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam/scripts/entry")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "scripts", "entry"))
 from covor.entry import metrics as EM
 from covor.entry.config import EntryCfg, OCCUPIED, UNKNOWN, FREE
 from covor.synth import mesh_gt as MG, metrics as ME
@@ -39,7 +39,7 @@ from build_entry_map import build_entry_grid
 from run_entry_metrics import load_map
 from flatten_floor import shift_columns
 
-SEQ = "/src/gs25058/cr_RNE/covor_slam/results/synth_corridor915"
+SEQ = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "results", "synth_corridor915")
 D = SEQ + "/entry"
 MAP = D + "/map3d_C_3drone_ii_all_cams_depth_only_%s_s4%s.npz"
 ARMS = (("ideal", "clean"), ("sgbm", "clean_sgbm"),

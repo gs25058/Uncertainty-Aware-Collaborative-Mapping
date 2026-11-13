@@ -2,7 +2,7 @@
 import os
 import csv
 
-CSV = "/src/gs25058/cr_RNE/covor_slam/results/diagnosis_results.csv"
+CSV = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "results", "diagnosis_results.csv")
 FIELDS = ["test", "config", "robot", "metric", "value", "time_s", "note"]
 
 

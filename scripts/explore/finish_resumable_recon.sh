@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
-cd /src/gs25058/cr_RNE/covor_slam
+cd "$(dirname "${BASH_SOURCE[0]}")/../.."
 export OPENBLAS_NUM_THREADS=1
 export OMP_NUM_THREADS=1
-exec /src/gs25058/miniconda3/envs/covor/bin/python - <<'PY'
+exec ${PYTHON:-python} - <<'PY'
 import csv,fcntl,hashlib,json,os,subprocess,sys,time
 from pathlib import Path
 root=Path('results/fire_recon_20261108_resume');report=Path('reports/fire_recon_20261108_resume');lock=(root/'post.lock').open('a+')

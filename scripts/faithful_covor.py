@@ -19,13 +19,14 @@ since MILUV UWB has a heavy tail (p99~0.9 m) the paper's outdoor data did not.
 Run:  python scripts/faithful_covor.py
 Rows -> diagnosis_results.csv
 """
+import os
 import sys
 import time
 import numpy as np
 import gtsam
 
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam")
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam/scripts")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "scripts"))
 from covor.fusion import CoVOR, Cfg
 from covor import evaluate as E, factors as F
 from diaglog import log_rows

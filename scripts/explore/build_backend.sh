@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -eu
 # Source dependencies stay outside the working tree. No ROS sensor/odom shortcut.
-task_external="${1:-/src/gs25058/cr_RNE/external_observation_20261105}"
+task_external="${1:-external_observation}"
 task_script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 mkdir -p "$task_external/standalone"
 if [ ! -d "$task_external/FUEL/.git" ]; then

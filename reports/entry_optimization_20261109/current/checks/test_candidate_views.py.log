@@ -1,8 +1,0 @@
-test_disabled_is_exact_original_pool (__main__.CommonViewControls) ... ok
-test_new_viewpoint_positions_are_in_connected_observed_free_only (__main__.CommonViewControls) ... ok
-test_positions_count_and_common_deterministic_selection (__main__.CommonViewControls) ... ok
-
-----------------------------------------------------------------------
-Ran 3 tests in 0.016s
-
-OK

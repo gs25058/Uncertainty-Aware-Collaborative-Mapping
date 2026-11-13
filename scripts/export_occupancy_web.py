@@ -41,7 +41,7 @@ import base64
 import argparse
 import numpy as np
 
-ROOT = "/src/gs25058/cr_RNE/covor_slam"
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 

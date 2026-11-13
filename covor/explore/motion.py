@@ -5,12 +5,13 @@ not RACER's full planner. Native polynomial header is unmodified upstream code.
 """
 import ctypes
 import copy
+import os
 from pathlib import Path
 import heapq
 import numpy as np
 from scipy import ndimage
 
-EXTERNAL=Path('/src/gs25058/cr_RNE/external_observation_20261105')
+EXTERNAL=Path(os.environ.get('EXTERNAL_OBSERVATION_DIR','external_observation'))
 
 class FuelPolynomial:
     def __init__(self):

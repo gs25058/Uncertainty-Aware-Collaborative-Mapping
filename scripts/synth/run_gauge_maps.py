@@ -26,8 +26,8 @@ import time
 import gtsam                       # noqa: F401  -- must precede open3d
 import numpy as np
 
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam")
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam/scripts/synth")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "scripts", "synth"))
 from covor import data as D
 from covor.occupancy import OccCfg
 from covor.synth import dataset as DS, mapping as MP, mesh_gt as MG, metrics as ME

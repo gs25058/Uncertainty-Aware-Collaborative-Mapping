@@ -9,13 +9,14 @@ pure SE(3). This test is therefore not just broken but meaningless as written --
 its whole subject (scale recovery) is gone. Run it at commit a0a5e07, or write an
 SE(3) replacement. Failing loudly beats an AttributeError deep in the build.
 """
+import os
 import sys
 import numpy as np
 import gtsam
 
 sys.exit(__doc__)
 
-sys.path.insert(0, "/src/gs25058/cr_RNE/covor_slam")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from covor import factors as F
 
 rng = np.random.default_rng(0)

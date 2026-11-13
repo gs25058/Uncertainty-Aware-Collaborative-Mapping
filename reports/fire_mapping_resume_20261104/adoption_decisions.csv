@@ -1,6 +1,0 @@
-component,action,reason
-surface_support,keep_experimental,Small local support recovery gain; no entry-to-goal valid paths; false and unverifiable surface claims remain.
-surface_body_geometry,keep_validation_option,Exact geometry exposes bad estimated foot heights; local successes and failures must both be retained; no uniform net improvement.
-relative_z_registration,diagnostic_only,Large area recall gain accompanies increased false reach and many invalid local configurations; common-floor assumption.
-one_frame_readiness_score,do_not_promote,Both conditions fall back to nearest; no verified target improvement demonstrated.
-uncertainty_weighting,optional_ablation,Full pose-depth weighting lowers voxel IoU/completeness and raises exact false-free in this scene; no universal best method established.

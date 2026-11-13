@@ -1,7 +1,0 @@
-run,condition,policy,time,map_version,valid_confirmed,reachable_denominator,valid_path_confirmation_rate,correct_blocked,blocked_denominator,correct_blocked_rate,balanced_score,invalid_paths,verified_path_denominator,wrong_path_rate,proposed_paths,unverifiable_paths,unknown,decided,total_goals,decision_rate,false_blocked,reference_undecidable,n_entry,n_confirmed,n_possible
-scene1_seed0_clean_entry,clean,entry,0.0,1,0,20,0.0,0,4,0.0,0.0,0,0,,0,0,24,0,24,0.0,0,0,0,0,1412
-scene1_seed0_clean_entry,clean,entry,8.0,84,1,20,0.05,0,4,0.0,0.025,0,1,0.0,1,0,23,1,24,0.041666666666666664,0,0,142,2732,6601
-scene1_seed0_clean_entry,clean,entry,16.0,212,1,20,0.05,0,4,0.0,0.025,0,1,0.0,1,0,23,1,24,0.041666666666666664,0,0,144,3196,8646
-scene1_seed0_clean_unknown,clean,unknown,0.0,1,0,20,0.0,0,4,0.0,0.0,0,0,,0,0,24,0,24,0.0,0,0,0,0,1412
-scene1_seed0_clean_unknown,clean,unknown,8.0,84,1,20,0.05,0,4,0.0,0.025,0,1,0.0,1,0,23,1,24,0.041666666666666664,0,0,142,2732,6601
-scene1_seed0_clean_unknown,clean,unknown,16.0,212,1,20,0.05,0,4,0.0,0.025,0,1,0.0,1,0,23,1,24,0.041666666666666664,0,0,144,3196,8646

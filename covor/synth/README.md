@@ -31,7 +31,7 @@ sequence into the MILUV tree, so real and synthetic data can never be confused.
 ## Reproduce
 
 ```bash
-P=/src/gs25058/miniconda3/envs/covor/bin/python     # needs trimesh + open3d
+P=python     # needs trimesh + open3d
 
 # A. mesh -> GT voxels (writes results/synth_<name>/)
 $P scripts/synth/build_gt_voxel.py --obj <scan.obj> --name room909

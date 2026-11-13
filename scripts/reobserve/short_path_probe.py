@@ -642,7 +642,7 @@ XYZ·자세·폭, 검증과 첫 실패 위치를 저장했다.
 
 ```bash
 export MPLCONFIGDIR=/tmp/covor_mpl OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
-PY=/src/gs25058/miniconda3/envs/covor/bin/python
+PY=python
 O=results/short_path_probe_20261104_replay
 for S in prepare positive ideal diagnose threshold certify select all-candidates contributors report; do
   $PY scripts/reobserve/short_path_probe.py --out $O --stage $S
