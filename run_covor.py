@@ -14,6 +14,7 @@ from covor.fusion import CoVOR, Cfg
 from covor import evaluate as E
 
 RESULTS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results")
+os.makedirs(RESULTS, exist_ok=True)
 
 
 def main(seq):
