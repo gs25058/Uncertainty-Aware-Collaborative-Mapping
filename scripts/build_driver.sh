@@ -1,11 +1,12 @@
 #!/bin/bash
 # Compile the standalone MILUV mono driver, linking the already-built ORB-SLAM3.
 set -e
-source /src/gs25058/miniconda3/etc/profile.d/conda.sh
+source "$(conda info --base)/etc/profile.d/conda.sh"
 conda activate slam_env
 
-ORB=/src/gs25058/cr_RNE/ORB_SLAM3
-OUT=/src/gs25058/cr_RNE/covor_slam/orbslam_driver
+PROJ="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ORB="${ORB_SLAM3_DIR:-$PROJ/../ORB_SLAM3}"   # path to a built ORB-SLAM3 checkout
+OUT="$PROJ/orbslam_driver"
 P=$CONDA_PREFIX
 
 g++ -std=c++14 -O3 -w \

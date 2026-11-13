@@ -1,16 +1,15 @@
-"""GTSAM CustomFactor builders for CoVOR-SLAM.
+"""GTSAM factor builders for CoVOR-SLAM.
 
-Each keyframe state is a metric camera pose ``Pose3`` (translation = metric
-position in world G) plus a scalar scale variable, which together parameterise the
-paper's 7-DoF Sim(3) state. Monocular VO supplies up-to-scale relative motion; the
-per-keyframe scale converts it to metric, and a random-walk factor on scale models
-scale drift. UWB range factors (inter-agent and anchor) inject metric information.
+Each node is a 6-DoF body(IMU) pose ``Pose3`` in the world frame G. The
+VINS-Fusion stereo+IMU front-end is metric and gravity-aligned, so relative
+motion needs no scale correction: odometry is a plain SE(3) between-factor and
+the graph is pure SE(3). (The mono front-end's 7-DoF Sim(3) state -- a per-node
+scale variable with a random-walk factor -- was removed in that transition; it is
+recoverable at commit a0a5e07 together with the ORB-SLAM3 comparison group.)
 
-Antenna moment arms are treated as pre-compensated, so range residuals use the
-camera translation directly (as stated in the paper, Sec. II-B).
-
-All Jacobians are computed by finite differences on the Lie-group tangent
-(Pose3.retract) and on the scalar, which is robust and adequate for LM here.
+UWB range factors (inter-agent and anchor) inject the absolute information. Their
+Jacobians are analytic; the moment-arm variants account for the tag sitting off
+the body origin, which is what makes yaw weakly observable from ranges.
 """
 import numpy as np
 import gtsam
@@ -22,11 +21,6 @@ EPS = 1e-6
 def X(k, i):
     """Key for robot k, keyframe i pose."""
     return gtsam.symbol(chr(ord('a') + k), i)
-
-
-def Sc(k, i):
-    """Key for robot k, keyframe i scale."""
-    return gtsam.symbol(chr(ord('p') + k), i)
 
 
 def Bias(k):
@@ -45,64 +39,17 @@ def pose_from_quat(pos, quat_xyzw) -> Pose3:
     return Pose3(Rot3.Quaternion(qw, qx, qy, qz), np.asarray(pos, dtype=float))
 
 
-def _num_jac_pose(fn, pose, m):
-    """d(fn)/d(pose tangent), shape (m, 6), via retract finite differences."""
-    J = np.zeros((m, 6))
-    r0 = fn(pose)
-    for k in range(6):
-        dv = np.zeros(6); dv[k] = EPS
-        J[:, k] = (fn(pose.retract(dv)) - r0) / EPS
-    return J
-
-
 # ----------------------------------------------------------------------------
-# VO odometry factor: connects poses i, i+1 of robot k and scale_i.
-#   predicted T_{i+1} = T_i * Pose3(dR_vo, s_i * dt_vo)
-#   residual = localCoordinates(predicted^{-1} * T_{i+1})   (6-vector)
+# VIO odometry factor: connects poses i, i+1 of robot k.
+#   residual = Log(dpose_vio^{-1} * (T_i^{-1} T_{i+1}))    (6-vector)
+# The front-end is metric, so this is GTSAM's native C++ BetweenFactorPose3:
+# analytic Jacobians, no Python callback (the mono version needed a CustomFactor
+# only to carry the scale variable).
 # ----------------------------------------------------------------------------
-def odometry_factor(k, i, dpose_vo: Pose3, sigma_rot, sigma_trans):
-    dR = dpose_vo.rotation()
-    dt = dpose_vo.translation()
-    keys = [X(k, i), X(k, i + 1), Sc(k, i)]
+def odometry_factor(k, i, dpose_vio: Pose3, sigma_rot, sigma_trans):
     noise = gtsam.noiseModel.Diagonal.Sigmas(
         np.array([sigma_rot] * 3 + [sigma_trans] * 3))
-
-    def err(this, values, H):
-        Ti = values.atPose3(keys[0])
-        Tj = values.atPose3(keys[1])
-        s = values.atDouble(keys[2])
-
-        # residual = Log(pred^{-1} * Tj), zero when the predicted pose matches Tj
-        def res(Ti_, Tj_, s_):
-            dT = Pose3(dR, s_ * dt)
-            pred = Ti_.compose(dT)
-            return Pose3.localCoordinates(pred, Tj_)
-
-        r = res(Ti, Tj, s)
-        if H is not None:
-            H[0] = _num_jac_pose(lambda p: res(p, Tj, s), Ti, 6)
-            H[1] = _num_jac_pose(lambda p: res(Ti, p, s), Tj, 6)
-            ds = (res(Ti, Tj, s + EPS) - r) / EPS
-            H[2] = ds.reshape(6, 1)
-        return r
-
-    return gtsam.CustomFactor(noise, keys, err)
-
-
-# ----------------------------------------------------------------------------
-# Scale random-walk factor: s_{i+1} - s_i ~ N(0, sigma^2). Models scale drift.
-# ----------------------------------------------------------------------------
-def scale_walk_factor(k, i, sigma):
-    keys = [Sc(k, i), Sc(k, i + 1)]
-    noise = gtsam.noiseModel.Isotropic.Sigma(1, sigma)
-
-    def err(this, values, H):
-        a = values.atDouble(keys[0]); b = values.atDouble(keys[1])
-        if H is not None:
-            H[0] = np.array([[-1.0]]); H[1] = np.array([[1.0]])
-        return np.array([b - a])
-
-    return gtsam.CustomFactor(noise, keys, err)
+    return gtsam.BetweenFactorPose3(X(k, i), X(k, i + 1), dpose_vio, noise)
 
 
 # ----------------------------------------------------------------------------
@@ -302,22 +249,55 @@ def bias_prior(k, b0, sigma):
 
 
 # ----------------------------------------------------------------------------
+# Gravity (attitude) prior: constrains roll/pitch ONLY, leaving yaw free.
+#
+# Why this has to exist. The VIO front-end observes the gravity direction with the
+# accelerometer, which is why its tilt error is ~0.7 deg and flat. But converting
+# that trajectory into relative-pose between-factors DISCARDS the absolute part:
+# without this factor the only absolute orientation constraint in the whole graph
+# is the single pose_prior on each robot's first node, and the relative chain's
+# random walk (sigma_odo_rot per step) opens up ~7.5 deg of tilt slack in 13 s and
+# ~35 deg over a full run. Measured consequence: fused tilt degraded from 0.6-0.9
+# deg to 3.0-4.1 deg. UWB cannot take up the slack -- with a 0.231 m tag moment arm
+# a 5 deg tilt moves the antenna 0.020 m, well under the 0.05 m range noise floor,
+# so ranges are effectively blind to tilt.
+#
+# Because nothing else in the graph observes tilt, this prior is the ONLY tilt
+# information present; its sigma therefore just sets how far the range factors can
+# drag tilt away from the front-end's estimate, and any such drag is spurious.
+# Erring tight is the safe direction.
+#
+# GTSAM's native Pose3AttitudeFactor gives a 2-dim residual with analytic
+# Jacobians: it enforces R * bRef ~= nZ. With bRef = the gravity direction in the
+# body frame as VIO measured it, and nZ = world up, the residual is exactly the
+# tilt disagreement, and rotation about gravity (yaw) leaves it unchanged.
+#
+# Consistency: align_to_world uses a yaw-only rotation Rz(psi), and
+# Rz(psi) * R_vio * (R_vio^T e_z) = Rz(psi) e_z = e_z, so the initial guess starts
+# at exactly zero residual. The factor adds no new frame assumption beyond the one
+# the yaw-only alignment already makes (both frames gravity-aligned).
+# ----------------------------------------------------------------------------
+_E_Z = np.array([0.0, 0.0, 1.0])
+
+
+def gravity_prior(k, i, R_vio, sigma_tilt):
+    """Absolute roll/pitch constraint from the VIO's gravity observation.
+
+    R_vio: (3,3) front-end rotation at this node, in its own gravity-aligned frame.
+    sigma_tilt: per-axis tilt sigma in rad (measured, see Cfg.sigma_tilt).
+    """
+    b_ref = gtsam.Unit3(np.asarray(R_vio, dtype=float).T @ _E_Z)
+    # Pose3AttitudeFactor requires a Diagonal model -- it rejects a Robust wrapper
+    # (TypeError), so the heavy tail measured on this residual (p90/median 2.2-2.8
+    # vs 1.82 for a Gaussian) cannot be down-weighted by an m-estimator here.
+    noise = gtsam.noiseModel.Isotropic.Sigma(2, sigma_tilt)
+    return gtsam.Pose3AttitudeFactor(X(k, i), gtsam.Unit3(_E_Z), noise, b_ref)
+
+
+# ----------------------------------------------------------------------------
 # Pose prior (gauge / frame-alignment prior, like the paper's phi_pri).
 # ----------------------------------------------------------------------------
 def pose_prior(k, i, pose0: Pose3, sigma_rot, sigma_trans):
     noise = gtsam.noiseModel.Diagonal.Sigmas(
         np.array([sigma_rot] * 3 + [sigma_trans] * 3))
     return gtsam.PriorFactorPose3(X(k, i), pose0, noise)
-
-
-def scale_prior(k, i, s0, sigma):
-    key = Sc(k, i)
-    noise = gtsam.noiseModel.Isotropic.Sigma(1, sigma)
-
-    def err(this, values, H):
-        s = values.atDouble(key)
-        if H is not None:
-            H[0] = np.array([[1.0]])
-        return np.array([s - s0])
-
-    return gtsam.CustomFactor(noise, [key], err)

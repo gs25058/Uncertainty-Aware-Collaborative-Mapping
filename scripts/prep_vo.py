@@ -6,9 +6,10 @@ Usage: prep_vo.py <sequence> <robot>   e.g.  prep_vo.py default_3_zigzag_0 ifo00
 """
 import os, sys, glob, yaml
 
-DATA = "/src/gs25058/cr_RNE/miluv/data"
-CALIB = "/src/gs25058/cr_RNE/miluv/config/realsense"
-PROJ = "/src/gs25058/cr_RNE/covor_slam"
+PROJ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MILUV = os.environ.get("MILUV_ROOT", os.path.join(PROJ, "data", "miluv"))
+DATA = os.path.join(MILUV, "data")
+CALIB = os.path.join(MILUV, "config", "realsense")
 CAM = "infra1"   # cam0 = left IR, used as the monocular stream
 
 

@@ -1,186 +1,102 @@
-# CoVOR-SLAM on MILUV
+# Uncertainty-Aware Collaborative Mapping
 
-A from-scratch implementation of **CoVOR-SLAM** (Lee et al., 2023 — *Cooperative
-SLAM using Visual Odometry and Ranges for Multi-Robot Systems*), run on the
-**MILUV** dataset (DECAR group). It fuses each robot's monocular visual odometry
-with UWB inter-agent and anchor ranges in a **Sim(3) factor graph**, recovering
-metric, jointly-consistent multi-robot trajectories **without inter-agent loop
-closure** — drift is corrected by ranges, not by visual place recognition.
+Multi-robot visual-inertial odometry fused with UWB ranges in a GTSAM factor graph,
+following CoVOR-SLAM (Lee et al., 2023), and an occupancy mapper that carries the
+resulting pose uncertainty into the map. Evaluated on the MILUV dataset.
 
-- **Front-end:** ORB-SLAM3 monocular VO per robot (up-to-scale keyframes).
-- **Back-end:** GTSAM factor graph in Python — 7-DoF Sim(3) states, VO odometry,
-  scale drift, UWB range, and laser-height factors, solved with Levenberg–Marquardt.
-- **Evaluation:** ATE RMSE against mocap ground truth, per robot.
+- **Fusion back-end** (`covor/`): per-robot SE(3) trajectories from a VINS-Fusion
+  stereo+IMU front-end, joined by UWB anchor and inter-robot range factors, a laser
+  height factor and a gravity prior. Solved with Levenberg-Marquardt.
+- **Occupancy mapping** (`covor/occupancy.py`): stereo depth is integrated into a
+  log-odds grid, with each observation weighted by the fused pose covariance.
+- **Evaluation**: ATE RMSE against cleaned mocap ground truth.
 
-## Pipeline
+## Branches
 
-```
-MILUV images ──► ORB-SLAM3 (monocular)  ──►  per-robot up-to-scale VO keyframes
-MILUV uwb_range.csv ─────────────────────►  inter-agent + anchor ranges
-                                              │
-                                              ▼
-                        Sim(3) factor graph (GTSAM, Python)
-                        · Pose3 (metric) + scalar scale per keyframe  = 7-DoF Sim(3)
-                        · VO odometry between-factors (scale-corrected)
-                        · scale random-walk factors (scale drift)
-                        · UWB inter-agent range factors   (native RangeFactorPose3)
-                        · UWB anchor range factors        (native, anchor = pinned Pose3)
-                        · laser height factors            (downward altimeter -> z)
-                        · frame-alignment / prior factors (gauge)
-                                              │
-                                Levenberg-Marquardt
-                                              ▼
-                     metric multi-robot trajectories  ──► ATE vs mocap
-```
+| branch | contents |
+|--------|----------|
+| `main` | stable fusion and occupancy code, this README |
+| `develop` | work in progress: entry-map, exploration and simulation experiments |
+| `paper/conference-2026` | write-ups, pre-registrations, result reports and paper figures |
 
-## Results
-
-On `default_3_zigzag_0` (3 robots, line-of-sight), per-robot ATE RMSE:
-
-| robot  | keyframes | mono-VO (Sim3) | CoVOR fused (SE3) |
-|--------|-----------|----------------|-------------------|
-| ifo001 | 202       | 0.091 m        | 0.568 m           |
-| ifo002 | 307       | 0.129 m        | 0.538 m           |
-| ifo003 | 391       | 0.284 m        | 0.425 m           |
-
-**Fusion does not beat VO on this sequence — and that result is the finding, not a
-bug.** The pipeline was validated separately: fed *perfect* ranges (mocap
-`gt_range`) with the moment-arm + height model, fused ATE matches VO and the
-drifty robot ifo003 improves (0.284 → 0.130 m). The limiter here is the **data**,
-not the code:
-
-- **Real UWB noise (σ ≈ 0.22 m, outliers to ~0.9 m) exceeds the VO error of
-  robots 1 & 2** (0.09–0.13 m), so range fusion can only pull them off a good
-  solution. As a rule of thumb, **fusion helps a robot iff its VO error ≳ the UWB
-  noise floor.** This LOS sequence is simply too easy for VO.
-- **Anchor geometry is vertically weak** (6 anchors all ~1.7 m high → poor VDOP);
-  the downward-laser **height factor** restores the unobservable z.
-
-A harder, longer, or higher-speed multi-robot sequence — where VO actually drifts
-past the UWB noise floor — is where fusion is expected to win.
-
-### Paper-faithful reproduction
-
-The table above uses a **loop-closing-ON** front-end (full mono-SLAM: local BA +
-loop closure + map merging), which is drift-*corrected* and stronger than the
-drifting VO the paper assumes. A separate, **paper-faithful** run uses a
-continuous **drifting** VO instead — loop *detection* and map *merging* are kept
-(so the trajectory stays continuous across drone tracking loss) but loop-closure
-*correction* is disabled via a `loopCorrection` flag added to the ORB-SLAM3 fork
-(`loopClosing: 1 + loopCorrection: 0`). On that faithful front-end, fusion **does**
-correct VO drift (ifo002 0.78→0.45 m, ifo003 0.61→0.46 m), reproducing the paper's
-core demonstration. Full method-vs-paper checklist, ATE table, and the patch note
-are in **[`FAITHFUL_REPRODUCTION.md`](FAITHFUL_REPRODUCTION.md)**.
-
-## Getting started
-
-### Prerequisites
-
-- **MILUV dataset** (DECAR) — Figshare [doi:10.25452/figshare.plus.28386041](https://doi.org/10.25452/figshare.plus.28386041).
-  Each sequence provides per-robot `uwb_range.csv` (with `range`, `gt_range`,
-  `std`, `bias`), `mocap.csv`, `height.csv`, plus `config/uwb/{anchors,tags}.yaml`
-  and `config/height/bias.yaml`.
-- **ORB-SLAM3** built with Pangolin / OpenCV / Eigen / Boost (for the VO front-end).
-- Two conda environments (see [Environments](#environments)).
-
-Data locations are set by the path constants at the top of `covor/data.py`
-(`DATA`, `UWB_CFG`, `HEIGHT_CFG`, `VO_DIR`) and `RESULTS` in `run_covor.py` —
-edit these to match your machine.
-
-### Run
+## Setup
 
 ```bash
-conda activate slam_env        # C++ / VO side
-# 1) front-end VO — per robot; runs ORB-SLAM3 monocular
-python scripts/prep_vo.py default_3_zigzag_0 ifo001   # generates config + image list
-bash   scripts/run_vo.sh  default_3_zigzag_0 ifo001   # repeat for ifo002, ifo003
-#   (or: bash scripts/run_vo_all.sh default_3_zigzag_0   -- all 3 robots, with retries)
+conda create -n covor python=3.10
+conda activate covor
+pip install -r requirements.txt
+```
 
-conda activate covor           # Python / GTSAM fusion side
-# 2) fusion + evaluation
+The dataset is not included. Download MILUV
+([doi:10.25452/figshare.plus.28386041](https://doi.org/10.25452/figshare.plus.28386041))
+and point the code at it:
+
+```bash
+export MILUV_ROOT=/path/to/miluv        # must contain data/ and config/
+export VINS_OUT_DIR=/path/to/vins/out   # VINS-Fusion output, <seq>/<robot>/vio.csv
+```
+
+Both default to `data/miluv` and `data/vins_out` inside the repository, so symlinks
+there work as well.
+
+## Usage
+
+```bash
 python run_covor.py default_3_zigzag_0
-# -> results/<seq>_trajectories.png, _errors.png, _summary.json
 ```
 
-Pre-computed VO keyframes for `default_3_zigzag_0` and `default_3_random_0` ship
-in `vo_output/`, so you can run step 2 without building ORB-SLAM3.
+This builds the graph, optimizes it, prints per-robot ATE for the VIO-only and fused
+trajectories, and writes plots and `*_summary.json` to `results/`.
 
-### Sanity checks
+Reference result on `default_3_zigzag_0` (rigid-aligned ATE RMSE, metres):
+
+| robot  | VIO only | fused |
+|--------|----------|-------|
+| ifo001 | 0.171    | 0.066 |
+| ifo002 | 0.202    | 0.111 |
+| ifo003 | 0.242    | 0.087 |
+
+Occupancy maps:
 
 ```bash
-python scripts/selftest_fusion.py   # synthetic end-to-end factor-graph test
-python scripts/test_jacobians.py    # analytic vs finite-difference Jacobians (~1e-7)
+python scripts/fuse_and_dump.py --seq default_3_zigzag_0   # fused poses + covariance
+python scripts/build_occupancy.py                          # weighted occupancy grid
+python scripts/export_occupancy_web.py                     # browser viewer
 ```
 
-## How it works
+Unit checks:
 
-### Sim(3) states without `gtsam.Similarity3`
-The paper optimizes 7-DoF Sim(3) states. GTSAM's Python `Similarity3` does not
-expose the Lie-group tangent ops (`retract` / `localCoordinates`) needed to use it
-as an optimization variable, so each keyframe state is a metric `Pose3`
-(translation = metric world position) **plus a scalar scale variable** — the same
-7 DoF. The scale enters the VO odometry factor (scaling the up-to-scale relative
-translation), and a random-walk factor on scale models scale drift, matching the
-paper's per-keyframe Sim(3) formulation.
+```bash
+python scripts/test_jacobians.py    # analytic vs finite-difference Jacobians
+```
 
-### Range / height factors and Jacobians
-Range residuals `||p_a − target|| − z` use GTSAM's **native C++ `RangeFactorPose3`**
-(analytic Jacobian, no Python callback → fast); anchors are fixed points modelled
-as strongly-priored `Pose3` variables so the same native factor applies. The
-custom analytic builders in `factors.py` (unit-tested against finite differences
-*and* the native factor in `scripts/test_jacobians.py`) drive the online-bias
-mode. The height factor is a unary `p_z − h` with analytic Jacobian
-`dr/dξ = [0,0,0, e_z^T R]`. All analytic Jacobians match finite differences to
-~1e-7 or better.
+### Legacy ORB-SLAM3 front-end
 
-### All three robots are anchored
-Each robot's own `uwb_range.csv` holds *its own* anchor ranges;
-`data.load_ranges` unions all robots' CSVs and de-duplicates, so every robot gets
-its full set of anchor measurements. (Reading only ifo001, as an earlier version
-did, silently dropped 2/3 of the anchors and left robots 2 & 3 unanchored.)
+An ORB-SLAM3 monocular front-end is still available (`Cfg(frontend="orb")`).
+Build the driver against an ORB-SLAM3 checkout (`ORB_SLAM3_DIR`, default
+`../ORB_SLAM3`) with `scripts/build_driver.sh`, then run
+`scripts/prep_vo.py` and `scripts/run_vo.sh` per robot. Keyframes for two sequences
+are included in `vo_output/`.
 
-### Assumptions
-- **Antenna offsets** are treated as pre-compensated (paper Sec. II-B), so range
-  residuals use the camera translation directly.
-- **Frame initialization** (the paper's `SL1L2` / initial scale from ArUco / known
-  GT scale) is seeded by aligning each robot's VO to mocap (Umeyama Sim(3)). The
-  optimization then relies on VO odometry + ranges; mocap is used only for the
-  initial guess and for evaluation.
-- Monocular ORB-SLAM3 can lose tracking on drone footage and reset (new atlas
-  map); odometry factors are skipped across large keyframe time gaps (map breaks).
-
-## Repository layout
+## Layout
 
 ```
-run_covor.py                   end-to-end: build → optimize → evaluate → figures
+run_covor.py            end-to-end run: build, optimize, evaluate, plot
 covor/
-  data.py                      MILUV loaders (VO, mocap, ranges, anchors, tags, height)
-  factors.py                   factor builders (odometry, scale, range, height, priors)
-  fusion.py                    graph assembly, Umeyama init, LM optimization
-  evaluate.py                  ATE RMSE + trajectory / error plots
-configs/                       per-robot ORB-SLAM3 camera configs (ifo001/2/3)
-orbslam_driver/
-  mono_miluv.cc                ORB-SLAM3 monocular front-end for MILUV
-scripts/
-  build_driver.sh             compile the driver against the built ORB-SLAM3
-  prep_vo.py                  generate ORB-SLAM3 config + image list per robot
-  run_vo.sh / run_vo_all.sh   run VO for one robot / all three (with retries)
-  selftest_fusion.py          synthetic end-to-end test of the factor graph
-  test_jacobians.py           analytic-vs-finite-difference Jacobian unit tests
-  sweep.py                    UWB weighting grid sweep
-  sweep_height.py             VO / UWB / height / UWB+height ablation + grid
-vo_output/                     pre-computed VO keyframes (sample inputs for fusion)
+  data.py               MILUV loaders (VIO, mocap, ranges, anchors, height)
+  factors.py            odometry, range, height and prior factors
+  fusion.py             graph assembly, initialization, optimization
+  evaluate.py           ATE and plotting
+  occupancy.py          stereo depth and uncertainty-weighted occupancy grid
+scripts/                occupancy pipeline, front-end drivers, Jacobian test
+configs/                ORB-SLAM3 camera configs
+orbslam_driver/         ORB-SLAM3 monocular driver source
+vo_output/              sample ORB-SLAM3 keyframes
+web/                    viewer template
 ```
-
-## Environments
-
-- **`slam_env`** (conda): ORB-SLAM3 + Pangolin / OpenCV / Eigen / Boost — C++ build
-  and VO front-end.
-- **`covor`** (conda, py3.10): `gtsam` 4.2 + numpy / scipy / pandas / matplotlib —
-  the fusion back-end.
 
 ## Reference
 
-- **CoVOR-SLAM** — Lee et al., *Cooperative SLAM using Visual Odometry and Ranges
-  for Multi-Robot Systems* (2023).
-- **MILUV dataset** — DECAR group. Figshare [doi:10.25452/figshare.plus.28386041](https://doi.org/10.25452/figshare.plus.28386041).
+- Lee et al., *Cooperative SLAM using Visual Odometry and Ranges for Multi-Robot
+  Systems*, 2023.
+- MILUV dataset, DECAR group.
